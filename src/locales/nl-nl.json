@@ -32,6 +32,11 @@
         "referralQrCodeGenerator": {
           "title": "Referral QR Code Generator | Maak Aangepaste QR Codes | Affensus",
           "description": "Gratis referral QR code generator voor affiliate marketeers. Maak aangepaste QR codes voor je referral links om conversies te verhogen en prestaties te volgen."
+        },
+        "affiliateNetworkUptime": {
+          "title": "Affiliate Netwerk Uptime Monitor | Real-time Status Tracking | Affensus",
+          "description": "Monitor affiliate netwerk uptime in real-time. Volg homepage, API en tracking URL status van belangrijke affiliate netwerken. Ontvang directe meldingen bij downtime.",
+          "keywords": "affiliate netwerk uptime, netwerk monitoring, affiliate tracking, uptime monitor, affiliate netwerk status"
         }
       },
       "auth": {
