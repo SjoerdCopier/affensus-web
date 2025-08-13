@@ -26,7 +26,7 @@ export default function Footer() {
               className="mb-4"
               priority
             />
-            <p className="text-white mb-4">
+            <p className="text-white mb-4 max-w-xs pr-8">
               {t('footer.companyDescription')}
             </p>
             <div className="flex space-x-4">
@@ -66,7 +66,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <div className="border-t border-gray-500 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm">
             {t('footer.copyright').replace('{year}', new Date().getFullYear().toString())}
           </p>
