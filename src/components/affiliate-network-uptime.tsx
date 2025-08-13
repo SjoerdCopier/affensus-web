@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, useCallback, Suspense } from 'react';
 import Breadcrumbs from "@/components/breadcrumbs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChevronDown, ChevronUp } from 'lucide-react';
@@ -14,21 +14,28 @@ import Footer from '@/components/footer';
 // HoverCard components for uptime details
 const HoverCard = ({ children }: { children: React.ReactNode }) => {
   const [isOpen, setIsOpen] = useState(false);
+  
+  const childrenArray = React.Children.toArray(children);
+  const trigger = childrenArray.find((child) => 
+    React.isValidElement(child) && child.type === HoverCardTrigger
+  );
+  const content = childrenArray.find((child) => 
+    React.isValidElement(child) && child.type === HoverCardContent
+  );
+  
   return (
     <div className="relative inline-block" onMouseEnter={() => setIsOpen(true)} onMouseLeave={() => setIsOpen(false)}>
-      {children}
+      {trigger}
       {isOpen && (
         <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 z-10">
-          {React.Children.toArray(children).find((child) => 
-            React.isValidElement(child) && child.type === HoverCardContent
-          )}
+          {content}
         </div>
       )}
     </div>
   );
 };
 
-const HoverCardTrigger = ({ children }: { children: React.ReactNode }) => children;
+const HoverCardTrigger = ({ children }: { children: React.ReactNode }) => <>{children}</>;
 
 const HoverCardContent = ({ children }: { children: React.ReactNode }) => (
   <div className="bg-black text-white px-2 py-1 rounded text-xs whitespace-nowrap">
@@ -73,7 +80,7 @@ const UptimeBar = ({ dayUptime }: { dayUptime: DayUptime[] }) => {
       </HoverCardTrigger>
       <HoverCardContent>
         <div className="space-y-2">
-          <h4 className="text-sm font-semibold">{new Date(date).toLocaleDateString()}</h4>
+          <h4 className="text-sm font-semibold">{date}</h4>
           <p>Uptime: {uptime !== null ? `${(uptime * 100).toFixed(2)}%` : 'N/A'}</p>
         </div>
       </HoverCardContent>
@@ -81,19 +88,10 @@ const UptimeBar = ({ dayUptime }: { dayUptime: DayUptime[] }) => {
   );
 
   const generateLast60Days = () => {
-    const today = new Date();
-    const last60Days = Array.from({length: 60}, (_, i) => {
-      const date = new Date(today);
-      date.setDate(today.getDate() - i);
-      return date.toISOString().split('T')[0];
-    }).reverse();
-
-    const uptimeMap = new Map(dayUptime.map(day => [day.date, day.uptime]));
-
-    return last60Days.map(date => ({
-      date,
-      uptime: uptimeMap.has(date) ? (uptimeMap.get(date) ?? null) : null
-    }));
+    // Use the provided dayUptime data directly
+    return dayUptime
+      .sort((a, b) => a.date.localeCompare(b.date))
+      .slice(-60); // Take last 60 days
   };
 
   const last60DaysData = generateLast60Days();
@@ -132,31 +130,24 @@ function AffiliateNetworkUptimeContent() {
     const fetchDomainData = async () => {
       setIsLoading(true);
       try {
-        // Try the Wrangler endpoint first, then fall back to Next.js API route
-        let response;
-        try {
-          response = await fetch('http://localhost:8788/api/tools/affiliate-network-uptime', {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-          if (!response.ok) throw new Error('Wrangler endpoint failed');
-        } catch {
-          // Fall back to Next.js API route
-          response = await fetch('/api/tools/affiliate-network-uptime', {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-        }
+        // Use relative path to API route (works with wrangler dev on any port)
+        const response = await fetch('/api/tools/affiliate-network-uptime', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
         
         if (!response.ok) {
           throw new Error(`Failed to fetch domain data: ${response.statusText}`);
         }
         const data = await response.json();
-        console.log(data);  
+        
+        // Check if the response contains an error
+        if (data.error) {
+          throw new Error(data.error);
+        }
+        
         if (!data || data.length === 0) {
           console.warn('No data returned from API');
         }
@@ -176,28 +167,30 @@ function AffiliateNetworkUptimeContent() {
     setExpandedDomain(expandedDomain === domainName ? null : domainName);
   };
 
-  useEffect(() => {
-    const sortDomains = (option: string) => {
-      const sortedDomains = [...domains];
-      switch (option) {
-        case 'uptime':
-          sortedDomains.sort((a, b) => b.avg_uptime_percentage - a.avg_uptime_percentage);
-          break;
-        case 'down':
-          sortedDomains.sort((a, b) => (a.avg_uptime_percentage < 100 ? -1 : 1) - (b.avg_uptime_percentage < 100 ? -1 : 1));
-          break;
-        case 'highest-downtime':
-          sortedDomains.sort((a, b) => (100 - a.avg_uptime_percentage) - (100 - b.avg_uptime_percentage));
-          break;
-        default:
-          // Keep original order
-          break;
-      }
-      setDomains(sortedDomains);
-    };
+  const sortDomains = useCallback((option: string) => {
+    if (domains.length === 0) return; // Don't sort empty array
+    
+    const sortedDomains = [...domains];
+    switch (option) {
+      case 'uptime':
+        sortedDomains.sort((a, b) => b.avg_uptime_percentage - a.avg_uptime_percentage);
+        break;
+      case 'down':
+        sortedDomains.sort((a, b) => (a.avg_uptime_percentage < 100 ? -1 : 1) - (b.avg_uptime_percentage < 100 ? -1 : 1));
+        break;
+      case 'highest-downtime':
+        sortedDomains.sort((a, b) => (100 - a.avg_uptime_percentage) - (100 - b.avg_uptime_percentage));
+        break;
+      default:
+        // Keep original order
+        return;
+    }
+    setDomains(sortedDomains);
+  }, [domains]);
 
+  useEffect(() => {
     sortDomains(sortOption);
-  }, [sortOption, domains]);
+  }, [sortOption, sortDomains]);
 
   const filteredDomains = domains.filter(domain =>
     domain.domain.toLowerCase().includes(searchTerm.toLowerCase())
@@ -209,15 +202,24 @@ function AffiliateNetworkUptimeContent() {
   };
 
   const getCombinedUptimeData = (dayUptimeArray: UptimeData[]) => {
-    const combinedData = new Map();
+    const combinedData = new Map<string, number>();
+    
+    // For each date, find the minimum uptime across all types (worst case scenario)
     dayUptimeArray.forEach(type => {
       type.day_uptime.forEach(day => {
-        if (day.uptime !== null && (!combinedData.has(day.date) || day.uptime < (combinedData.get(day.date) ?? 1))) {
-          combinedData.set(day.date, day.uptime);
+        if (day.uptime !== null) {
+          const currentMin = combinedData.get(day.date);
+          if (currentMin === undefined || day.uptime < currentMin) {
+            combinedData.set(day.date, day.uptime);
+          }
         }
       });
     });
-    return Array.from(combinedData, ([date, uptime]) => ({ date, uptime }));
+    
+    // Convert to array and sort by date
+    return Array.from(combinedData, ([date, uptime]) => ({ date, uptime }))
+      .sort((a, b) => a.date.localeCompare(b.date))
+      .slice(-60); // Take last 60 days
   };
 
   return (
@@ -285,6 +287,11 @@ function AffiliateNetworkUptimeContent() {
                 </>
               ) : error ? (
                 <div className="col-span-2 text-red-500">{error}</div>
+              ) : filteredDomains.length === 0 ? (
+                <div className="col-span-2 text-center text-gray-500">
+                  <p>No uptime data available at the moment.</p>
+                  <p className="text-sm mt-2">Uptime monitoring is being configured and will be available soon.</p>
+                </div>
               ) : (
                 <>
                   <div className="space-y-8">
@@ -391,7 +398,7 @@ function AffiliateNetworkUptimeContent() {
               What does our Uptime Monitor track?
             </h2>
             <p>
-              Our Uptime Monitor tracks three crucial components of affiliate networks: Homepage, API, and Tracking URLs. We continuously check these elements to ensure your affiliate operations run smoothly.
+              Our Uptime Monitor will track three crucial components of affiliate networks: Homepage, API, and Tracking URLs. We will continuously check these elements to ensure your affiliate operations run smoothly once the system is fully implemented.
             </p>
             <h2 className="mt-4 text-xl font-bold tracking-tight text-[#6ca979] pt-5 sm:text-2xl">
               What do the colored bars represent?
@@ -409,13 +416,13 @@ function AffiliateNetworkUptimeContent() {
               How often do we check for uptime?
             </h2>
             <p>
-              We perform checks every 5 minutes, providing near real-time monitoring of your affiliate network&apos;s performance. This frequent monitoring allows for quick detection and response to any issues that may arise.
+              Once fully implemented, we will perform checks every 5 minutes, providing near real-time monitoring of your affiliate network&apos;s performance. This frequent monitoring will allow for quick detection and response to any issues that may arise.
             </p>
             <h2 className="mt-4 text-xl font-bold tracking-tight text-[#6ca979] pt-5 sm:text-2xl">
               What actions should I take if downtime is detected?
             </h2>
             <p>
-              If significant downtime is detected, we recommend: 1) Verifying the issue on your end, 2) Contacting the affiliate network&apos;s support team, 3) Temporarily pausing any active campaigns, and 4) Keeping your affiliates informed about the situation. Our system also provides automated alerts to help you respond quickly to any disruptions.
+              When the monitoring system is active and significant downtime is detected, we recommend: 1) Verifying the issue on your end, 2) Contacting the affiliate network&apos;s support team, 3) Temporarily pausing any active campaigns, and 4) Keeping your affiliates informed about the situation. Our system will also provide automated alerts to help you respond quickly to any disruptions.
             </p>
           </div>
         </div>

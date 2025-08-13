@@ -132,8 +132,16 @@ export async function onRequestGet(context: { env: Env, request: Request }): Pro
     }
 
     if (!success) {
-      console.log('All API attempts failed, returning mock data');
-      throw new Error('Unable to fetch data from Uptime Kuma');
+      console.log('All API attempts failed');
+      return new Response(JSON.stringify({ error: 'Unable to fetch data from Uptime Kuma - no real data available' }), {
+        status: 503,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type'
+        }
+      });
     }
 
     // Process the Prometheus metrics to match our expected format
@@ -151,9 +159,9 @@ export async function onRequestGet(context: { env: Env, request: Request }): Pro
   } catch (error) {
     console.error('Error in affiliate-network-uptime API:', error);
     
-    // Return mock data for testing if the real API fails
-    const mockData = generateMockData();
-    return new Response(JSON.stringify(mockData), {
+    // Return error instead of mock data
+    return new Response(JSON.stringify({ error: 'Failed to fetch real uptime data: ' + (error instanceof Error ? error.message : 'Unknown error') }), {
+      status: 500,
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
@@ -178,9 +186,9 @@ export async function onRequestOptions(): Promise<Response> {
 async function processStatusPageData(statusData: any): Promise<Domain[]> {
   console.log('Processing status page data:', statusData);
   
-  // If we can't process the status page data, return mock data
+  // If we can't process the status page data, return empty array
   if (!statusData || !statusData.publicGroupList) {
-    return generateMockData();
+    return [];
   }
 
   const domains: Map<string, Domain> = new Map();
@@ -206,18 +214,25 @@ async function processStatusPageData(statusData: any): Promise<Domain[]> {
         // Calculate uptime from monitor data
         const uptime = monitor.uptime || 0;
         const responseTime = monitor.avgPing || 0;
+        
+        // Convert uptime to percentage if it's a decimal (0-1), otherwise assume it's already a percentage
+        const uptimePercentage = uptime <= 1 ? uptime * 100 : uptime;
+        const uptimeDecimal = uptime <= 1 ? uptime : uptime / 100;
 
         domainData.urls.push({
           type: monitorType,
-          avg_uptime_percentage: uptime * 100,
+          avg_uptime_percentage: uptimePercentage,
           avg_response_time: responseTime
         });
 
-        // Generate sample day uptime data
-        const dayUptime = generateSampleDayUptime(uptime);
+        // Only include today's data since we don't have historical data
+        const today = new Date().toISOString().split('T')[0];
         domainData.day_uptime.push({
           type: monitorType,
-          day_uptime: dayUptime
+          day_uptime: [{
+            date: today,
+            uptime: uptimeDecimal
+          }]
         });
       });
     }
@@ -230,7 +245,7 @@ async function processStatusPageData(statusData: any): Promise<Domain[]> {
     }
   });
 
-  return domains.size > 0 ? Array.from(domains.values()) : generateMockData();
+  return Array.from(domains.values());
 }
 
 async function processPrometheusMetrics(metricsText: string): Promise<Domain[]> {
@@ -293,8 +308,8 @@ async function processPrometheusMetrics(metricsText: string): Promise<Domain[]> 
     const status = monitor.metrics['monitor_status'] || 0; // 1 = UP, 0 = DOWN
     const responseTime = monitor.metrics['monitor_response_time'] || 0;
     
-    // Calculate uptime percentage (assume 99%+ if status is UP)
-    const uptimePercentage = status === 1 ? 99.5 + (Math.random() * 0.5) : 85 + (Math.random() * 10);
+    // Calculate uptime percentage based on actual status
+    const uptimePercentage = status === 1 ? 100 : 0;
 
     // Add URL data - treating each monitor as a "Tracking" endpoint since they're all tracking URLs
     domainData.urls.push({
@@ -303,12 +318,14 @@ async function processPrometheusMetrics(metricsText: string): Promise<Domain[]> 
       avg_response_time: responseTime
     });
 
-    // Generate sample day uptime data
-    const dayUptime = generateSampleDayUptime(uptimePercentage / 100);
-    
+    // Only include today's data since we don't have historical data
+    const today = new Date().toISOString().split('T')[0];
     domainData.day_uptime.push({
       type: 'Tracking',
-      day_uptime: dayUptime
+      day_uptime: [{
+        date: today,
+        uptime: uptimePercentage / 100
+      }]
     });
   }
 
@@ -341,73 +358,6 @@ function extractTypeFromMonitor(monitorName: string): string {
   return 'Homepage';
 }
 
-function generateSampleDayUptime(baseUptime: number): DayUptime[] {
-  // Generate last 60 days with sample data based on current uptime
-  const today = new Date();
-  const last60Days = Array.from({ length: 60 }, (_, i) => {
-    const date = new Date(today);
-    date.setDate(today.getDate() - i);
-    return date.toISOString().split('T')[0];
-  }).reverse();
+// Note: generateSampleDayUptime function removed since we only show real data from today
 
-  return last60Days.map(date => {
-    // Generate some realistic variation around the base uptime
-    const variation = (Math.random() - 0.5) * 0.1; // ±5% variation
-    const dayUptime = Math.max(0, Math.min(1, baseUptime + variation));
-    
-    return {
-      date,
-      uptime: dayUptime
-    };
-  });
-}
-
-function generateMockData(): Domain[] {
-  const mockNetworks = [
-    { name: 'ShareASale', uptime: 99.95, responseTime: 120 },
-    { name: 'Commission Junction', uptime: 99.8, responseTime: 95 },
-    { name: 'ClickBank', uptime: 98.5, responseTime: 150 },
-    { name: 'Amazon Associates', uptime: 99.99, responseTime: 85 },
-    { name: 'Impact', uptime: 99.2, responseTime: 110 },
-    { name: 'Rakuten Advertising', uptime: 97.8, responseTime: 200 }
-  ];
-
-  return mockNetworks.map(network => {
-    const baseUptime = network.uptime / 100;
-    return {
-      domain: network.name.toLowerCase().replace(/\s+/g, ''),
-      avg_uptime_percentage: network.uptime,
-      urls: [
-        {
-          type: 'Homepage',
-          avg_uptime_percentage: network.uptime,
-          avg_response_time: network.responseTime
-        },
-        {
-          type: 'API',
-          avg_uptime_percentage: network.uptime - 0.1,
-          avg_response_time: network.responseTime + 20
-        },
-        {
-          type: 'Tracking',
-          avg_uptime_percentage: network.uptime + 0.05,
-          avg_response_time: network.responseTime - 10
-        }
-      ],
-      day_uptime: [
-        {
-          type: 'Homepage',
-          day_uptime: generateSampleDayUptime(baseUptime)
-        },
-        {
-          type: 'API',
-          day_uptime: generateSampleDayUptime(baseUptime - 0.001)
-        },
-        {
-          type: 'Tracking',
-          day_uptime: generateSampleDayUptime(baseUptime + 0.0005)
-        }
-      ]
-    };
-  });
-}
+// Mock data generation removed - only real data from Uptime Kuma is used
