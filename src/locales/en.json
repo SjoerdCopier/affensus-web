@@ -1,0 +1,592 @@
+{
+  "metadata": {
+    "homepage": {
+      "title": "Affensus - AI-Powered Affiliate Marketing Solutions | Transform Your Business",
+      "description": "Transform your affiliate marketing business with Affensus's AI-powered solutions. Advanced tools, analytics, and earnings calculators for modern affiliate marketers."
+    },
+    "privacy": {
+      "title": "Privacy Policy | Affensus - AI-Powered Affiliate Marketing Solutions",
+      "description": "Learn how Affensus collects, uses, and protects your personal information. GDPR-compliant privacy policy for our affiliate marketing platform."
+    },
+    "terms": {
+      "title": "Terms of Service | Affensus - AI-Powered Affiliate Marketing Solutions",
+      "description": "Read the terms and conditions for using Affensus affiliate marketing platform. Understand your rights and responsibilities as a user."
+    },
+    "faq": {
+      "title": "Frequently Asked Questions | Affensus - AI-Powered Affiliate Marketing",
+      "description": "Find answers to common questions about Affensus affiliate marketing tools, features, and services. Get the help you need quickly."
+    },
+    "pricing": {
+      "title": "Flexible Pricing Plans | Affensus - AI-Powered Affiliate Marketing",
+      "description": "Choose the perfect pricing plan for your affiliate marketing needs. Flexible monthly and yearly options starting at $17/month. Keep 100% of your earnings."
+    },
+    "tools": {
+      "affiliateLinkChecker": {
+        "title": "Affiliate Link Checker Tool | Verify Your Affiliate Links | Affensus",
+        "description": "Free affiliate link checker tool to verify your affiliate links are working correctly. Check redirects, validate URLs, and ensure proper commission tracking."
+      },
+      "affiliateEarningsCalculator": {
+        "title": "Affiliate Earnings Calculator | Calculate Your Potential Income | Affensus",
+        "description": "Free affiliate earnings calculator to estimate your potential affiliate marketing income. Calculate commissions, conversion rates, and revenue projections."
+      },
+      "referralQrCodeGenerator": {
+        "title": "Referral QR Code Generator | Create Custom QR Codes | Affensus",
+        "description": "Free referral QR code generator for affiliate marketers. Create custom QR codes for your referral links to boost conversions and track performance."
+      }
+    },
+    "auth": {
+      "title": "Sign In or Sign Up | Affensus - AI-Powered Affiliate Marketing Solutions",
+      "description": "Create your Affensus account or sign in to access AI-powered affiliate marketing tools, analytics, and earnings calculators."
+    }
+  },
+  "common": {
+    "navigation": {
+      "home": "Home",
+      "about": "About",
+      "services": "Services",
+      "contact": "Contact"
+    },
+    "actions": {
+      "learnMore": "Learn More",
+      "getStarted": "Get Started",
+      "contactUs": "Contact Us"
+    }
+  },
+  "homepage": {
+    "hero": {
+      "title": "Transform Your Business with AI",
+      "subtitle": "Cutting-edge artificial intelligence solutions tailored to your needs",
+      "cta": "Discover Our Solutions"
+    },
+    "features": {
+      "title": "Why Choose Affensus?",
+      "ai": "Advanced AI Technology",
+      "customization": "Custom Solutions",
+      "support": "24/7 Support"
+    }
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "subtitle": "How we collect, use, and protect your information",
+    "breadcrumb": "Privacy",
+    "lastUpdated": "Last Updated",
+    "sections": {
+      "introduction": {
+        "title": "Introduction",
+        "paragraph1": "This Privacy Policy describes how Affensus collects, uses, and protects your personal information.",
+        "paragraph2": "By using our service, you agree to the collection and use of information in accordance with this policy.",
+        "gdprCompliance": "We are committed to GDPR compliance and protecting your privacy rights."
+      },
+      "informationWeCollect": {
+        "title": "Information We Collect",
+        "personalInformation": {
+          "title": "Personal Information",
+          "intro": "We may collect personal information that you provide directly to us:",
+          "items": [
+            "Name and contact information",
+            "Email address",
+            "Account credentials",
+            "Profile information"
+          ]
+        },
+        "usageInformation": {
+          "title": "Usage Information",
+          "intro": "We automatically collect certain information about your use of our services:",
+          "items": [
+            "Learning progress and preferences",
+            "Feature usage patterns",
+            "Device and browser information",
+            "Performance and error data"
+          ]
+        },
+        "mobileAppData": {
+          "title": "Mobile App Data",
+          "intro": "If you use our mobile applications, we may collect:",
+          "items": [
+            "Device identifiers",
+            "App usage statistics",
+            "Crash reports and diagnostics",
+            "Push notification preferences"
+          ]
+        }
+      },
+      "howWeUseInformation": {
+        "title": "How We Use Information",
+        "paragraph1": "We use the information we collect to provide, maintain, and improve our services, communicate with you, and ensure security.",
+        "paragraph2": "Your data helps us personalize your experience and develop new features that meet your needs."
+      },
+      "cookiesAndTracking": {
+        "title": "Cookies and Tracking",
+        "essentialCookies": {
+          "title": "Essential Cookies",
+          "intro": "These cookies are necessary for the website to function properly:",
+          "items": [
+            "Session management",
+            "Security and authentication",
+            "Language preferences",
+            "Basic functionality"
+          ]
+        },
+        "analyticsCookies": {
+          "title": "Analytics Cookies",
+          "intro": "These cookies help us understand how visitors interact with our website:",
+          "items": [
+            "Usage analytics",
+            "Performance monitoring",
+            "Feature optimization",
+            "User experience improvements"
+          ]
+        },
+        "cookieManagement": {
+          "title": "Cookie Management",
+          "content": "You can control and manage cookies through your browser settings. However, disabling essential cookies may affect website functionality."
+        }
+      },
+      "dataSharing": {
+        "title": "Data Sharing",
+        "thirdPartyServices": {
+          "title": "Third-Party Services",
+          "intro": "We may share data with trusted third-party service providers:",
+          "items": [
+            "Google Analytics for usage statistics",
+            "Cloudflare for security and performance",
+            "Payment processors for transactions",
+            "Email service providers for communications"
+          ]
+        },
+        "legalRequirements": {
+          "title": "Legal Requirements",
+          "content": "We may disclose your information if required by law or to protect our rights and safety."
+        },
+        "businessTransfers": {
+          "title": "Business Transfers",
+          "content": "In the event of a merger, acquisition, or sale of assets, your information may be transferred as part of the transaction."
+        },
+        "noSaleNotice": "We do not sell, trade, or rent your personal information to third parties for marketing purposes."
+      },
+      "dataSecurity": {
+        "title": "Data Security",
+        "paragraph1": "We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.",
+        "paragraph2": "While we strive to protect your data, no method of transmission over the internet is 100% secure."
+      },
+      "yourRights": {
+        "title": "Your Rights",
+        "gdprRights": {
+          "title": "GDPR Rights",
+          "paragraph1": "Under GDPR, you have the right to access, rectify, erase, and restrict processing of your personal data.",
+          "paragraph2": "You also have the right to data portability and to object to processing based on legitimate interests."
+        }
+      },
+      "dataRetention": {
+        "title": "Data Retention",
+        "retentionPeriods": {
+          "title": "Retention Periods",
+          "intro": "We retain your personal information for as long as necessary to provide our services:",
+          "items": [
+            "Account data: Until account deletion",
+            "Usage data: 2 years",
+            "Analytics data: 26 months",
+            "Support communications: 3 years"
+          ]
+        },
+        "deletionProcedures": {
+          "title": "Deletion Procedures",
+          "content": "You can request deletion of your account and associated data through your account settings or by contacting us directly."
+        }
+      },
+      "internationalTransfers": {
+        "title": "International Transfers",
+        "crossBorderProcessing": {
+          "title": "Cross-Border Processing",
+          "content": "Your data may be transferred to and processed in countries other than your own, including countries outside the European Economic Area."
+        },
+        "safeguards": {
+          "title": "Safeguards",
+          "intro": "We ensure adequate protection for international transfers through:",
+          "items": [
+            "Standard Contractual Clauses (SCCs)",
+            "Adequacy decisions by relevant authorities",
+            "Certification schemes and codes of conduct",
+            "Binding corporate rules where applicable"
+          ]
+        }
+      },
+      "childrensPrivacy": {
+        "title": "Children's Privacy",
+        "ageRestrictions": {
+          "title": "Age Restrictions",
+          "content": "Our services are not intended for children under 13. We do not knowingly collect personal information from children under 13."
+        },
+        "parentalControls": {
+          "title": "Parental Controls",
+          "content": "If you are a parent and believe your child has provided us with personal information, please contact us immediately."
+        },
+        "educationalUse": {
+          "title": "Educational Use",
+          "content": "For educational institutions using our services, we comply with applicable laws including COPPA and FERPA."
+        }
+      },
+      "changesToPolicy": {
+        "title": "Changes to This Policy",
+        "policyUpdates": {
+          "title": "Policy Updates",
+          "content": "We may update this Privacy Policy from time to time. We will notify you of any material changes."
+        },
+        "notificationOfChanges": {
+          "title": "Notification of Changes",
+          "intro": "We will notify you of significant changes through:",
+          "items": [
+            "Email notifications to registered users",
+            "In-app notifications and banners",
+            "Updated privacy policy page",
+            "Social media announcements for major changes"
+          ]
+        },
+        "continuedUse": {
+          "title": "Continued Use",
+          "content": "Your continued use of our services after changes become effective constitutes acceptance of the updated policy."
+        }
+      },
+      "contactInformation": {
+        "title": "Contact Information",
+        "privacyQuestions": {
+          "title": "Privacy Questions",
+          "intro": "If you have questions about this Privacy Policy or our data practices, please contact us:"
+        },
+        "dataProtectionOfficer": "Data Protection Officer",
+        "company": "Affensus",
+        "address": "123 Business Street, Suite 100, City, State 12345",
+        "email": "privacy@affensus.com",
+        "subject": "Subject: Privacy Policy Inquiry",
+        "responseTime": {
+          "title": "Response Time",
+          "content": "We aim to respond to all privacy-related inquiries within 30 days."
+        },
+        "supervisoryAuthority": {
+          "title": "Supervisory Authority",
+          "content": "If you have concerns about our data processing, you have the right to lodge a complaint with your local data protection authority."
+        }
+      }
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "subtitle": "Please read these terms carefully before using our service",
+      "breadcrumb": "Terms",
+      "lastUpdated": "Last Updated",
+      "sections": {
+        "agreementToTerms": {
+          "title": "Agreement to Terms",
+          "paragraph1": "By accessing and using Affensus services, you accept and agree to be bound by the terms and provision of this agreement.",
+          "paragraph2": "If you do not agree to abide by the above, please do not use this service."
+        },
+        "serviceDescription": {
+          "title": "Description of Service",
+          "intro": "Affensus provides AI-powered solutions and tools including:",
+          "features": [
+            "AI-powered business solutions",
+            "Affiliate marketing tools",
+            "Analytics and reporting",
+            "Custom integrations"
+          ],
+          "reserveRight": "We reserve the right to modify, suspend, or discontinue any part of our service at any time."
+        },
+        "userAccounts": {
+          "title": "User Accounts",
+          "paragraph1": "When you create an account with us, you must provide information that is accurate, complete, and current at all times.",
+          "paragraph2": "You are responsible for safeguarding the password and for all activities that occur under your account."
+        },
+        "acceptableUse": {
+          "title": "Acceptable Use",
+          "intro": "You agree not to use the service to:",
+          "prohibitedActivities": [
+            "Violate any applicable laws or regulations",
+            "Infringe upon intellectual property rights",
+            "Transmit harmful or malicious code",
+            "Attempt to gain unauthorized access to our systems"
+          ]
+        },
+        "intellectualProperty": {
+          "title": "Intellectual Property",
+          "paragraph1": "The service and its original content, features, and functionality are and will remain the exclusive property of Affensus.",
+          "paragraph2": "The service is protected by copyright, trademark, and other laws."
+        },
+        "privacy": {
+          "title": "Privacy",
+          "content": "Your privacy is important to us. Please review our Privacy Policy, which also governs your use of the service."
+        },
+        "termination": {
+          "title": "Termination",
+          "paragraph1": "We may terminate or suspend your account and bar access to the service immediately, without prior notice.",
+          "paragraph2": "Upon termination, your right to use the service will cease immediately."
+        },
+        "disclaimers": {
+          "title": "Disclaimers",
+          "content": "The service is provided on an \"AS IS\" and \"AS AVAILABLE\" basis. Affensus makes no warranties, expressed or implied."
+        },
+        "limitationOfLiability": {
+          "title": "Limitation of Liability",
+          "content": "In no event shall Affensus be liable for any indirect, incidental, special, consequential, or punitive damages."
+        },
+        "governingLaw": {
+          "title": "Governing Law",
+          "content": "These terms shall be interpreted and governed by the laws of the jurisdiction in which Affensus operates."
+        },
+        "changesToTerms": {
+          "title": "Changes to Terms",
+          "paragraph1": "We reserve the right to modify or replace these terms at any time.",
+          "paragraph2": "If a revision is material, we will provide at least 30 days notice prior to any new terms taking effect."
+        },
+        "contactInformation": {
+          "title": "Contact Information",
+          "intro": "If you have any questions about these Terms of Service, please contact us:",
+          "company": "Affensus Limited",
+          "address": "Unit B,3/F., Kai Wan House 146 Tung Choi Street Mongkok, Kowloon Hong Kong",
+          "email": "legal@affensus.com"
+        }
+      },
+      "dataDeletion": {
+        "title": "Data Deletion Request",
+        "subtitle": "How to request deletion of your personal data from Affensus",
+        "breadcrumb": "Data Deletion",
+        "lastUpdated": "Last Updated",
+        "sections": {
+          "introduction": {
+            "title": "Introduction",
+            "paragraph1": "At Affensus, we respect your right to control your personal data. This page explains how you can request the deletion of your personal information from our platform.",
+            "paragraph2": "We are committed to processing data deletion requests promptly and in accordance with applicable data protection laws, including GDPR and CCPA.",
+            "compliance": "We comply with data protection regulations and will process your deletion request within 30 days."
+          },
+          "yourRights": {
+            "title": "Your Data Deletion Rights",
+            "paragraph1": "You have the right to request deletion of your personal data at any time. This includes:",
+            "paragraph2": "We will process your request within 30 days and confirm the deletion in writing.",
+            "items": [
+              "Account information and profile data",
+              "Learning progress and preferences",
+              "Usage statistics and analytics data",
+              "Communication history and support tickets",
+              "Device and browser information",
+              "Payment and billing information (if applicable)"
+            ]
+          },
+          "whatWeDelete": {
+            "title": "What We Delete",
+            "paragraph1": "When you request data deletion, we will remove the following information:",
+            "items": [
+              "Personal identification information",
+              "Account credentials and authentication data",
+              "Learning progress and course history",
+              "User preferences and settings",
+              "Communication records and support tickets",
+              "Analytics and usage data",
+              "Device and browser information",
+              "Payment and billing records (if applicable)"
+            ]
+          },
+          "howToRequest": {
+            "title": "How to Request Data Deletion",
+            "paragraph1": "You can request data deletion through the following methods:",
+            "items": [
+              "Email us at privacy@affensus.com with subject \"Data Deletion Request\"",
+              "Include your email address and any account identifiers",
+              "Specify which data you want deleted (all data or specific categories)",
+              "Provide any additional context that may help us locate your data"
+            ]
+          },
+          "processingTime": {
+            "title": "Processing Time",
+            "paragraph1": "We aim to process all data deletion requests within 30 days of receipt.",
+            "paragraph2": "For urgent requests or if you have concerns about our response time, please contact us directly."
+          },
+          "confirmation": {
+            "title": "Confirmation of Deletion",
+            "paragraph1": "Once your data has been deleted, we will send you a confirmation email.",
+            "paragraph2": "Please note that some information may be retained for legal or regulatory purposes as required by law."
+          },
+          "contactInfo": {
+            "title": "Contact Information",
+            "paragraph1": "For data deletion requests or questions about your privacy rights, please contact us:"
+          },
+          "legalBasis": {
+            "title": "Legal Basis for Data Deletion",
+            "paragraph1": "Your right to data deletion is protected under various data protection laws:",
+            "paragraph2": "We process deletion requests in accordance with these legal frameworks and our privacy policy.",
+            "items": [
+              "GDPR Article 17 (Right to Erasure)",
+              "CCPA Section 1798.105 (Right to Delete)",
+              "Other applicable data protection laws",
+              "Our commitment to user privacy and data protection"
+            ]
+          }
+        }
+      },
+      "refundPolicy": {
+        "title": "Refund Policy",
+        "subtitle": "Our commitment to your satisfaction with Affensus services",
+        "breadcrumb": "Refund Policy",
+        "lastUpdated": "Last Updated",
+        "sections": {
+          "introduction": {
+            "title": "Affensus Refund Policy",
+            "paragraph1": "You are entitled to a refund within 7 days of signing up with Affensus. No questions asked!"
+          },
+          "howToRequest": {
+            "title": "How to Request a Refund",
+            "paragraph1": "Follow these simple steps to request your refund:",
+            "steps": [
+              "Log in to your Affensus dashboard",
+              "Click on your profile in the top right corner",
+              "Select \"Subscriptions\" from the dropdown menu",
+              "Find the \"Request Refund\" button and click it",
+              "Your refund will be automatically approved"
+            ]
+          },
+          "processingTime": {
+            "title": "Refund Processing Time",
+            "paragraph1": "The refund process is quick and easy. You can expect to see the refund reflected in your account within 5-10 business days, depending on your payment method."
+          },
+          "feedback": {
+            "title": "We Value Your Feedback",
+            "paragraph1": "At Affensus, we're committed to providing the best possible experience for our users. If you're considering a refund, we'd love to hear from you about how we can improve our service.",
+            "paragraph2": "Please take a moment to share your thoughts with us:",
+            "paragraph3": "Your feedback is invaluable and helps us continually improve. You can share your thoughts by emailing us at feedback@affensus.com or through the feedback form in your dashboard.",
+            "questions": [
+              "What aspects of our service didn't meet your expectations?",
+              "Are there any features you feel are missing?",
+              "How can we enhance your experience with Affensus?"
+            ]
+          }
+        }
+      },
+      "aboutUs": {
+        "title": "About Sjoerd Copier",
+        "subtitle": "Transforming businesses through affiliate marketing excellence",
+        "breadcrumb": "About Us",
+        "hero": {
+          "title": "Hi, I'm Sjoerd Copier",
+          "subtitle": "Founder & CEO of Affensus",
+          "description": "I've dedicated over a decade to mastering affiliate marketing, helping thousands of marketers build profitable businesses and generating millions in revenue along the way."
+        },
+        "stats": {
+          "revenue": "€50M+",
+          "revenueLabel": "Revenue Generated",
+          "marketers": "500+",
+          "marketersLabel": "Marketers Mentored",
+          "years": "10+",
+          "yearsLabel": "Years Experience"
+        },
+        "story": {
+          "title": "My Journey",
+          "year": "2013",
+          "content": "It all started with a simple €50 investment in my first affiliate campaign. What began as curiosity about digital marketing quickly became an obsession with understanding consumer behavior, conversion optimization, and the psychology behind successful partnerships.",
+          "evolution": "From that humble beginning, I've built a career helping Fortune 500 companies scale their affiliate programs, mentoring hundreds of marketers to achieve 6-figure incomes, and developing cutting-edge AI tools that revolutionize campaign optimization."
+        },
+        "mission": {
+          "title": "The Affensus Mission",
+          "content": "I created Affensus to democratize access to the strategies, tools, and insights that have driven my success. Every feature, every tool, every piece of content is designed with one goal: empowering you to build a thriving affiliate marketing business."
+        },
+        "values": {
+          "title": "What Drives Me"
+        },
+        "contact": {
+          "title": "Let's Build Something Great Together",
+          "content": "Whether you're just starting out or looking to scale your existing affiliate business, I'm here to help. Every message gets a personal response from me.",
+          "cta": "Ready to transform your affiliate marketing game?"
+        }
+      }
+    }
+  },
+  "faq": {
+    "title": "FAQs",
+    "subtitle": "Explore commonly asked questions for clear and helpful insights on our services.",
+    "questions": {
+      "purpose": {
+        "question": "What is the main purpose of this app?",
+        "answer": "Affensus is an all-in-one dashboard for managing your affiliate networks. It helps you to manage your networks, subscriptions, data and promotions."
+      },
+      "multipleCoupons": {
+        "question": "Can I generate multiple unique coupon texts at once?",
+        "answer": "Yes, you can generate multiple unique coupon texts at once."
+      },
+      "merchantData": {
+        "question": "What kind of data can I see on each merchant's profile?",
+        "answer": "Depending on the network, you can see the following data: Logo, Name, Display url, Affiliate url, commission data and more."
+      },
+      "networkLimit": {
+        "question": "Is there a limit to the number of networks I can add?",
+        "answer": "No, you can add as many networks as you want."
+      },
+      "support": {
+        "question": "Do you offer customer support if I need help?",
+        "answer": "Yes, we offer customer support if you need help."
+      }
+    },
+    "contact": {
+      "title": "Still have a questions?",
+      "subtitle": "Can't find the answer you're looking for? Please chat with our friendly team.",
+      "cta": "Mail Affensus"
+    }
+  },
+  "pricing": {
+    "title": "Flexible pricing plans. Any scale.",
+    "subtitle": "Whether you're an individual, a small team, or a growing enterprise, we have a plan that aligns perfectly with your goals.",
+    "billing": {
+      "monthly": "Monthly",
+      "yearly": "Yearly",
+      "discount": "Get 1 month for free"
+    },
+    "popular": "Popular",
+    "free": "Free forever",
+    "billed": "Billed",
+    "cta": "Get Affensus",
+    "security": "Affensus never has access to your keys, they're securely stored on your own device. Plus, we don't take a cut from your commissions.",
+    "earnings": "You keep 100% of your earnings for as little as $17 USD per month."
+  },
+  "auth": {
+    "signUp": {
+      "title": "Create your account",
+      "description": "Get started with Affensus and transform your affiliate marketing business"
+    },
+    "signIn": {
+      "title": "Welcome back",
+      "description": "Sign in to your Affensus account to continue"
+    },
+    "buttons": {
+      "continueWithEmail": "Continue with Email",
+      "continueWithGoogle": "Continue with Google",
+      "continueWithGithub": "Continue with GitHub",
+      "sendMagicLink": "Send Magic Link",
+      "sendingMagicLink": "Sending...",
+      "backToAllOptions": "Back to all options",
+      "signIn": "Sign In",
+      "signUp": "Sign Up"
+    },
+    "form": {
+      "emailLabel": "Email",
+      "emailPlaceholder": "Enter your email address"
+    },
+    "magicLink": {
+      "title": "Check your email",
+      "description": "We've sent a magic link to {email} to {action} to your account",
+      "instructions": "Click the link in your email to {action} to your account",
+      "backButton": "Back to sign in"
+    },
+    "features": {
+      "startForFree": "Start for {strong}free{/strong}",
+      "noCreditCard": "No {strong}credit card{/strong} required",
+      "dayRefund": "{strong}30-day{/strong} money-back guarantee",
+      "respectPrivacy": "We {strong}respect{/strong} your privacy",
+      "happyCustomers": "Join {strong}thousands{/strong} of happy customers"
+    },
+    "toggleText": {
+      "alreadyHaveAccount": "Already have an account?",
+      "dontHaveAccount": "Don't have an account?"
+    },
+    "terms": {
+      "byCreatingAccount": "By creating an account, you agree to our",
+      "termsOfService": "Terms of Service",
+      "and": "and",
+      "privacyPolicy": "Privacy Policy"
+    }
+  }
+}

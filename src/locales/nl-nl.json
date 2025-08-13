@@ -1,0 +1,442 @@
+{
+    "metadata": {
+      "homepage": {
+        "title": "Affensus - AI-Aangedreven Affiliate Marketing Oplossingen | Transformeer Je Bedrijf",
+        "description": "Transformeer je affiliate marketing bedrijf met Affensus's AI-aangedreven oplossingen. Geavanceerde tools, analytics en inkomstenberekeningen voor moderne affiliate marketeers."
+      },
+      "privacy": {
+        "title": "Privacybeleid | Affensus - AI-Aangedreven Affiliate Marketing Oplossingen",
+        "description": "Leer hoe Affensus je persoonlijke informatie verzamelt, gebruikt en beschermt. GDPR-conform privacybeleid voor ons affiliate marketing platform."
+      },
+      "terms": {
+        "title": "Gebruiksvoorwaarden | Affensus - AI-Aangedreven Affiliate Marketing Oplossingen",
+        "description": "Lees de voorwaarden voor het gebruik van het Affensus affiliate marketing platform. Begrijp je rechten en verantwoordelijkheden als gebruiker."
+      },
+      "faq": {
+        "title": "Veelgestelde Vragen | Affensus - AI-Aangedreven Affiliate Marketing",
+        "description": "Vind antwoorden op veelgestelde vragen over Affensus affiliate marketing tools, functies en diensten. Krijg snel de hulp die je nodig hebt."
+      },
+      "pricing": {
+        "title": "Flexibele Prijsplannen | Affensus - AI-Aangedreven Affiliate Marketing",
+        "description": "Kies het perfecte prijsplan voor je affiliate marketing behoeften. Flexibele maandelijkse en jaarlijkse opties vanaf €17/maand. Behoud 100% van je verdiensten."
+      },
+      "tools": {
+        "affiliateLinkChecker": {
+          "title": "Affiliate Link Checker Tool | Verifieer Je Affiliate Links | Affensus",
+          "description": "Gratis affiliate link checker tool om te controleren of je affiliate links correct werken. Controleer redirects, valideer URLs en zorg voor juiste commissietracking."
+        },
+        "affiliateEarningsCalculator": {
+          "title": "Affiliate Inkomsten Calculator | Bereken Je Potentiële Inkomen | Affensus",
+          "description": "Gratis affiliate inkomsten calculator om je potentiële affiliate marketing inkomen te schatten. Bereken commissies, conversieratio's en omzetprognoses."
+        },
+        "referralQrCodeGenerator": {
+          "title": "Referral QR Code Generator | Maak Aangepaste QR Codes | Affensus",
+          "description": "Gratis referral QR code generator voor affiliate marketeers. Maak aangepaste QR codes voor je referral links om conversies te verhogen en prestaties te volgen."
+        }
+      },
+      "auth": {
+        "title": "Aanmelden of Account Aanmaken | Affensus - AI-Aangedreven Affiliate Marketing Oplossingen",
+        "description": "Maak je Affensus account aan of meld je aan om toegang te krijgen tot AI-aangedreven affiliate marketing tools, analytics en inkomstenberekeningen."
+      }
+    },
+    "common": {
+      "navigation": {
+        "home": "Home",
+        "about": "About",
+        "services": "Services",
+        "contact": "Contact"
+      },
+      "actions": {
+        "learnMore": "Learn More",
+        "getStarted": "Get Started",
+        "contactUs": "Contact Us"
+      }
+    },
+    "homepage": {
+      "hero": {
+        "title": "Transform Your Business with AI",
+        "subtitle": "Cutting-edge artificial intelligence solutions tailored to your needs",
+        "cta": "Discover Our Solutions"
+      },
+      "features": {
+        "title": "Why Choose Affensus?",
+        "ai": "Advanced AI Technology",
+        "customization": "Custom Solutions",
+        "support": "24/7 Support"
+      }
+    },
+    "privacy": {
+      "title": "Privacybeleid",
+      "subtitle": "Hoe we uw informatie verzamelen, gebruiken en beschermen",
+      "breadcrumb": "Privacy",
+      "lastUpdated": "Laatst bijgewerkt",
+      "sections": {
+        "introduction": {
+          "title": "Inleiding",
+          "paragraph1": "Dit Privacybeleid beschrijft hoe Affensus uw persoonlijke informatie verzamelt, gebruikt en beschermt.",
+          "paragraph2": "Door onze dienst te gebruiken, gaat u akkoord met het verzamelen en gebruiken van informatie in overeenstemming met dit beleid.",
+          "gdprCompliance": "We zijn toegewijd aan GDPR-naleving en het beschermen van uw privacyrechten."
+        },
+        "informationWeCollect": {
+          "title": "Informatie die we verzamelen",
+          "personalInformation": {
+            "title": "Persoonlijke informatie",
+            "intro": "We kunnen persoonlijke informatie verzamelen die u rechtstreeks aan ons verstrekt:",
+            "items": [
+              "Naam en contactgegevens",
+              "E-mailadres",
+              "Accountgegevens",
+              "Profielinformatie"
+            ]
+          },
+          "usageInformation": {
+            "title": "Gebruiksinformatie",
+            "intro": "We verzamelen automatisch bepaalde informatie over uw gebruik van onze diensten:",
+            "items": [
+              "Leervoortgang en voorkeuren",
+              "Functiegebruikspatronen",
+              "Apparaat- en browserinformatie",
+              "Prestatie- en foutgegevens"
+            ]
+          },
+          "mobileAppData": {
+            "title": "Mobiele app-gegevens",
+            "intro": "Als u onze mobiele applicaties gebruikt, kunnen we verzamelen:",
+            "items": [
+              "Apparaatidentificatoren",
+              "App-gebruiksstatistieken",
+              "Crashrapporten en diagnostiek",
+              "Push-notificatievoorkeuren"
+            ]
+          }
+        },
+        "howWeUseInformation": {
+          "title": "Hoe we informatie gebruiken",
+          "paragraph1": "We gebruiken de informatie die we verzamelen om onze diensten te leveren, te onderhouden en te verbeteren, met u te communiceren en de veiligheid te waarborgen.",
+          "paragraph2": "Uw gegevens helpen ons om uw ervaring te personaliseren en nieuwe functies te ontwikkelen die aan uw behoeften voldoen."
+        },
+        "cookiesAndTracking": {
+          "title": "Cookies en tracking",
+          "essentialCookies": {
+            "title": "Essentiële cookies",
+            "intro": "Deze cookies zijn noodzakelijk voor de goede werking van de website:",
+            "items": [
+              "Sessiebeheer",
+              "Veiligheid en authenticatie",
+              "Taalvoorkeuren",
+              "Basis functionaliteit"
+            ]
+          },
+          "analyticsCookies": {
+            "title": "Analytische cookies",
+            "intro": "Deze cookies helpen ons te begrijpen hoe bezoekers met onze website omgaan:",
+            "items": [
+              "Gebruiksanalyse",
+              "Prestatiemonitoring",
+              "Functie-optimalisatie",
+              "Verbeteringen van gebruikerservaring"
+            ]
+          },
+          "cookieManagement": {
+            "title": "Cookiebeheer",
+            "content": "U kunt cookies beheren via uw browserinstellingen. Het uitschakelen van essentiële cookies kan echter de functionaliteit van de website beïnvloeden."
+          }
+        },
+        "dataSharing": {
+          "title": "Gegevensdeling",
+          "thirdPartyServices": {
+            "title": "Dienstverleners van derden",
+            "intro": "We kunnen gegevens delen met vertrouwde dienstverleners van derden:",
+            "items": [
+              "Google Analytics voor gebruiksstatistieken",
+              "Cloudflare voor veiligheid en prestaties",
+              "Betaalverwerkers voor transacties",
+              "E-maildienstverleners voor communicatie"
+            ]
+          },
+          "legalRequirements": {
+            "title": "Wettelijke vereisten",
+            "content": "We kunnen uw informatie openbaren indien dit wettelijk vereist is of om onze rechten en veiligheid te beschermen."
+          },
+          "businessTransfers": {
+            "title": "Bedrijfsoverdrachten",
+            "content": "In geval van een fusie, overname of verkoop van activa, kunnen uw gegevens worden overgedragen als onderdeel van de transactie."
+          },
+          "noSaleNotice": "We verkopen, verhandelen of verhuren uw persoonlijke informatie niet aan derden voor marketingdoeleinden."
+        },
+        "dataSecurity": {
+          "title": "Gegevensbeveiliging",
+          "paragraph1": "We implementeren passende technische en organisatorische maatregelen om uw persoonlijke informatie te beschermen tegen ongeautoriseerde toegang, wijziging, openbaarmaking of vernietiging.",
+          "paragraph2": "Hoewel we ernaar streven uw gegevens te beschermen, is geen enkele methode van verzending via internet 100% veilig."
+        },
+        "yourRights": {
+          "title": "Uw rechten",
+          "gdprRights": {
+            "title": "GDPR-rechten",
+            "paragraph1": "Volgens de GDPR heeft u het recht om toegang te krijgen tot, te rectificeren, te wissen en de verwerking van uw persoonlijke gegevens te beperken.",
+            "paragraph2": "U heeft ook het recht op gegevensportabiliteit en om bezwaar te maken tegen verwerking op basis van legitieme belangen."
+          }
+        },
+        "dataRetention": {
+          "title": "Gegevensbewaring",
+          "retentionPeriods": {
+            "title": "Bewaartermijnen",
+            "intro": "We bewaren uw persoonlijke informatie zolang als nodig is om onze diensten te leveren:",
+            "items": [
+              "Accountgegevens: Tot accountverwijdering",
+              "Gebruiksgegevens: 2 jaar",
+              "Analytische gegevens: 26 maanden",
+              "Ondersteuningscommunicatie: 3 jaar"
+            ]
+          },
+          "deletionProcedures": {
+            "title": "Verwijdermethoden",
+            "content": "U kunt verwijdering van uw account en bijbehorende gegevens aanvragen via uw accountinstellingen of door rechtstreeks contact met ons op te nemen."
+          }
+        },
+        "internationalTransfers": {
+          "title": "Internationale overdrachten",
+          "crossBorderProcessing": {
+            "title": "Grensoverschrijdende verwerking",
+            "content": "Uw gegevens kunnen worden overgedragen naar en verwerkt in andere landen dan uw eigen land, inclusief landen buiten de Europese Economische Ruimte."
+          },
+          "safeguards": {
+            "title": "Beschermingsmaatregelen",
+            "intro": "We zorgen voor adequate bescherming voor internationale overdrachten door:",
+            "items": [
+              "Standaardcontractuele clausules (SCC's)",
+              "Toereikendheidsbeslissingen door relevante autoriteiten",
+              "Certificeringsregelingen en gedragscodes",
+              "Bindende bedrijfsregels waar van toepassing"
+            ]
+          }
+        },
+        "childrensPrivacy": {
+          "title": "Privacy van kinderen",
+          "ageRestrictions": {
+            "title": "Leeftijdsbeperkingen",
+            "content": "Onze diensten zijn niet bedoeld voor kinderen onder de 13 jaar. We verzamelen niet bewust persoonlijke informatie van kinderen onder de 13 jaar."
+          },
+          "parentalControls": {
+            "title": "Ouderlijk toezicht",
+            "content": "Als u een ouder bent en denkt dat uw kind ons persoonlijke informatie heeft gegeven, neem dan onmiddellijk contact met ons op."
+          },
+          "educationalUse": {
+            "title": "Educatief gebruik",
+            "content": "Voor onderwijsinstellingen die onze diensten gebruiken, voldoen we aan toepasselijke wetten inclusief COPPA en FERPA."
+          }
+        },
+        "changesToPolicy": {
+          "title": "Wijzigingen in dit beleid",
+          "policyUpdates": {
+            "title": "Beleidsupdates",
+            "content": "We kunnen dit Privacybeleid van tijd tot tijd bijwerken. We zullen u op de hoogte stellen van eventuele materiële wijzigingen."
+          },
+          "notificationOfChanges": {
+            "title": "Kennisgeving van wijzigingen",
+            "intro": "We zullen u op de hoogte stellen van belangrijke wijzigingen via:",
+            "items": [
+              "E-mailmeldingen aan geregistreerde gebruikers",
+              "In-app meldingen en banners",
+              "Bijgewerkte privacybeleidspagina",
+              "Social media aankondigingen voor grote wijzigingen"
+            ]
+          },
+          "continuedUse": {
+            "title": "Voortgezet gebruik",
+            "content": "Uw voortgezette gebruik van onze diensten na het effectief worden van wijzigingen betekent acceptatie van het bijgewerkte beleid."
+          }
+        },
+        "contactInformation": {
+          "title": "Contactgegevens",
+          "privacyQuestions": {
+            "title": "Privacyvragen",
+            "intro": "Als u vragen heeft over dit Privacybeleid of onze gegevenspraktijken, neem dan contact met ons op:"
+          },
+          "dataProtectionOfficer": "Functionaris voor gegevensbescherming",
+          "company": "Affensus",
+          "address": "123 Business Street, Suite 100, City, State 12345",
+          "email": "privacy@affensus.com",
+          "subject": "Onderwerp: Privacybeleid Vraag",
+          "responseTime": {
+            "title": "Reactietijd",
+            "content": "We streven ernaar om binnen 30 dagen te reageren op alle privacy-gerelateerde vragen."
+          },
+          "supervisoryAuthority": {
+            "title": "Toezichthoudende autoriteit",
+            "content": "Als u zorgen heeft over onze gegevensverwerking, heeft u het recht om een klacht in te dienen bij uw lokale autoriteit voor gegevensbescherming."
+          }
+        }
+      }
+    },
+    "terms": {
+      "title": "Gebruiksvoorwaarden",
+      "subtitle": "Lees deze voorwaarden zorgvuldig door voordat u onze dienst gebruikt",
+      "breadcrumb": "Voorwaarden",
+      "lastUpdated": "Laatst bijgewerkt",
+      "sections": {
+        "agreementToTerms": {
+          "title": "Akkoord met voorwaarden",
+          "paragraph1": "Door toegang te krijgen tot en gebruik te maken van Affensus diensten, accepteert en gaat u akkoord met de voorwaarden van deze overeenkomst.",
+          "paragraph2": "Als u niet akkoord gaat met het bovenstaande, gebruik dan deze dienst niet."
+        },
+        "serviceDescription": {
+          "title": "Beschrijving van de dienst",
+          "intro": "Affensus biedt AI-aangedreven oplossingen en tools, waaronder:",
+          "features": [
+            "AI-aangedreven zakelijke oplossingen",
+            "Affiliate marketing tools",
+            "Analytics en rapportage",
+            "Aangepaste integraties"
+          ],
+          "reserveRight": "We behouden ons het recht voor om elk deel van onze dienst te wijzigen, op te schorten of te beëindigen."
+        },
+        "userAccounts": {
+          "title": "Gebruikersaccounts",
+          "paragraph1": "Wanneer u een account bij ons aanmaakt, moet u informatie verstrekken die nauwkeurig, volledig en actueel is.",
+          "paragraph2": "U bent verantwoordelijk voor het beveiligen van het wachtwoord en voor alle activiteiten die onder uw account plaatsvinden."
+        },
+        "acceptableUse": {
+          "title": "Aanvaardbaar gebruik",
+          "intro": "U gaat akkoord om de dienst niet te gebruiken om:",
+          "prohibitedActivities": [
+            "Toepasselijke wetten of voorschriften te overtreden",
+            "Intellectuele eigendomsrechten te schenden",
+            "Schadelijke of kwaadaardige code te verzenden",
+            "Ongeautoriseerde toegang tot onze systemen te proberen te krijgen"
+          ]
+        },
+        "intellectualProperty": {
+          "title": "Intellectueel eigendom",
+          "paragraph1": "De dienst en de originele inhoud, functies en functionaliteit zijn en blijven het exclusieve eigendom van Affensus.",
+          "paragraph2": "De dienst wordt beschermd door auteursrecht, handelsmerk en andere wetten."
+        },
+        "privacy": {
+          "title": "Privacy",
+          "content": "Uw privacy is belangrijk voor ons. Bekijk ons Privacybeleid, dat ook uw gebruik van de dienst regelt."
+        },
+        "termination": {
+          "title": "Beëindiging",
+          "paragraph1": "We kunnen uw account beëindigen of opschorten en de toegang tot de dienst onmiddellijk blokkeren, zonder voorafgaande kennisgeving.",
+          "paragraph2": "Na beëindiging houdt uw recht om de dienst te gebruiken onmiddellijk op."
+        },
+        "disclaimers": {
+          "title": "Vrijwaringen",
+          "content": "De dienst wordt geleverd op een \"ZOALS IS\" en \"BESCHIKBAAR\" basis. Affensus geeft geen garanties, uitdrukkelijk of impliciet."
+        },
+        "limitationOfLiability": {
+          "title": "Beperking van aansprakelijkheid",
+          "content": "Affensus is in geen geval aansprakelijk voor indirecte, incidentele, bijzondere, gevolgschade of strafschade."
+        },
+        "governingLaw": {
+          "title": "Toepasselijk recht",
+          "content": "Deze voorwaarden worden geïnterpreteerd en beheerst door de wetten van de jurisdictie waarin Affensus opereert."
+        },
+        "changesToTerms": {
+          "title": "Wijzigingen in voorwaarden",
+          "paragraph1": "We behouden ons het recht voor om deze voorwaarden te allen tijde te wijzigen of te vervangen.",
+          "paragraph2": "Als een wijziging materieel is, geven we ten minste 30 dagen kennisgeving voordat nieuwe voorwaarden van kracht worden."
+        },
+        "contactInformation": {
+          "title": "Contactgegevens",
+          "intro": "Als u vragen heeft over deze Gebruiksvoorwaarden, neem dan contact met ons op:",
+          "company": "Affensus Limited",
+          "address": "Unit B,3/F., Kai Wan House 146 Tung Choi Street Mongkok, Kowloon Hong Kong",
+          "email": "legal@affensus.com"
+        }
+      }
+    },
+  "faq": {
+    "title": "Veelgestelde vragen",
+    "subtitle": "Verken veelgestelde vragen voor duidelijke en nuttige inzichten over onze diensten.",
+    "questions": {
+      "purpose": {
+        "question": "Wat is het hoofddoel van deze app?",
+        "answer": "Affensus is een alles-in-één dashboard voor het beheren van je affiliate netwerken. Het helpt je bij het beheren van je netwerken, abonnementen, data en promoties."
+      },
+      "multipleCoupons": {
+        "question": "Kan ik meerdere unieke coupons tegelijk genereren?",
+        "answer": "Ja, je kunt meerdere unieke coupons tegelijk genereren."
+      },
+      "merchantData": {
+        "question": "Welke gegevens kan ik zien op elk handelaarprofiel?",
+        "answer": "Afhankelijk van het netwerk kun je de volgende gegevens zien: Logo, Naam, Weergave-url, Affiliate-url, commissiegegevens en meer."
+      },
+      "networkLimit": {
+        "question": "Is er een limiet aan het aantal netwerken dat ik kan toevoegen?",
+        "answer": "Nee, je kunt zoveel netwerken toevoegen als je wilt."
+      },
+      "support": {
+        "question": "Bieden jullie klantenondersteuning als ik hulp nodig heb?",
+        "answer": "Ja, we bieden klantenondersteuning als je hulp nodig hebt."
+      }
+    },
+    "contact": {
+      "title": "Heb je nog vragen?",
+      "subtitle": "Kun je het antwoord dat je zoekt niet vinden? Neem contact op met ons vriendelijke team.",
+      "cta": "Mail Affensus"
+    }
+  },
+  "pricing": {
+    "title": "Flexibele prijsplannen. Elke schaal.",
+    "subtitle": "Of je nu een individu bent, een klein team, of een groeiende onderneming, we hebben een plan dat perfect aansluit bij jouw doelen.",
+    "billing": {
+      "monthly": "Maandelijks",
+      "yearly": "Jaarlijks",
+      "discount": "Krijg 1 maand gratis"
+    },
+    "popular": "Populair",
+    "free": "Voor altijd gratis",
+    "billed": "Gefactureerd",
+    "cta": "Krijg Affensus",
+    "security": "Affensus heeft nooit toegang tot je sleutels, ze worden veilig opgeslagen op je eigen apparaat. Bovendien nemen we geen percentage van je commissies.",
+    "earnings": "Je houdt 100% van je verdiensten voor slechts $17 USD per maand."
+  },
+  "auth": {
+    "signUp": {
+      "title": "Maak je account aan",
+      "description": "Begin met Affensus en transformeer je affiliate marketing bedrijf"
+    },
+    "signIn": {
+      "title": "Welkom terug",
+      "description": "Meld je aan bij je Affensus account om door te gaan"
+    },
+    "buttons": {
+      "continueWithEmail": "Doorgaan met E-mail",
+      "continueWithGoogle": "Doorgaan met Google",
+      "continueWithGithub": "Doorgaan met GitHub",
+      "sendMagicLink": "Magic Link Versturen",
+      "sendingMagicLink": "Versturen...",
+      "backToAllOptions": "Terug naar alle opties",
+      "signIn": "Aanmelden",
+      "signUp": "Account Aanmaken"
+    },
+    "form": {
+      "emailLabel": "E-mail",
+      "emailPlaceholder": "Voer je e-mailadres in"
+    },
+    "magicLink": {
+      "title": "Controleer je e-mail",
+      "description": "We hebben een magic link naar {email} gestuurd om {action} bij je account",
+      "instructions": "Klik op de link in je e-mail om {action} bij je account",
+      "backButton": "Terug naar aanmelden"
+    },
+    "features": {
+      "startForFree": "Begin {strong}gratis{/strong}",
+      "noCreditCard": "Geen {strong}creditcard{/strong} vereist",
+      "dayRefund": "{strong}30-dagen{/strong} geld-terug-garantie",
+      "respectPrivacy": "We {strong}respecteren{/strong} je privacy",
+      "happyCustomers": "Doe mee met {strong}duizenden{/strong} tevreden klanten"
+    },
+    "toggleText": {
+      "alreadyHaveAccount": "Heb je al een account?",
+      "dontHaveAccount": "Heb je nog geen account?"
+    },
+    "terms": {
+      "byCreatingAccount": "Door een account aan te maken ga je akkoord met onze",
+      "termsOfService": "Gebruiksvoorwaarden",
+      "and": "en",
+      "privacyPolicy": "Privacybeleid"
+    }
+  }
+}

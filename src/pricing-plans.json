@@ -1,0 +1,165 @@
+{
+  "plans": {
+    "starter": {
+      "id": "starter",
+      "name": {
+        "en": "Starter",
+        "nl-nl": "Starter"
+      },
+      "description": {
+        "en": "Perfect for starters or entrepreneurs working on one domain.",
+        "nl-nl": "Perfect voor starters of ondernemers die aan één domein werken."
+      },
+      "price": {
+        "monthly": {
+          "amount": 2900,
+          "currency": "USD",
+          "symbol": "$"
+        },
+        "yearly": {
+          "amount": 31900,
+          "currency": "USD",
+          "symbol": "$"
+        }
+      },
+      "billing": {
+        "monthly": {
+          "en": "month",
+          "nl-nl": "maand"
+        },
+        "yearly": {
+          "en": "year",
+          "nl-nl": "jaar"
+        }
+      },
+      "features": {
+        "en": [
+          "1 Project",
+          "1 Seat",
+          "$30 Additional project",
+          "Fully Encrypt"
+        ],
+        "nl-nl": [
+          "1 Project",
+          "1 Gebruiker",
+          "$30 Extra project",
+          "Volledig versleuteld"
+        ]
+      },
+      "stripePriceId": "price_starter",
+      "popular": false
+    },
+    "professional": {
+      "id": "professional",
+      "name": {
+        "en": "Professional",
+        "nl-nl": "Professioneel"
+      },
+      "description": {
+        "en": "For those that work in teams or maintain multiple domains.",
+        "nl-nl": "Voor degenen die in teams werken of meerdere domeinen onderhouden."
+      },
+      "price": {
+        "monthly": {
+          "amount": 9900,
+          "currency": "USD",
+          "symbol": "$"
+        },
+        "yearly": {
+          "amount": 108900,
+          "currency": "USD",
+          "symbol": "$"
+        }
+      },
+      "billing": {
+        "monthly": {
+          "en": "month",
+          "nl-nl": "maand"
+        },
+        "yearly": {
+          "en": "year",
+          "nl-nl": "jaar"
+        }
+      },
+      "features": {
+        "en": [
+          "1 Project",
+          "10 Seat",
+          "$20 Additional project",
+          "Fully Encrypt",
+          "Coupon plugin",
+          "Project export",
+          "Customer support"
+        ],
+        "nl-nl": [
+          "1 Project",
+          "10 Gebruikers",
+          "$20 Extra project",
+          "Volledig versleuteld",
+          "Coupon plugin",
+          "Project export",
+          "Klantondersteuning"
+        ]
+      },
+      "stripePriceId": "price_professional",
+      "popular": true
+    },
+    "enterprise": {
+      "id": "enterprise",
+      "name": {
+        "en": "Enterprise",
+        "nl-nl": "Enterprise"
+      },
+      "description": {
+        "en": "Perfect for agencies that run multiple sites.",
+        "nl-nl": "Perfect voor bureaus die meerdere sites beheren."
+      },
+      "price": {
+        "monthly": {
+          "amount": 14900,
+          "currency": "USD",
+          "symbol": "$"
+        },
+        "yearly": {
+          "amount": 163900,
+          "currency": "USD",
+          "symbol": "$"
+        }
+      },
+      "billing": {
+        "monthly": {
+          "en": "month",
+          "nl-nl": "maand"
+        },
+        "yearly": {
+          "en": "year",
+          "nl-nl": "jaar"
+        }
+      },
+      "features": {
+        "en": [
+          "1 Project",
+          "Unlimited seats",
+          "$10 Additional project",
+          "Fully Encrypt",
+          "Coupon plugin",
+          "Project export",
+          "Customer support",
+          "Monitoring Alerts"
+        ],
+        "nl-nl": [
+          "1 Project",
+          "Onbeperkte gebruikers",
+          "$10 Extra project",
+          "Volledig versleuteld",
+          "Coupon plugin",
+          "Project export",
+          "Klantondersteuning",
+          "Monitoring waarschuwingen"
+        ]
+      },
+      "stripePriceId": "price_enterprise",
+      "popular": false
+    }
+  }
+} 
