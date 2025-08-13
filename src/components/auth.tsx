@@ -72,7 +72,7 @@ export default function AuthComponent() {
       }
 
       window.location.href = oauthUrl
-    } catch (error) {
+    } catch {
       alert(`Failed to authenticate with ${provider}`)
     }
   }

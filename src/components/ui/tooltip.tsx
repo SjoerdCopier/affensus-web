@@ -3,10 +3,9 @@ import { cn } from "@/lib/utils"
 
 interface TooltipProviderProps {
   children: React.ReactNode
-  delayDuration?: number
 }
 
-const TooltipProvider = ({ children, delayDuration }: TooltipProviderProps) => {
+const TooltipProvider = ({ children }: TooltipProviderProps) => {
   return <div>{children}</div>
 }
 

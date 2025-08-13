@@ -1,5 +1,3 @@
-import { signJwt } from '@/lib/jwt'
-
 interface GitHubUserInfo {
   id: number
   login: string
@@ -26,6 +24,37 @@ function parseCookies(cookieHeader: string | null): Record<string, string> {
     }
   })
   return cookies
+}
+
+async function signJwt(payload: any, secret: string, expiresIn: number): Promise<string> {
+  const header = { alg: 'HS256', typ: 'JWT' }
+  const now = Math.floor(Date.now() / 1000)
+  const exp = now + expiresIn
+  
+  const jwtPayload = { ...payload, iat: now, exp }
+  
+  const encoder = new TextEncoder()
+  const key = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  )
+  
+  const headerB64 = btoa(JSON.stringify(header)).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_')
+  const payloadB64 = btoa(JSON.stringify(jwtPayload)).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_')
+  
+  const signatureArrayBuffer = await crypto.subtle.sign(
+    'HMAC',
+    key,
+    encoder.encode(`${headerB64}.${payloadB64}`)
+  )
+  
+  const signatureB64 = btoa(String.fromCharCode(...new Uint8Array(signatureArrayBuffer)))
+    .replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_')
+  
+  return `${headerB64}.${payloadB64}.${signatureB64}`
 }
 
 async function processPendingPayments(db: any, email: string, userId: number, stripeSecretKey?: string) {

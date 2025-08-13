@@ -68,7 +68,7 @@ function AffiliateEarningsCalculatorContent() {
               Affiliate Earnings Calculator
             </h1>
             <p className="text-lg text-gray-700 leading-relaxed">
-              Estimate your potential affiliate earnings based on your website's performance metrics.
+              Estimate your potential affiliate earnings based on your website&apos;s performance metrics.
             </p>
           </div>
 
@@ -84,7 +84,7 @@ function AffiliateEarningsCalculatorContent() {
                       <div>
                         <div className="flex items-center space-x-2">
                           <Label htmlFor="pageviews">Monthly Pageviews</Label>
-                          <TooltipProvider delayDuration={0}>
+                          <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger>
                                 <InfoIcon className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-help" />
@@ -108,7 +108,7 @@ function AffiliateEarningsCalculatorContent() {
                       <div>
                         <div className="flex items-center space-x-2">
                           <Label htmlFor="ctr">Click-Through Rate (%)</Label>
-                          <TooltipProvider delayDuration={0}>
+                          <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger>
                                 <InfoIcon className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-help" />
@@ -132,14 +132,14 @@ function AffiliateEarningsCalculatorContent() {
                       <div>
                         <div className="flex items-center space-x-2">
                           <Label htmlFor="conversionRate">Conversion Rate (%)</Label>
-                          <TooltipProvider delayDuration={0}>
+                          <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger>
                                 <InfoIcon className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-help" />
                               </TooltipTrigger>
                               <TooltipContent className="max-w-[350px] font-normal">
                                 <p>The percentage of visitors who make a purchase after clicking your affiliate link.</p>
-                                <p className="pt-2">This rate reflects how well the products you're promoting match your audience's interests and needs.</p>
+                                <p className="pt-2">This rate reflects how well the products you&apos;re promoting match your audience&apos;s interests and needs.</p>
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
@@ -156,7 +156,7 @@ function AffiliateEarningsCalculatorContent() {
                       <div>
                         <div className="flex items-center space-x-2">
                           <Label htmlFor="commissionRate">Commission Rate (%)</Label>
-                          <TooltipProvider delayDuration={0}>
+                          <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger>
                                 <InfoIcon className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-help" />
@@ -180,7 +180,7 @@ function AffiliateEarningsCalculatorContent() {
                       <div>
                         <div className="flex items-center space-x-2">
                           <Label htmlFor="averageOrderValue">Average Order Value ($)</Label>
-                          <TooltipProvider delayDuration={0}>
+                          <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger>
                                 <InfoIcon className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-help" />
@@ -217,17 +217,17 @@ function AffiliateEarningsCalculatorContent() {
                           <div>
                             <div className="flex items-center space-x-2">
                               <Label htmlFor="costPerVisitor">Cost Per Visitor ($)</Label>
-                              <TooltipProvider delayDuration={0}>
-                                <Tooltip>
-                                  <TooltipTrigger>
-                                    <InfoIcon className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-help" />
-                                  </TooltipTrigger>
-                                  <TooltipContent className="max-w-[350px] font-normal">
-                                    <p>The average cost to acquire a single visitor to your website.</p>
-                                    <p className="pt-2">This helps calculate the ROI of your affiliate marketing efforts.</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
+                                                        <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <InfoIcon className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-help" />
+                              </TooltipTrigger>
+                              <TooltipContent className="max-w-[350px] font-normal">
+                                <p>The average cost to acquire a single visitor to your website.</p>
+                                <p className="pt-2">This helps calculate the ROI of your affiliate marketing efforts.</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                             </div>
                             <Input
                               id="costPerVisitor"
@@ -242,7 +242,7 @@ function AffiliateEarningsCalculatorContent() {
                           <div>
                             <div className="flex items-center space-x-2">
                               <Label htmlFor="returnVisitorRate">Return Visitor Rate (%)</Label>
-                              <TooltipProvider delayDuration={0}>
+                              <TooltipProvider>
                                 <Tooltip>
                                   <TooltipTrigger>
                                     <InfoIcon className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-help" />
@@ -266,7 +266,7 @@ function AffiliateEarningsCalculatorContent() {
                           <div>
                             <div className="flex items-center space-x-2">
                               <Label htmlFor="averageLifetimeValue">Average Customer Lifetime Value ($)</Label>
-                              <TooltipProvider delayDuration={0}>
+                              <TooltipProvider>
                                 <Tooltip>
                                   <TooltipTrigger>
                                     <InfoIcon className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-help" />
@@ -360,7 +360,7 @@ function AffiliateEarningsCalculatorContent() {
               <ul className="list-disc list-inside space-y-2 text-gray-700 leading-relaxed">
                 <li>Improve your content quality to attract more visitors</li>
                 <li>Optimize your CTR by using compelling call-to-action buttons and product images</li>
-                <li>Choose high-converting products that align with your audience's interests</li>
+                <li>Choose high-converting products that align with your audience&apos;s interests</li>
                 <li>Negotiate higher commission rates with your affiliate partners</li>
                 <li>Focus on promoting products with higher average order values</li>
               </ul>

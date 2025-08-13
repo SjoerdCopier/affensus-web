@@ -2,6 +2,7 @@
 
 import { useLocaleTranslations } from '@/hooks/use-locale-translations';
 import Image from 'next/image';
+import Link from 'next/link';
 import { locales } from '@/locales/settings';
 
 export default function Footer() {
@@ -44,7 +45,7 @@ export default function Footer() {
           <div>
             <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
-              <li><a href="/contact" className="text-white inline-flex items-center text-sm font-medium leading-none border-b border-dotted border-white/[0.5] pb-1 hover:text-gray-300 transition-colors">Contact</a></li>
+              <li><Link href="/contact" className="text-white inline-flex items-center text-sm font-medium leading-none border-b border-dotted border-white/[0.5] pb-1 hover:text-gray-300 transition-colors">Contact</Link></li>
             </ul>
           </div>
 
@@ -52,10 +53,10 @@ export default function Footer() {
           <div>
             <h4 className="text-lg font-semibold mb-4">Support</h4>
             <ul className="space-y-2">
-              <li><a href="/refund-policy" className="text-white inline-flex items-center text-sm font-medium leading-none border-b border-dotted border-white/[0.5] pb-1 hover:text-gray-300 transition-colors">Refund Policy</a></li>
-              <li><a href="/data-deletion" className="text-white inline-flex items-center text-sm font-medium leading-none border-b border-dotted border-white/[0.5] pb-1 hover:text-gray-300 transition-colors">Data Deletion</a></li>
-              <li><a href="/privacy" className="text-white inline-flex items-center text-sm font-medium leading-none border-b border-dotted border-white/[0.5] pb-1 hover:text-gray-300 transition-colors">Privacy Policy</a></li>
-              <li><a href="/terms" className="text-white inline-flex items-center text-sm font-medium leading-none border-b border-dotted border-white/[0.5] pb-1 hover:text-gray-300 transition-colors">Terms of Service</a></li>
+              <li><Link href="/refund-policy" className="text-white inline-flex items-center text-sm font-medium leading-none border-b border-dotted border-white/[0.5] pb-1 hover:text-gray-300 transition-colors">Refund Policy</Link></li>
+              <li><Link href="/data-deletion" className="text-white inline-flex items-center text-sm font-medium leading-none border-b border-dotted border-white/[0.5] pb-1 hover:text-gray-300 transition-colors">Data Deletion</Link></li>
+              <li><Link href="/privacy" className="text-white inline-flex items-center text-sm font-medium leading-none border-b border-dotted border-white/[0.5] pb-1 hover:text-gray-300 transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="text-white inline-flex items-center text-sm font-medium leading-none border-b border-dotted border-white/[0.5] pb-1 hover:text-gray-300 transition-colors">Terms of Service</Link></li>
             </ul>
           </div>
         </div>
@@ -78,7 +79,7 @@ export default function Footer() {
             
             <div className="absolute bottom-full right-0 mb-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10" style={{ border: '1px solid #6ca979' }}>
               {Object.entries(locales).map(([key, locale]) => (
-                <a 
+                <Link 
                   key={key} 
                   href={key === 'en' ? '/' : `/${key}`}
                   className={`block px-4 py-2 text-sm transition-colors ${
@@ -87,7 +88,7 @@ export default function Footer() {
                 >
                   <span className="mr-2">{locale.flag}</span>
                   {locale.label}
-                </a>
+                </Link>
               ))}
             </div>
           </div>

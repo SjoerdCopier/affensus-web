@@ -1,6 +1,6 @@
 "use client"
 
-import { useLocaleTranslations } from '@/hooks/use-locale-translations';
+import Link from 'next/link';
 import Image from 'next/image';
 
 export default function Hero() {
@@ -39,14 +39,14 @@ export default function Hero() {
           
           <ul className="flex items-center gap-3">
             <li>
-              <a href="signin" className="flex items-center justify-center text-white font-medium leading-none text-base rounded-xl bg-green-600 hover:bg-green-700 h-[51px] px-7 transition-all duration-500 ease-in-out">
+              <Link href="/auth" className="flex items-center justify-center text-white font-medium leading-none text-base rounded-xl bg-green-600 hover:bg-green-700 h-[51px] px-7 transition-all duration-500 ease-in-out">
                 Get Affensus
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="book-demo" className="flex items-center justify-center text-black font-medium leading-none text-base rounded-xl bg-gray-100 hover:bg-gray-200 h-[51px] px-7 transition-all duration-500 ease-in-out">
+              <Link href="/book-demo" className="flex items-center justify-center text-black font-medium leading-none text-base rounded-xl bg-gray-100 hover:bg-gray-200 h-[51px] px-7 transition-all duration-500 ease-in-out">
                 Book a Demo
-              </a>
+              </Link>
             </li>
           </ul>
         </div>

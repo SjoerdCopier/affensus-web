@@ -1,6 +1,5 @@
 "use client"
 
-import { useLocaleTranslations } from '@/hooks/use-locale-translations';
 import Header from '@/components/header';
 import Hero from '@/components/hero';
 import FAQ from '@/components/faq';

@@ -40,7 +40,7 @@ export default function ReferralQRCodeGenerator() {
     setQRCode(url);
   };
 
-  const handleOptionChange = (option: keyof QROptions, value: any) => {
+  const handleOptionChange = (option: keyof QROptions, value: string | number | boolean) => {
     setQROptions(prev => ({ ...prev, [option]: value }));
   };
 
