@@ -77,8 +77,8 @@
         "launchDiscount": "Lanceringskorting voor eerste 150 klanten",
         "readMore": "Lees meer",
         "title1": "48 Affiliate Netwerken",
-        "title2": "in Eén Dashboard",
-        "description": "Houd al je handelaren bij, abonneer je op nieuwe programma's, scrape handelaarsdata en genereer unieke coupon teksten allemaal in één dashboard.",
+        "title2": "in één Dashboard",
+        "description": "Houd al je adverteerders bij, abonneer je op nieuwe programma's, scrape handelaarsdata en genereer unieke coupon teksten allemaal in één dashboard.",
         "getAffensus": "Koop Affensus",
         "bookDemo": "Boek een Demo",
         "affiliateRevenue": "Affiliate Inkomsten",
@@ -90,6 +90,10 @@
         "ai": "Advanced AI Technology",
         "customization": "Custom Solutions",
         "support": "24/7 Support"
+      },
+      "affiliateNetworks": {
+        "title": "Integreer moeiteloos met je favoriete affiliate netwerken",
+        "description": "Maak naadloos verbinding met top affiliate netwerken via Affensus."
       }
     },
     "privacy": {
@@ -479,6 +483,185 @@
     "socialMedia": {
       "x": "X",
       "linkedin": "LinkedIn"
+    }
+  },
+  "tools": {
+    "affiliateLinkChecker": {
+      "title": "Schakelt Je Affiliate Link van Netwerk?",
+      "description": "Je hardverdiende commissies kunnen weglekken als je affiliate links doorverwijzen naar een ander netwerk. Gebruik onze tool om ervoor te zorgen dat je links veilig zijn en correct gekoppeld zijn aan je beoogde netwerk.",
+      "form": {
+        "label": "Voer Affiliate URL in:",
+        "placeholder": "https://voorbeeld.com/affiliate-link",
+        "button": "Controleer URL"
+      },
+      "loading": "URL controleren...",
+      "results": {
+        "redirects": "Doorverwijzingen:",
+        "redirectNumber": "Doorverwijzing {number}:",
+        "network": "Netwerk:",
+        "status": "Status:"
+      },
+      "messages": {
+        "error": "Er is een fout opgetreden bij het verwerken van je verzoek. Probeer het later opnieuw. Als het probleem aanhoudt, neem dan contact op met ondersteuning.",
+        "deadEnd": "We hebben een doodlopende weg gedetecteerd in een van de doorverwijzingen. Het is waarschijnlijk dat deze affiliate link niet meer werkt. Log in om deze adverteerder te promoten via een ander netwerk.",
+        "deadLink": "We hebben een 404 dode link gedetecteerd in een van de doorverwijzingen. Het is waarschijnlijk dat deze affiliate link niet meer werkt. Log in om deze adverteerder te promoten via een ander netwerk.",
+        "multipleNetworks": "We hebben meerdere affiliate netwerken geïdentificeerd die aan deze link zijn gekoppeld. Je komt mogelijk in aanmerking om dit programma uit te voeren via een ander netwerk in plaats van {network}. Log in om deze kans te verkennen en je aan te melden voor hun campagne.",
+        "success": "Geweldig nieuws! Je link is in perfecte staat zonder problemen gedetecteerd. Log in om te verkennen hoe je je verdiensten van deze link kunt maximaliseren."
+      },
+      "sections": {
+        "about": {
+          "title": "Over deze tool",
+          "multipleUrls": {
+            "question": "Kun je meerdere URL's tegelijk testen?",
+            "answer": "Absoluut! Log in op je account om meerdere URL's gelijktijdig te testen. Je kunt zelfs importeren vanuit Google Docs of je API, en we zorgen voor dagelijkse tests. Blijf op de hoogte met meldingen wanneer een affiliate URL breekt of nieuwe kansen presenteert."
+          }
+        },
+        "whatIs": {
+          "title": "Wat is de Affiliate Link Checker?",
+          "description": "Deze tool is essentieel voor affiliate marketeers die ervoor willen zorgen dat hun links correct functioneren en verkeer sturen zoals bedoeld. Door snel problemen zoals kapotte links of ongeautoriseerde doorverwijzingen te identificeren, kun je onmiddellijk actie ondernemen om je affiliate campagnes te optimaliseren. Daarnaast helpt deze tool je verborgen relaties binnen affiliate netwerken te ontdekken, waardoor je meer controle en transparantie krijgt over je partnerschappen. Zorg ervoor dat je affiliate links optimaal presteren door ze regelmatig te controleren met deze tool."
+        },
+        "howItWorks": {
+          "title": "Hoe werkt de Link checker?",
+          "description": "Je kunt waardevolle inzichten krijgen in de reis van je affiliate links. We volgen elke doorverwijzing en tussenstap om je een duidelijk beeld te geven van hoe je links presteren. Dit helpt je potentiële problemen te identificeren, zoals onverwachte doorverwijzingen of ongeautoriseerde wijzigingen, waardoor je affiliate campagnes zo effectief en transparant mogelijk zijn."
+        },
+        "differentNetwork": {
+          "title": "Welke acties worden aanbevolen als mijn link op een ander netwerk eindigt?",
+          "description": "Subnetwerken of subprogramma's zijn netwerken of programma's die gebruik maken van de aanbiedingen van andere netwerken en deze promoten op hun eigen platforms. Hoewel er niets inherent verkeerd is aan deze praktijk, kan het betekenen dat je geld laat liggen. Leer meer over sub-affiliate netwerken."
+        },
+        "programLeasing": {
+          "title": "Hoe kan programma-leasing leiden tot potentiële problemen in affiliate marketing?",
+          "description": "Veelvoorkomende problemen geassocieerd met subnetwerken zijn link tracking problemen, verloren verkopen en vertragingen in betalingen. Daarnaast, omdat subnetwerken hun eigen inkomsten moeten genereren, kunnen de mechanismen van een programma vaak verschillen van het origineel. Dit kan resulteren in kortere cookie-periodes, lagere commissietarieven en andere wijzigingen die je totale verdiensten kunnen verminderen. Het is belangrijk om je bewust te zijn van deze potentiële valkuilen om ervoor te zorgen dat je je affiliate marketing inspanningen maximaliseert en geen potentiële inkomsten mist."
+        }
+      }
+    },
+    "affiliateEarningsCalculator": {
+      "title": "Affiliate Inkomsten Calculator",
+      "description": "Schat je potentiële affiliate inkomsten op basis van de prestaties van je website.",
+      "inputParameters": "Invoerparameters",
+      "estimatedEarnings": "Geschatte Inkomsten",
+      "advancedMode": "Geavanceerde Modus",
+      "advancedMetrics": "Geavanceerde Metrieken",
+      "form": {
+        "monthlyPageviews": "Maandelijkse Paginaweergaven",
+        "clickThroughRate": "Klik-Door-Ratio (%)",
+        "conversionRate": "Conversieratio (%)",
+        "commissionRate": "Commissieratio (%)",
+        "averageOrderValue": "Gemiddelde Bestelwaarde (€)",
+        "costPerVisitor": "Kosten per Bezoeker (€)",
+        "returnVisitorRate": "Terugkeerbezoeker Ratio (%)",
+        "averageLifetimeValue": "Gemiddelde Klantlevensduurwaarde (€)"
+      },
+      "tooltips": {
+        "pageviews": {
+          "title": "Het aantal paginaweergaven dat je website per maand ontvangt.",
+          "description": "Deze metriek is cruciaal voor het schatten van je potentiële affiliate inkomsten omdat het je totale verkeer vertegenwoordigt."
+        },
+        "ctr": {
+          "title": "Het percentage bezoekers dat op je affiliate links klikt.",
+          "description": "Een hogere CTR duidt op effectievere plaatsing en presentatie van je affiliate links."
+        },
+        "conversionRate": {
+          "title": "Het percentage bezoekers dat een aankoop doet na het klikken op je affiliate link.",
+          "description": "Deze ratio weerspiegelt hoe goed de producten die je promoot aansluiten bij de interesses en behoeften van je publiek."
+        },
+        "commissionRate": {
+          "title": "Het percentage van de verkoopwaarde dat je verdient als commissie.",
+          "description": "Hogere commissieratio's verhogen direct je verdiensten per verkoop, maar kunnen variëren afhankelijk van het affiliate programma en producttype."
+        },
+        "averageOrderValue": {
+          "title": "De gemiddelde waarde van bestellingen die via je affiliate links worden gedaan.",
+          "description": "Hogere gemiddelde bestelwaarden kunnen je verdiensten aanzienlijk verhogen, vooral in combinatie met een goede commissieratio."
+        },
+        "costPerVisitor": {
+          "title": "De gemiddelde kosten om een enkele bezoeker naar je website te krijgen.",
+          "description": "Dit helpt bij het berekenen van de ROI van je affiliate marketing inspanningen."
+        },
+        "returnVisitorRate": {
+          "title": "Het percentage bezoekers dat terugkeert naar je site.",
+          "description": "Een hogere ratio kan duiden op sterke content en gebruikersbetrokkenheid."
+        },
+        "averageLifetimeValue": {
+          "title": "De totale omzet die je verwacht te verdienen van een klant gedurende hun levensduur.",
+          "description": "Dit helpt bij het begrijpen van de langetermijnwaarde van je affiliate inspanningen."
+        }
+      },
+      "results": {
+        "dailyEarnings": "Dagelijkse Inkomsten",
+        "weeklyEarnings": "Wekelijkse Inkomsten",
+        "monthlyEarnings": "Maandelijkse Inkomsten",
+        "yearlyEarnings": "Jaarlijkse Inkomsten",
+        "monthlyCost": "Maandelijkse Kosten",
+        "monthlyProfit": "Maandelijkse Winst",
+        "roi": "ROI"
+      },
+      "sections": {
+        "howItWorks": {
+          "title": "Hoe Het Werkt",
+          "description": "De affiliate inkomsten calculator gebruikt de volgende formule:",
+          "formula": "Inkomsten = Paginaweergaven × CTR × Conversieratio × Commissieratio × Gemiddelde Bestelwaarde",
+          "explanation": "Deze berekening geeft een schatting van je potentiële inkomsten op basis van de invoerparameters. Houd er rekening mee dat daadwerkelijke resultaten kunnen variëren door factoren zoals seizoensinvloeden, productpopulariteit en marktomstandigheden."
+        },
+        "tips": {
+          "title": "Tips om Je Affiliate Inkomsten te Verhogen",
+          "items": {
+            "0": "Verbeter je contentkwaliteit om meer bezoekers aan te trekken",
+            "1": "Optimaliseer je CTR door overtuigende call-to-action knoppen en productafbeeldingen te gebruiken",
+            "2": "Kies hoog-converterende producten die aansluiten bij de interesses van je publiek",
+            "3": "Onderhandel over hogere commissieratio's met je affiliate partners",
+            "4": "Focus op het promoten van producten met hogere gemiddelde bestelwaarden"
+          }
+        },
+        "negotiating": {
+          "title": "Onderhandelen over Hogere Commissies",
+          "paragraph1": "Wanneer je affiliate managers benadert met een media kit, hoor je misschien dat ze geen budget hebben voor branding of extra exposure pakketten. Ze hebben echter vaak wel de flexibiliteit om verhoogde commissieratio's aan te bieden.",
+          "paragraph2": "Gebruik de calculator hierboven om de potentiële toename van omzet door een hogere commissieratio te demonstreren. Deze datagedreven aanpak kan een krachtig onderhandelingsinstrument zijn.",
+          "paragraph3": "Bijvoorbeeld, als je momenteel 4% commissie verdient en onderhandelt over een verhoging naar 6%:",
+          "example": {
+            "at4": "Bij 4%: Maandelijkse inkomsten van €{amount}",
+            "at6": "Bij 6%: Maandelijkse inkomsten van €{amount}",
+            "increase": "Potentiële toename: €{amount} per maand"
+          },
+          "paragraph4": "Deze aanzienlijke toename van inkomsten kan een overtuigend argument zijn voor zowel jou als de affiliate manager, omdat het je aanmoedigt om meer verkopen te genereren zonder dat er extra budgettoewijzing van hun kant nodig is."
+        }
+      }
+    },
+    "referralQrCodeGenerator": {
+      "title": "Genereer Je Referral QR Code Gratis!",
+      "description": "Maak een aangepaste QR code voor je referral link. Pas kleuren, grootte aan en voeg een logo toe om het te laten opvallen! We laten je het zelfs gratis downloaden! Of log in en gebruik onze API om QR codes programmatisch te genereren.",
+      "form": {
+        "label": "Voer Referral URL in:",
+        "placeholder": "https://voorbeeld.com/ref=jouwcode",
+        "button": "Genereer QR Code"
+      },
+      "options": {
+        "size": "Grootte:",
+        "foregroundColor": "Voorgrondkleur:",
+        "backgroundColor": "Achtergrondkleur:",
+        "includeMargin": "Marge Inclusief:",
+        "logoSize": "Logo Grootte:",
+        "uploadLogo": "Logo Uploaden (optioneel):"
+      },
+      "download": {
+        "button": "QR Code Downloaden",
+        "apiInfo": "Moet je QR codes programmatisch genereren? Elk Affensus pakket bevat een gratis API om QR codes onderweg te genereren!"
+      },
+      "sections": {
+        "about": {
+          "title": "Over deze tool",
+          "whatIs": {
+            "title": "Wat is de Referral QR Code Generator?",
+            "description": "Onze Referral QR Code Generator is een krachtige tool ontworpen om je te helpen bij het maken van aangepaste QR codes voor je referral links. Met deze tool kun je eenvoudig QR codes genereren die zowel functioneel als visueel aantrekkelijk zijn, waardoor het voor je publiek gemakkelijker wordt om toegang te krijgen tot je referral links."
+          }
+        },
+        "howItWorks": {
+          "title": "Hoe werkt de QR Code Generator?",
+          "description": "Voer gewoon je referral URL in en onze tool genereert onmiddellijk een QR code. Je kunt vervolgens verschillende aspecten van de QR code aanpassen, inclusief de grootte, kleuren en zelfs een logo of afbeelding toevoegen om het meer gebrandmerkt en herkenbaar te maken."
+        },
+        "whyUse": {
+          "title": "Waarom QR codes gebruiken voor referrals?",
+          "description": "QR codes bieden een snelle en eenvoudige manier voor mensen om toegang te krijgen tot je referral links, vooral in fysieke of offline contexten. Ze kunnen worden toegevoegd aan visitekaartjes, flyers, posters of ander marketingmateriaal, waardoor de kloof tussen offline en online marketing inspanningen wordt overbrugd."
+        }
+      }
     }
   }
 }

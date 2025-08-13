@@ -90,6 +90,10 @@
       "ai": "Advanced AI Technology",
       "customization": "Custom Solutions",
       "support": "24/7 Support"
+    },
+    "affiliateNetworks": {
+      "title": "Integrate effortlessly with your favorite affiliate networks",
+      "description": "Seamlessly connect to top affiliate networks with Affensus, making integration effortless and efficient."
     }
   },
   "privacy": {
@@ -629,6 +633,185 @@
     "socialMedia": {
       "x": "X",
       "linkedin": "LinkedIn"
+    }
+  },
+  "tools": {
+    "affiliateLinkChecker": {
+      "title": "Is Your Affiliate Link Switching Networks?",
+      "description": "Your hard-earned commissions might be slipping away if your affiliate links are rerouting to a different network. Use our tool to ensure your links are secure and correctly aligned with your intended network.",
+      "form": {
+        "label": "Enter Affiliate URL:",
+        "placeholder": "https://example.com/affiliate-link",
+        "button": "Check URL"
+      },
+      "loading": "Checking URL...",
+      "results": {
+        "redirects": "Redirects:",
+        "redirectNumber": "Redirect {number}:",
+        "network": "Network:",
+        "status": "Status:"
+      },
+      "messages": {
+        "error": "An error occurred while processing your request. Please try again later. If the issue persists, contact support.",
+        "deadEnd": "We've detected a dead end in one of the redirects. It's likely that this affiliate link is no longer working. Log in to promote this advertiser via a different network.",
+        "deadLink": "We've detected a 404 dead link in one of the redirects. It's likely that this affiliate link is no longer working. Log in to promote this advertiser via a different network.",
+        "multipleNetworks": "We've identified multiple affiliate networks associated with this link. You may be eligible to run this program through a different network instead of {network}. Log in to explore this opportunity and apply to their campaign.",
+        "success": "Great news! Your link is in perfect shape with no issues detected. Log in to explore how you can maximize your earnings from this link."
+      },
+      "sections": {
+        "about": {
+          "title": "About this tool",
+          "multipleUrls": {
+            "question": "Can you test multiple URLs at once?",
+            "answer": "Absolutely! Log in to your account to test multiple URLs simultaneously. You can even import from Google Docs or your API, and we'll handle daily tests for you. Stay informed with notifications when an affiliate URL breaks or presents new opportunities."
+          }
+        },
+        "whatIs": {
+          "title": "What is the Affiliate Link Checker?",
+          "description": "This tool is essential for affiliate marketers who want to ensure their links are functioning correctly and driving traffic as intended. By quickly identifying issues like broken links or unauthorized redirects, you can take immediate action to optimize your affiliate campaigns. Additionally, this tool helps you uncover hidden relationships within affiliate networks, giving you greater control and transparency over your partnerships. Make sure your affiliate links are working to their full potential by regularly checking them with this tool."
+        },
+        "howItWorks": {
+          "title": "How does the Link checker work?",
+          "description": "You can gain valuable insights into your affiliate links' journey. We track every redirect and intermediary step to provide you with a clear picture of how your links are performing. This helps you identify any potential issues, such as unexpected redirects or unauthorized changes, ensuring your affiliate campaigns are as effective and transparent as possible."
+        },
+        "differentNetwork": {
+          "title": "What actions are recommended if my link ends up on a different network?",
+          "description": "Subnetworks or subprograms are networks or programs that leverage the offerings of other networks, promoting them on their own platforms. While there's nothing inherently wrong with this practice, it could mean you're leaving money on the table. Learn more about sub-affiliate networks."
+        },
+        "programLeasing": {
+          "title": "How can program leasing lead to potential issues in affiliate marketing?",
+          "description": "Common issues associated with subnetworks include link tracking problems, lost sales, and delays in payments. Additionally, since subnetworks need to generate their own revenue, the mechanics of a program can often differ from the original. This can result in shorter cookie periods, lower commission rates, and other changes that might reduce your overall earnings. It's important to be aware of these potential pitfalls to ensure you're maximizing your affiliate marketing efforts and not missing out on potential income."
+        }
+      }
+    },
+    "affiliateEarningsCalculator": {
+      "title": "Affiliate Earnings Calculator",
+      "description": "Estimate your potential affiliate earnings based on your website's performance metrics.",
+      "inputParameters": "Input Parameters",
+      "estimatedEarnings": "Estimated Earnings",
+      "advancedMode": "Advanced Mode",
+      "advancedMetrics": "Advanced Metrics",
+      "form": {
+        "monthlyPageviews": "Monthly Pageviews",
+        "clickThroughRate": "Click-Through Rate (%)",
+        "conversionRate": "Conversion Rate (%)",
+        "commissionRate": "Commission Rate (%)",
+        "averageOrderValue": "Average Order Value ($)",
+        "costPerVisitor": "Cost Per Visitor ($)",
+        "returnVisitorRate": "Return Visitor Rate (%)",
+        "averageLifetimeValue": "Average Customer Lifetime Value ($)"
+      },
+      "tooltips": {
+        "pageviews": {
+          "title": "The number of pageviews your website receives per month.",
+          "description": "This metric is crucial for estimating your potential affiliate earnings as it represents your overall traffic."
+        },
+        "ctr": {
+          "title": "The percentage of visitors who click on your affiliate links.",
+          "description": "A higher CTR indicates more effective placement and presentation of your affiliate links."
+        },
+        "conversionRate": {
+          "title": "The percentage of visitors who make a purchase after clicking your affiliate link.",
+          "description": "This rate reflects how well the products you're promoting match your audience's interests and needs."
+        },
+        "commissionRate": {
+          "title": "The percentage of the sale value you earn as commission.",
+          "description": "Higher commission rates directly increase your earnings per sale, but may vary depending on the affiliate program and product type."
+        },
+        "averageOrderValue": {
+          "title": "The average value of orders made through your affiliate links.",
+          "description": "Higher average order values can significantly boost your earnings, especially when combined with a good commission rate."
+        },
+        "costPerVisitor": {
+          "title": "The average cost to acquire a single visitor to your website.",
+          "description": "This helps calculate the ROI of your affiliate marketing efforts."
+        },
+        "returnVisitorRate": {
+          "title": "The percentage of visitors who return to your site.",
+          "description": "A higher rate can indicate strong content and user engagement."
+        },
+        "averageLifetimeValue": {
+          "title": "The total revenue you expect to earn from a customer over their lifetime.",
+          "description": "This helps in understanding the long-term value of your affiliate efforts."
+        }
+      },
+      "results": {
+        "dailyEarnings": "Daily Earnings",
+        "weeklyEarnings": "Weekly Earnings",
+        "monthlyEarnings": "Monthly Earnings",
+        "yearlyEarnings": "Yearly Earnings",
+        "monthlyCost": "Monthly Cost",
+        "monthlyProfit": "Monthly Profit",
+        "roi": "ROI"
+      },
+      "sections": {
+        "howItWorks": {
+          "title": "How It Works",
+          "description": "The affiliate earnings calculator uses the following formula:",
+          "formula": "Earnings = Pageviews × CTR × Conversion Rate × Commission Rate × Average Order Value",
+          "explanation": "This calculation provides an estimate of your potential earnings based on the input parameters. Keep in mind that actual results may vary due to factors such as seasonality, product popularity, and market conditions."
+        },
+        "tips": {
+          "title": "Tips to Increase Your Affiliate Earnings",
+          "items": [
+            "Improve your content quality to attract more visitors",
+            "Optimize your CTR by using compelling call-to-action buttons and product images",
+            "Choose high-converting products that align with your audience's interests",
+            "Negotiate higher commission rates with your affiliate partners",
+            "Focus on promoting products with higher average order values"
+          ]
+        },
+        "negotiating": {
+          "title": "Negotiating Higher Commissions",
+          "paragraph1": "When approaching affiliate managers with a media kit, you might hear that they have no budget for branding or extra exposure packages. However, they often have the flexibility to offer increased commission rates.",
+          "paragraph2": "Use the calculator above to demonstrate the potential increase in revenue from a higher commission rate. This data-driven approach can be a powerful negotiation tool.",
+          "paragraph3": "For example, if you currently earn a 4% commission and negotiate an increase to 6%:",
+          "example": {
+            "at4": "At 4%: Monthly earnings of ${amount}",
+            "at6": "At 6%: Monthly earnings of ${amount}",
+            "increase": "Potential increase: ${amount} per month"
+          },
+          "paragraph4": "This significant increase in earnings can be a compelling argument for both you and the affiliate manager, as it incentivizes you to drive more sales without requiring additional budget allocation from their end."
+        }
+      }
+    },
+    "referralQrCodeGenerator": {
+      "title": "Generate Your Referral QR Code for Free!",
+      "description": "Create a custom QR code for your referral link. Customize colors, size, and add a logo to make it stand out! We even let you download it for free! Or login and use our API to generate QR codes programmatically.",
+      "form": {
+        "label": "Enter Referral URL:",
+        "placeholder": "https://example.com/ref=yourcode",
+        "button": "Generate QR Code"
+      },
+      "options": {
+        "size": "Size:",
+        "foregroundColor": "Foreground Color:",
+        "backgroundColor": "Background Color:",
+        "includeMargin": "Include Margin:",
+        "logoSize": "Logo Size:",
+        "uploadLogo": "Upload Logo (optional):"
+      },
+      "download": {
+        "button": "Download QR Code",
+        "apiInfo": "Need to generate QR codes programmatically? Every Affensus package includes a free API to generate QR codes on the fly!"
+      },
+      "sections": {
+        "about": {
+          "title": "About this tool",
+          "whatIs": {
+            "title": "What is the Referral QR Code Generator?",
+            "description": "Our Referral QR Code Generator is a powerful tool designed to help you create custom QR codes for your referral links. With this tool, you can easily generate QR codes that are both functional and visually appealing, making it easier for your audience to access your referral links."
+          }
+        },
+        "howItWorks": {
+          "title": "How does the QR Code Generator work?",
+          "description": "Simply input your referral URL, and our tool will generate a QR code instantly. You can then customize various aspects of the QR code, including its size, colors, and even add a logo or image to make it more branded and recognizable."
+        },
+        "whyUse": {
+          "title": "Why use QR codes for referrals?",
+          "description": "QR codes provide a quick and easy way for people to access your referral links, especially in physical or offline contexts. They can be added to business cards, flyers, posters, or any other marketing material, bridging the gap between offline and online marketing efforts."
+        }
+      }
     }
   }
 }

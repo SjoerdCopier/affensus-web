@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Breadcrumbs from "@/components/breadcrumbs";
+import { useLocaleTranslations } from "@/hooks/use-locale-translations";
 
 interface Redirect {
     url: string;
@@ -12,6 +13,7 @@ interface Redirect {
 }
 
 function AffiliateLinkCheckerContent() {
+    const { t } = useLocaleTranslations();
     const [affiliateUrl, setAffiliateUrl] = useState("");
     const [loading, setLoading] = useState(false);
     const [redirects, setRedirects] = useState<Redirect[]>([]);
@@ -75,7 +77,7 @@ function AffiliateLinkCheckerContent() {
                                 <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
                             </svg>
                             <div className="ml-4">
-                                We&apos;ve detected a dead end in one of the redirects. It&apos;s likely that this affiliate link is no longer working. Log in to promote this advertiser via a different network.
+                                {t('tools.affiliateLinkChecker.messages.deadEnd')}
                             </div>
                         </>
                     );
@@ -93,7 +95,7 @@ function AffiliateLinkCheckerContent() {
                                 <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
                             </svg>
                             <div className="ml-4">
-                                We&apos;ve detected a 404 dead link in one of the redirects. It&apos;s likely that this affiliate link is no longer working. Log in to promote this advertiser via a different network.
+                                {t('tools.affiliateLinkChecker.messages.deadLink')}
                             </div>
                         </>
                     );
@@ -112,7 +114,7 @@ function AffiliateLinkCheckerContent() {
                                 <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
                             </svg>
                             <div className="ml-4">
-                                We&apos;ve identified multiple affiliate networks associated with this link. You may be eligible to run this program through a different network instead of <b>{firstNetwork}</b>. Log in to explore this opportunity and apply to their campaign.
+                                {t('tools.affiliateLinkChecker.messages.multipleNetworks').replace('{network}', firstNetwork)}
                             </div>
                         </>
                     );
@@ -130,7 +132,7 @@ function AffiliateLinkCheckerContent() {
                                 <path d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"></path>
                             </svg>
                             <div className="ml-4">
-                                Great news! Your link is in perfect shape with no issues detected. Log in to explore how you can maximize your earnings from this link.
+                                {t('tools.affiliateLinkChecker.messages.success')}
                             </div>
                         </>
                     );
@@ -154,7 +156,7 @@ function AffiliateLinkCheckerContent() {
                         <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
                     </svg>
                     <div className="ml-4">
-                        An error occurred while processing your request. Please try again later. If the issue persists, contact support.
+                        {t('tools.affiliateLinkChecker.messages.error')}
                     </div>
                 </>
             );
@@ -186,10 +188,10 @@ function AffiliateLinkCheckerContent() {
                 <div className="max-w-4xl mx-auto">
                     <div className="mb-8">
                 <h1 className="text-3xl font-bold text-gray-900 mb-4">
-                    Is Your Affiliate Link Switching Networks?
+                    {t('tools.affiliateLinkChecker.title')}
                 </h1>
                 <p className="text-lg text-gray-700 leading-relaxed">
-                    Your hard-earned commissions might be slipping away if your affiliate links are rerouting to a different network. Use our tool to ensure your links are secure and correctly aligned with your intended network.
+                    {t('tools.affiliateLinkChecker.description')}
                 </p>
             </div>
 
@@ -197,7 +199,7 @@ function AffiliateLinkCheckerContent() {
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
                         <label htmlFor="affiliate-url" className="block text-sm font-medium text-gray-700 mb-2">
-                            Enter Affiliate URL:
+                            {t('tools.affiliateLinkChecker.form.label')}
                         </label>
                         <input
                             type="url"
@@ -205,7 +207,7 @@ function AffiliateLinkCheckerContent() {
                             value={affiliateUrl}
                             onChange={(e) => setAffiliateUrl(e.target.value)}
                             required
-                            placeholder="https://example.com/affiliate-link"
+                            placeholder={t('tools.affiliateLinkChecker.form.placeholder')}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
                     </div>
@@ -213,14 +215,14 @@ function AffiliateLinkCheckerContent() {
                         type="submit"
                         className="bg-[#6ca979] text-white px-6 py-2 rounded-md hover:bg-[#5a8a66] transition-colors"
                     >
-                        Check URL
+                        {t('tools.affiliateLinkChecker.form.button')}
                     </button>
                 </form>
                 
                 {loading && (
                     <div className="mt-6 text-center">
                         <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#6ca979]"></div>
-                        <p className="mt-2 text-gray-600">Checking URL...</p>
+                        <p className="mt-2 text-gray-600">{t('tools.affiliateLinkChecker.loading')}</p>
                     </div>
                 )}
                 
@@ -232,21 +234,21 @@ function AffiliateLinkCheckerContent() {
                 
                 {redirects.length > 0 && (
                     <div className="mt-6">
-                        <h2 className="text-xl font-semibold">Redirects:</h2>
+                        <h2 className="text-xl font-semibold">{t('tools.affiliateLinkChecker.results.redirects')}</h2>
                         <ul className="mt-4 space-y-2">
                             {redirects.map((redirect: Redirect, index: number) => (
                                 <li key={index} className="p-4 border border-gray-200 rounded-md">
-                                    <div className="text-sm text-gray-500">Redirect {index + 1}:</div>
+                                    <div className="text-sm text-gray-500">{t('tools.affiliateLinkChecker.results.redirectNumber').replace('{number}', String(index + 1))}</div>
                                     <div className="text-lg text-gray-900 truncate" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                         {redirect.url.length > 55 ? `${redirect.url.substring(0, 55)}...` : redirect.url}
                                     </div>
                                     {redirect.name && (
                                         <div className="text-sm font-medium text-blue-500">
-                                            Network: {redirect.name}
+                                            {t('tools.affiliateLinkChecker.results.network')} {redirect.name}
                                         </div>
                                     )}
                                     <div className={`text-sm font-medium ${typeof redirect.status === 'number' && redirect.status < 300 ? 'text-green-500' : 'text-red-500'}`}>
-                                        Status: {redirect.status} ({redirect.type})
+                                        {t('tools.affiliateLinkChecker.results.status')} {redirect.status} ({redirect.type})
                                     </div>
                                 </li>
                             ))}
@@ -257,42 +259,42 @@ function AffiliateLinkCheckerContent() {
 
             <div className="space-y-8">
                 <section>
-                    <h2 className="text-xl font-semibold text-gray-900 mb-4">About this tool</h2>
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4">{t('tools.affiliateLinkChecker.sections.about.title')}</h2>
                     <div className="space-y-4">
                         <div>
-                            <h3 className="text-lg font-medium text-gray-800 mb-2">Can you test multiple URLs at once?</h3>
+                            <h3 className="text-lg font-medium text-gray-800 mb-2">{t('tools.affiliateLinkChecker.sections.about.multipleUrls.question')}</h3>
                             <p className="text-gray-700">
-                                Absolutely! Log in to your account to test multiple URLs simultaneously. You can even import from Google Docs or your API, and we&apos;ll handle daily tests for you. Stay informed with notifications when an affiliate URL breaks or presents new opportunities.
+                                {t('tools.affiliateLinkChecker.sections.about.multipleUrls.answer')}
                             </p>
                         </div>
                     </div>
                 </section>
 
                 <section>
-                    <h2 className="text-xl font-semibold text-gray-900 mb-4">What is the Affiliate Link Checker?</h2>
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4">{t('tools.affiliateLinkChecker.sections.whatIs.title')}</h2>
                     <p className="text-gray-700 leading-relaxed">
-                        This tool is essential for affiliate marketers who want to ensure their links are functioning correctly and driving traffic as intended. By quickly identifying issues like broken links or unauthorized redirects, you can take immediate action to optimize your affiliate campaigns. Additionally, this tool helps you uncover hidden relationships within affiliate networks, giving you greater control and transparency over your partnerships. Make sure your affiliate links are working to their full potential by regularly checking them with this tool.
+                        {t('tools.affiliateLinkChecker.sections.whatIs.description')}
                     </p>
                 </section>
 
                 <section>
-                    <h2 className="text-xl font-semibold text-gray-900 mb-4">How does the Link checker work?</h2>
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4">{t('tools.affiliateLinkChecker.sections.howItWorks.title')}</h2>
                     <p className="text-gray-700 leading-relaxed">
-                        You can gain valuable insights into your affiliate links&apos; journey. We track every redirect and intermediary step to provide you with a clear picture of how your links are performing. This helps you identify any potential issues, such as unexpected redirects or unauthorized changes, ensuring your affiliate campaigns are as effective and transparent as possible.
+                        {t('tools.affiliateLinkChecker.sections.howItWorks.description')}
                     </p>
                 </section>
 
                 <section>
-                    <h2 className="text-xl font-semibold text-gray-900 mb-4">What actions are recommended if my link ends up on a different network?</h2>
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4">{t('tools.affiliateLinkChecker.sections.differentNetwork.title')}</h2>
                     <p className="text-gray-700 leading-relaxed">
-                        Subnetworks or subprograms are networks or programs that leverage the offerings of other networks, promoting them on their own platforms. While there&apos;s nothing inherently wrong with this practice, it could mean you&apos;re leaving money on the table. Learn more about sub-affiliate networks.
+                        {t('tools.affiliateLinkChecker.sections.differentNetwork.description')}
                     </p>
                 </section>
 
                 <section>
-                    <h2 className="text-xl font-semibold text-gray-900 mb-4">How can program leasing lead to potential issues in affiliate marketing?</h2>
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4">{t('tools.affiliateLinkChecker.sections.programLeasing.title')}</h2>
                     <p className="text-gray-700 leading-relaxed">
-                        Common issues associated with subnetworks include link tracking problems, lost sales, and delays in payments. Additionally, since subnetworks need to generate their own revenue, the mechanics of a program can often differ from the original. This can result in shorter cookie periods, lower commission rates, and other changes that might reduce your overall earnings. It&apos;s important to be aware of these potential pitfalls to ensure you&apos;re maximizing your affiliate marketing efforts and not missing out on potential income.
+                        {t('tools.affiliateLinkChecker.sections.programLeasing.description')}
                     </p>
                 </section>
                 </div>

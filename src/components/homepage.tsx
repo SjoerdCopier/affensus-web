@@ -2,6 +2,7 @@
 
 import Header from '@/components/header';
 import Hero from '@/components/hero';
+import AffiliateNetworks from '@/components/affiliate-networks';
 import FAQ from '@/components/faq';
 import Pricing from '@/components/pricing';
 import Footer from '@/components/footer';
@@ -16,6 +17,8 @@ export default function Homepage() {
         <Hero />
 
       </div>
+      
+      <AffiliateNetworks />
       
       <FAQ />
       

@@ -8,8 +8,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import { InfoIcon } from 'lucide-react'
 import Breadcrumbs from "@/components/breadcrumbs"
+import { useLocaleTranslations } from "@/hooks/use-locale-translations"
 
 function AffiliateEarningsCalculatorContent() {
+  const { t } = useLocaleTranslations();
   // Existing state
   const [pageviews, setPageviews] = useState(10000)
   const [ctr, setCtr] = useState(15)
@@ -65,10 +67,10 @@ function AffiliateEarningsCalculatorContent() {
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-4">
-              Affiliate Earnings Calculator
+              {t('tools.affiliateEarningsCalculator.title')}
             </h1>
             <p className="text-lg text-gray-700 leading-relaxed">
-              Estimate your potential affiliate earnings based on your website&apos;s performance metrics.
+              {t('tools.affiliateEarningsCalculator.description')}
             </p>
           </div>
 
@@ -77,21 +79,21 @@ function AffiliateEarningsCalculatorContent() {
               <div>
                 <Card className={"bg-[#f5f7f4]"}>
                   <CardHeader>
-                    <CardTitle>Input Parameters</CardTitle>
+                    <CardTitle>{t('tools.affiliateEarningsCalculator.inputParameters')}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
                       <div>
                         <div className="flex items-center space-x-2">
-                          <Label htmlFor="pageviews">Monthly Pageviews</Label>
+                          <Label htmlFor="pageviews">{t('tools.affiliateEarningsCalculator.form.monthlyPageviews')}</Label>
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger>
                                 <InfoIcon className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-help" />
                               </TooltipTrigger>
                               <TooltipContent className="max-w-[350px] font-normal">
-                                <p>The number of pageviews your website receives per month.</p>
-                                <p className="pt-2">This metric is crucial for estimating your potential affiliate earnings as it represents your overall traffic.</p>
+                                <p>{t('tools.affiliateEarningsCalculator.tooltips.pageviews.title')}</p>
+                                <p className="pt-2">{t('tools.affiliateEarningsCalculator.tooltips.pageviews.description')}</p>
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
@@ -107,15 +109,15 @@ function AffiliateEarningsCalculatorContent() {
 
                       <div>
                         <div className="flex items-center space-x-2">
-                          <Label htmlFor="ctr">Click-Through Rate (%)</Label>
+                          <Label htmlFor="ctr">{t('tools.affiliateEarningsCalculator.form.clickThroughRate')}</Label>
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger>
                                 <InfoIcon className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-help" />
                               </TooltipTrigger>
                               <TooltipContent className="max-w-[350px] font-normal">
-                                <p>The percentage of visitors who click on your affiliate links.</p>
-                                <p className="pt-2">A higher CTR indicates more effective placement and presentation of your affiliate links.</p>
+                                <p>{t('tools.affiliateEarningsCalculator.tooltips.ctr.title')}</p>
+                                <p className="pt-2">{t('tools.affiliateEarningsCalculator.tooltips.ctr.description')}</p>
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
@@ -131,15 +133,15 @@ function AffiliateEarningsCalculatorContent() {
 
                       <div>
                         <div className="flex items-center space-x-2">
-                          <Label htmlFor="conversionRate">Conversion Rate (%)</Label>
+                          <Label htmlFor="conversionRate">{t('tools.affiliateEarningsCalculator.form.conversionRate')}</Label>
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger>
                                 <InfoIcon className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-help" />
                               </TooltipTrigger>
                               <TooltipContent className="max-w-[350px] font-normal">
-                                <p>The percentage of visitors who make a purchase after clicking your affiliate link.</p>
-                                <p className="pt-2">This rate reflects how well the products you&apos;re promoting match your audience&apos;s interests and needs.</p>
+                                <p>{t('tools.affiliateEarningsCalculator.tooltips.conversionRate.title')}</p>
+                                <p className="pt-2">{t('tools.affiliateEarningsCalculator.tooltips.conversionRate.description')}</p>
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
@@ -155,15 +157,15 @@ function AffiliateEarningsCalculatorContent() {
 
                       <div>
                         <div className="flex items-center space-x-2">
-                          <Label htmlFor="commissionRate">Commission Rate (%)</Label>
+                          <Label htmlFor="commissionRate">{t('tools.affiliateEarningsCalculator.form.commissionRate')}</Label>
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger>
                                 <InfoIcon className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-help" />
                               </TooltipTrigger>
                               <TooltipContent className="max-w-[350px] font-normal">
-                                <p>The percentage of the sale value you earn as commission.</p>
-                                <p className="pt-2">Higher commission rates directly increase your earnings per sale, but may vary depending on the affiliate program and product type.</p>
+                                <p>{t('tools.affiliateEarningsCalculator.tooltips.commissionRate.title')}</p>
+                                <p className="pt-2">{t('tools.affiliateEarningsCalculator.tooltips.commissionRate.description')}</p>
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
@@ -179,15 +181,15 @@ function AffiliateEarningsCalculatorContent() {
 
                       <div>
                         <div className="flex items-center space-x-2">
-                          <Label htmlFor="averageOrderValue">Average Order Value ($)</Label>
+                          <Label htmlFor="averageOrderValue">{t('tools.affiliateEarningsCalculator.form.averageOrderValue')}</Label>
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger>
                                 <InfoIcon className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-help" />
                               </TooltipTrigger>
                               <TooltipContent className="max-w-[350px] font-normal">
-                                <p>The average value of orders made through your affiliate links.</p>
-                                <p className="pt-2">Higher average order values can significantly boost your earnings, especially when combined with a good commission rate.</p>
+                                <p>{t('tools.affiliateEarningsCalculator.tooltips.averageOrderValue.title')}</p>
+                                <p className="pt-2">{t('tools.affiliateEarningsCalculator.tooltips.averageOrderValue.description')}</p>
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
@@ -207,24 +209,24 @@ function AffiliateEarningsCalculatorContent() {
                           checked={showAdvanced}
                           onCheckedChange={setShowAdvanced}
                         />
-                        <Label htmlFor="advanced-mode">Advanced Mode</Label>
+                        <Label htmlFor="advanced-mode">{t('tools.affiliateEarningsCalculator.advancedMode')}</Label>
                       </div>
 
                       {showAdvanced && (
                         <div className="space-y-4 mt-4 p-4 bg-gray-100 rounded-md">
-                          <h4 className="font-semibold">Advanced Metrics</h4>
+                          <h4 className="font-semibold">{t('tools.affiliateEarningsCalculator.advancedMetrics')}</h4>
 
                           <div>
                             <div className="flex items-center space-x-2">
-                              <Label htmlFor="costPerVisitor">Cost Per Visitor ($)</Label>
+                              <Label htmlFor="costPerVisitor">{t('tools.affiliateEarningsCalculator.form.costPerVisitor')}</Label>
                                                         <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger>
                                 <InfoIcon className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-help" />
                               </TooltipTrigger>
                               <TooltipContent className="max-w-[350px] font-normal">
-                                <p>The average cost to acquire a single visitor to your website.</p>
-                                <p className="pt-2">This helps calculate the ROI of your affiliate marketing efforts.</p>
+                                <p>{t('tools.affiliateEarningsCalculator.tooltips.costPerVisitor.title')}</p>
+                                <p className="pt-2">{t('tools.affiliateEarningsCalculator.tooltips.costPerVisitor.description')}</p>
                               </TooltipContent>
                             </Tooltip>
                           </TooltipProvider>
@@ -241,15 +243,15 @@ function AffiliateEarningsCalculatorContent() {
 
                           <div>
                             <div className="flex items-center space-x-2">
-                              <Label htmlFor="returnVisitorRate">Return Visitor Rate (%)</Label>
+                              <Label htmlFor="returnVisitorRate">{t('tools.affiliateEarningsCalculator.form.returnVisitorRate')}</Label>
                               <TooltipProvider>
                                 <Tooltip>
                                   <TooltipTrigger>
                                     <InfoIcon className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-help" />
                                   </TooltipTrigger>
                                   <TooltipContent className="max-w-[350px] font-normal">
-                                    <p>The percentage of visitors who return to your site.</p>
-                                    <p className="pt-2">A higher rate can indicate strong content and user engagement.</p>
+                                    <p>{t('tools.affiliateEarningsCalculator.tooltips.returnVisitorRate.title')}</p>
+                                    <p className="pt-2">{t('tools.affiliateEarningsCalculator.tooltips.returnVisitorRate.description')}</p>
                                   </TooltipContent>
                                 </Tooltip>
                               </TooltipProvider>
@@ -265,15 +267,15 @@ function AffiliateEarningsCalculatorContent() {
 
                           <div>
                             <div className="flex items-center space-x-2">
-                              <Label htmlFor="averageLifetimeValue">Average Customer Lifetime Value ($)</Label>
+                              <Label htmlFor="averageLifetimeValue">{t('tools.affiliateEarningsCalculator.form.averageLifetimeValue')}</Label>
                               <TooltipProvider>
                                 <Tooltip>
                                   <TooltipTrigger>
                                     <InfoIcon className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-help" />
                                   </TooltipTrigger>
                                   <TooltipContent className="max-w-[350px] font-normal">
-                                    <p>The total revenue you expect to earn from a customer over their lifetime.</p>
-                                    <p className="pt-2">This helps in understanding the long-term value of your affiliate efforts.</p>
+                                    <p>{t('tools.affiliateEarningsCalculator.tooltips.averageLifetimeValue.title')}</p>
+                                    <p className="pt-2">{t('tools.affiliateEarningsCalculator.tooltips.averageLifetimeValue.description')}</p>
                                   </TooltipContent>
                                 </Tooltip>
                               </TooltipProvider>
@@ -296,39 +298,39 @@ function AffiliateEarningsCalculatorContent() {
               <div>
                 <Card>
                   <CardHeader>
-                    <CardTitle>Estimated Earnings</CardTitle>
+                    <CardTitle>{t('tools.affiliateEarningsCalculator.estimatedEarnings')}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
                       <div>
-                        <Label>Daily Earnings</Label>
+                        <Label>{t('tools.affiliateEarningsCalculator.results.dailyEarnings')}</Label>
                         <Input readOnly className="mt-2" value={`$${earnings.daily.toFixed(2)}`} />
                       </div>
                       <div>
-                        <Label>Weekly Earnings</Label>
+                        <Label>{t('tools.affiliateEarningsCalculator.results.weeklyEarnings')}</Label>
                         <Input readOnly className="mt-2" value={`$${earnings.weekly.toFixed(2)}`} />
                       </div>
                       <div>
-                        <Label>Monthly Earnings</Label>
+                        <Label>{t('tools.affiliateEarningsCalculator.results.monthlyEarnings')}</Label>
                         <Input readOnly className="mt-2" value={`$${earnings.monthly.toFixed(2)}`} />
                       </div>
                       <div>
-                        <Label>Yearly Earnings</Label>
+                        <Label>{t('tools.affiliateEarningsCalculator.results.yearlyEarnings')}</Label>
                         <Input readOnly className="mt-2" value={`$${earnings.yearly.toFixed(2)}`} />
                       </div>
 
                       {showAdvanced && (
                         <>
                           <div>
-                            <Label>Monthly Cost</Label>
+                            <Label>{t('tools.affiliateEarningsCalculator.results.monthlyCost')}</Label>
                             <Input readOnly className="mt-2" value={`$${earnings.monthlyCost.toFixed(2)}`} />
                           </div>
                           <div>
-                            <Label>Monthly Profit</Label>
+                            <Label>{t('tools.affiliateEarningsCalculator.results.monthlyProfit')}</Label>
                             <Input readOnly className="mt-2" value={`$${earnings.monthlyProfit.toFixed(2)}`} />
                           </div>
                           <div>
-                            <Label>ROI</Label>
+                            <Label>{t('tools.affiliateEarningsCalculator.results.roi')}</Label>
                             <Input readOnly className="mt-2" value={`${earnings.roi.toFixed(2)}%`} />
                           </div>
                         </>
@@ -342,8 +344,8 @@ function AffiliateEarningsCalculatorContent() {
 
           <div className="space-y-8">
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">How It Works</h2>
-              <p className="text-gray-700 leading-relaxed mb-4">The affiliate earnings calculator uses the following formula:</p>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">{t('tools.affiliateEarningsCalculator.sections.howItWorks.title')}</h2>
+              <p className="text-gray-700 leading-relaxed mb-4">{t('tools.affiliateEarningsCalculator.sections.howItWorks.description')}</p>
               <pre className="bg-gray-100 p-4 rounded-md overflow-x-auto">
                 <span style={{ color: "#E53E3E" }}>Earnings</span> =
                 <span style={{ color: "#3182CE" }}> Pageviews </span> ×
@@ -352,38 +354,38 @@ function AffiliateEarningsCalculatorContent() {
                 <span style={{ color: "#4299E1" }}> Commission Rate </span> ×
                 <span style={{ color: "#ED8936" }}> Average Order Value</span>
               </pre>
-              <p className="mt-4 text-gray-700 leading-relaxed">This calculation provides an estimate of your potential earnings based on the input parameters. Keep in mind that actual results may vary due to factors such as seasonality, product popularity, and market conditions.</p>
+              <p className="mt-4 text-gray-700 leading-relaxed">{t('tools.affiliateEarningsCalculator.sections.howItWorks.explanation')}</p>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Tips to Increase Your Affiliate Earnings</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">{t('tools.affiliateEarningsCalculator.sections.tips.title')}</h2>
               <ul className="list-disc list-inside space-y-2 text-gray-700 leading-relaxed">
-                <li>Improve your content quality to attract more visitors</li>
-                <li>Optimize your CTR by using compelling call-to-action buttons and product images</li>
-                <li>Choose high-converting products that align with your audience&apos;s interests</li>
-                <li>Negotiate higher commission rates with your affiliate partners</li>
-                <li>Focus on promoting products with higher average order values</li>
+                <li>{t('tools.affiliateEarningsCalculator.sections.tips.items.0')}</li>
+                <li>{t('tools.affiliateEarningsCalculator.sections.tips.items.1')}</li>
+                <li>{t('tools.affiliateEarningsCalculator.sections.tips.items.2')}</li>
+                <li>{t('tools.affiliateEarningsCalculator.sections.tips.items.3')}</li>
+                <li>{t('tools.affiliateEarningsCalculator.sections.tips.items.4')}</li>
               </ul>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Negotiating Higher Commissions</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">{t('tools.affiliateEarningsCalculator.sections.negotiating.title')}</h2>
               <p className="text-gray-700 leading-relaxed mb-4">
-                When approaching affiliate managers with a media kit, you might hear that they have no budget for branding or extra exposure packages. However, they often have the flexibility to offer increased commission rates.
+                {t('tools.affiliateEarningsCalculator.sections.negotiating.paragraph1')}
               </p>
               <p className="text-gray-700 leading-relaxed mb-4">
-                Use the calculator above to demonstrate the potential increase in revenue from a higher commission rate. This data-driven approach can be a powerful negotiation tool.
+                {t('tools.affiliateEarningsCalculator.sections.negotiating.paragraph2')}
               </p>
               <p className="text-gray-700 leading-relaxed mb-4">
-                For example, if you currently earn a 4% commission and negotiate an increase to 6%:
+                {t('tools.affiliateEarningsCalculator.sections.negotiating.paragraph3')}
               </p>
               <ul className="list-disc list-inside space-y-2 mb-4 text-gray-700 leading-relaxed">
-                <li>At 4%: Monthly earnings of ${earnings.monthly.toFixed(2)}</li>
-                <li>At 6%: Monthly earnings of ${(earnings.monthly * 1.5).toFixed(2)}</li>
-                <li>Potential increase: ${(earnings.monthly * 0.5).toFixed(2)} per month</li>
+                <li>{t('tools.affiliateEarningsCalculator.sections.negotiating.example.at4').replace('{amount}', earnings.monthly.toFixed(2))}</li>
+                <li>{t('tools.affiliateEarningsCalculator.sections.negotiating.example.at6').replace('{amount}', (earnings.monthly * 1.5).toFixed(2))}</li>
+                <li>{t('tools.affiliateEarningsCalculator.sections.negotiating.example.increase').replace('{amount}', (earnings.monthly * 0.5).toFixed(2))}</li>
               </ul>
               <p className="text-gray-700 leading-relaxed">
-                This significant increase in earnings can be a compelling argument for both you and the affiliate manager, as it incentivizes you to drive more sales without requiring additional budget allocation from their end.
+                {t('tools.affiliateEarningsCalculator.sections.negotiating.paragraph4')}
               </p>
             </section>
           </div>

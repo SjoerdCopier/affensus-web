@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 import Breadcrumbs from "@/components/breadcrumbs";
+import { useLocaleTranslations } from "@/hooks/use-locale-translations";
 
 const QRCode = dynamic(() => import('qrcode.react').then(mod => mod.QRCodeSVG), { ssr: false });
 
@@ -20,6 +21,7 @@ interface QROptions {
 }
 
 export default function ReferralQRCodeGenerator() {
+  const { t } = useLocaleTranslations();
   const [url, setUrl] = useState("");
   const [qrCode, setQRCode] = useState<string | null>(null);
   const [qrOptions, setQROptions] = useState<QROptions>({
@@ -137,10 +139,10 @@ export default function ReferralQRCodeGenerator() {
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-4">
-              Generate Your Referral QR Code for Free!
+              {t('tools.referralQrCodeGenerator.title')}
             </h1>
         <p className="text-lg text-gray-700 leading-relaxed">
-          Create a custom QR code for your referral link. Customize colors, size, and add a logo to make it stand out! We even let you download it for free! Or login and use our API to generate QR codes programmatically.
+          {t('tools.referralQrCodeGenerator.description')}
         </p>
       </div>
 
@@ -148,7 +150,7 @@ export default function ReferralQRCodeGenerator() {
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label htmlFor="referral-url" className="block text-sm font-medium text-gray-700 mb-2">
-              Enter Referral URL:
+              {t('tools.referralQrCodeGenerator.form.label')}
             </label>
             <input
               type="url"
@@ -156,7 +158,7 @@ export default function ReferralQRCodeGenerator() {
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               required
-              placeholder="https://example.com/ref=yourcode"
+              placeholder={t('tools.referralQrCodeGenerator.form.placeholder')}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
@@ -164,7 +166,7 @@ export default function ReferralQRCodeGenerator() {
             type="submit"
             className="bg-[#6ca979] text-white px-6 py-2 rounded-md hover:bg-[#5a8a66] transition-colors"
           >
-            Generate QR Code
+            {t('tools.referralQrCodeGenerator.form.button')}
           </button>
         </form>
 
@@ -184,7 +186,7 @@ export default function ReferralQRCodeGenerator() {
 
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Size:</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('tools.referralQrCodeGenerator.options.size')}</label>
                 <input
                   type="range"
                   min="128"
@@ -196,7 +198,7 @@ export default function ReferralQRCodeGenerator() {
                 <span className="text-xs text-gray-500">{qrOptions.size}px</span>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Foreground Color:</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('tools.referralQrCodeGenerator.options.foregroundColor')}</label>
                 <input
                   type="color"
                   value={qrOptions.fgColor}
@@ -205,7 +207,7 @@ export default function ReferralQRCodeGenerator() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Background Color:</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('tools.referralQrCodeGenerator.options.backgroundColor')}</label>
                 <input
                   type="color"
                   value={qrOptions.bgColor}
@@ -214,7 +216,7 @@ export default function ReferralQRCodeGenerator() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Include Margin:</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('tools.referralQrCodeGenerator.options.includeMargin')}</label>
                 <input
                   type="checkbox"
                   checked={qrOptions.includeMargin}
@@ -223,7 +225,7 @@ export default function ReferralQRCodeGenerator() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Logo Size:</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('tools.referralQrCodeGenerator.options.logoSize')}</label>
                 <input
                   type="range"
                   min="24"
@@ -237,7 +239,7 @@ export default function ReferralQRCodeGenerator() {
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Upload Logo (optional):</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('tools.referralQrCodeGenerator.options.uploadLogo')}</label>
               <input
                 type="file"
                 accept="image/*"
@@ -250,11 +252,11 @@ export default function ReferralQRCodeGenerator() {
               onClick={downloadQRCode}
               className="w-full bg-green-600 text-white py-2 px-4 rounded-md shadow hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
             >
-              Download QR Code
+              {t('tools.referralQrCodeGenerator.download.button')}
             </button>
 
             <p className="mt-4 text-sm text-gray-600">
-              Need to generate QR codes programmatically? Every Affensus package includes a free API to generate QR codes on the fly!
+              {t('tools.referralQrCodeGenerator.download.apiInfo')}
             </p>
           </div>
         )}
@@ -262,28 +264,28 @@ export default function ReferralQRCodeGenerator() {
 
       <div className="space-y-8">
         <section>
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">About this tool</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">{t('tools.referralQrCodeGenerator.sections.about.title')}</h2>
           <div className="space-y-4">
             <div>
-              <h3 className="text-lg font-medium text-gray-800 mb-2">What is the Referral QR Code Generator?</h3>
+              <h3 className="text-lg font-medium text-gray-800 mb-2">{t('tools.referralQrCodeGenerator.sections.about.whatIs.title')}</h3>
               <p className="text-gray-700">
-                Our Referral QR Code Generator is a powerful tool designed to help you create custom QR codes for your referral links. With this tool, you can easily generate QR codes that are both functional and visually appealing, making it easier for your audience to access your referral links.
+                {t('tools.referralQrCodeGenerator.sections.about.whatIs.description')}
               </p>
             </div>
           </div>
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">How does the QR Code Generator work?</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">{t('tools.referralQrCodeGenerator.sections.howItWorks.title')}</h2>
           <p className="text-gray-700 leading-relaxed">
-            Simply input your referral URL, and our tool will generate a QR code instantly. You can then customize various aspects of the QR code, including its size, colors, and even add a logo or image to make it more branded and recognizable.
+            {t('tools.referralQrCodeGenerator.sections.howItWorks.description')}
           </p>
         </section>
 
         <section>
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Why use QR codes for referrals?</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">{t('tools.referralQrCodeGenerator.sections.whyUse.title')}</h2>
           <p className="text-gray-700 leading-relaxed">
-            QR codes provide a quick and easy way for people to access your referral links, especially in physical or offline contexts. They can be added to business cards, flyers, posters, or any other marketing material, bridging the gap between offline and online marketing efforts.
+            {t('tools.referralQrCodeGenerator.sections.whyUse.description')}
           </p>
         </section>
         </div>
