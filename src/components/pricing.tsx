@@ -94,15 +94,15 @@ export default function Pricing() {
                       {isYearly ? plan.price.yearly.symbol : plan.price.monthly.symbol}{formatPrice(isYearly ? plan.price.yearly.amount : plan.price.monthly.amount)}
                       <span className="text-gray-1800 font-normal text-base leading-none inline-flex mb-1.5">
                         / {isYearly 
-                          ? (plan.billing.yearly[currentLocale as keyof typeof plan.billing.yearly] || plan.billing.yearly.en)
-                          : (plan.billing.monthly[currentLocale as keyof typeof plan.billing.monthly] || plan.billing.monthly.en)
+                          ? t('pricing.billing.yearly')
+                          : t('pricing.billing.monthly')
                         }
                       </span>
                     </h3>
                     <p className="text-dark-gray-1200 mb-[30px] text-sm font-normal tracking-[-0.14px] leading-none">
                       {isYearly 
-                        ? `${t('pricing.billed')} ${plan.billing.yearly[currentLocale as keyof typeof plan.billing.yearly] || plan.billing.yearly.en}ly, ${plan.price.monthly.symbol}${formatPrice(Math.round(plan.price.yearly.amount / 12))} per month`
-                        : `${t('pricing.billed')} ${plan.billing.monthly[currentLocale as keyof typeof plan.billing.monthly] || plan.billing.monthly.en}ly`
+                        ? `${t('pricing.billed')} ${t('pricing.billing.yearly')}, ${plan.price.monthly.symbol}${formatPrice(Math.round(plan.price.yearly.amount / 12))} per month`
+                        : `${t('pricing.billed')} ${t('pricing.billing.monthly')}`
                       }
                     </p>
                     <a 

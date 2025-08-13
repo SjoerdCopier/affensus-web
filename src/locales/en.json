@@ -52,11 +52,38 @@
       "contactUs": "Contact Us"
     }
   },
+  "header": {
+    "pricing": "Pricing",
+    "freeTools": "Free Tools",
+    "signIn": "Sign in",
+    "register": "Register",
+    "tools": {
+      "affiliateLinkChecker": {
+        "title": "Affiliate Link Checker",
+        "description": "Check if your affiliate links are redirecting to the correct network"
+      },
+      "referralQrCodeGenerator": {
+        "title": "Referral QR Code Generator",
+        "description": "Create custom QR codes for your referral links"
+      },
+      "affiliateEarningsCalculator": {
+        "title": "Affiliate Earnings Calculator",
+        "description": "Estimate your potential affiliate earnings"
+      }
+    }
+  },
   "homepage": {
     "hero": {
-      "title": "Transform Your Business with AI",
-      "subtitle": "Cutting-edge artificial intelligence solutions tailored to your needs",
-      "cta": "Discover Our Solutions"
+      "launchDiscount": "Launch Discount for first 150 customers",
+      "readMore": "Read more",
+      "title1": "48 Affiliate Networks",
+      "title2": "in One Dashboard",
+      "description": "Keep track of all your merchants, subscribe to new programs, scrape merchant data and generate unique coupon texts all in one dashboard.",
+      "getAffensus": "Get Affensus",
+      "bookDemo": "Book a Demo",
+      "affiliateRevenue": "Affiliate Revenue",
+      "revenueAmount": "7420",
+      "revenuePercentage": "15.1%"
     },
     "features": {
       "title": "Why Choose Affensus?",
@@ -587,6 +614,21 @@
       "termsOfService": "Terms of Service",
       "and": "and",
       "privacyPolicy": "Privacy Policy"
+    }
+  },
+  "footer": {
+    "companyDescription": "Say goodbye to juggling multiple tools and focus on what truly matters, growing your affiliate success.",
+    "quickLinks": "Quick Links",
+    "contact": "Contact",
+    "support": "Support",
+    "refundPolicy": "Refund Policy",
+    "dataDeletion": "Data Deletion",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "copyright": "© {year} Affensus. All rights reserved.",
+    "socialMedia": {
+      "x": "X",
+      "linkedin": "LinkedIn"
     }
   }
 }

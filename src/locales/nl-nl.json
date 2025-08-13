@@ -52,11 +52,38 @@
         "contactUs": "Contact Us"
       }
     },
+    "header": {
+      "pricing": "Prijzen",
+      "freeTools": "Gratis Tools",
+      "signIn": "Aanmelden",
+      "register": "Registreren",
+      "tools": {
+        "affiliateLinkChecker": {
+          "title": "Affiliate Link Checker",
+          "description": "Controleer of je affiliate links doorverwijzen naar het juiste netwerk"
+        },
+        "referralQrCodeGenerator": {
+          "title": "Referral QR Code Generator",
+          "description": "Maak aangepaste QR codes voor je referral links"
+        },
+        "affiliateEarningsCalculator": {
+          "title": "Affiliate Inkomsten Calculator",
+          "description": "Schat je potentiële affiliate inkomsten"
+        }
+      }
+    },
     "homepage": {
       "hero": {
-        "title": "Transform Your Business with AI",
-        "subtitle": "Cutting-edge artificial intelligence solutions tailored to your needs",
-        "cta": "Discover Our Solutions"
+        "launchDiscount": "Lanceringskorting voor eerste 150 klanten",
+        "readMore": "Lees meer",
+        "title1": "48 Affiliate Netwerken",
+        "title2": "in Eén Dashboard",
+        "description": "Houd al je handelaren bij, abonneer je op nieuwe programma's, scrape handelaarsdata en genereer unieke coupon teksten allemaal in één dashboard.",
+        "getAffensus": "Koop Affensus",
+        "bookDemo": "Boek een Demo",
+        "affiliateRevenue": "Affiliate Inkomsten",
+        "revenueAmount": "7420",
+        "revenuePercentage": "15,1%"
       },
       "features": {
         "title": "Why Choose Affensus?",
@@ -378,7 +405,7 @@
     }
   },
   "pricing": {
-    "title": "Flexibele prijsplannen. Elke schaal.",
+    "title": "Flexibele prijsplannen.",
     "subtitle": "Of je nu een individu bent, een klein team, of een groeiende onderneming, we hebben een plan dat perfect aansluit bij jouw doelen.",
     "billing": {
       "monthly": "Maandelijks",
@@ -388,7 +415,7 @@
     "popular": "Populair",
     "free": "Voor altijd gratis",
     "billed": "Gefactureerd",
-    "cta": "Krijg Affensus",
+    "cta": "Koop Affensus",
     "security": "Affensus heeft nooit toegang tot je sleutels, ze worden veilig opgeslagen op je eigen apparaat. Bovendien nemen we geen percentage van je commissies.",
     "earnings": "Je houdt 100% van je verdiensten voor slechts $17 USD per maand."
   },
@@ -437,6 +464,21 @@
       "termsOfService": "Gebruiksvoorwaarden",
       "and": "en",
       "privacyPolicy": "Privacybeleid"
+    }
+  },
+  "footer": {
+    "companyDescription": "Zeg vaarwel tegen het jongleren met meerdere tools en focus op wat er echt toe doet: het laten groeien van je affiliate succes.",
+    "quickLinks": "Snelle Links",
+    "contact": "Contact",
+    "support": "Ondersteuning",
+    "refundPolicy": "Terugstortingsbeleid",
+    "dataDeletion": "Gegevensverwijdering",
+    "privacyPolicy": "Privacybeleid",
+    "termsOfService": "Gebruiksvoorwaarden",
+    "copyright": "© {year} Affensus. Alle rechten voorbehouden.",
+    "socialMedia": {
+      "x": "X",
+      "linkedin": "LinkedIn"
     }
   }
 }
