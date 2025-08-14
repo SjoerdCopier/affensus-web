@@ -23,6 +23,22 @@ interface UptimeKumaHeartbeat {
   duration: number;
 }
 
+interface StatusPageHeartbeat {
+  status: number;
+  time: string;
+  msg: string;
+  ping: number;
+}
+
+interface StatusPageResponse {
+  heartbeatList: {
+    [key: string]: StatusPageHeartbeat[];
+  };
+  uptimeList: {
+    [key: string]: number;
+  };
+}
+
 interface DayUptime {
   date: string;
   uptime: number | null;
@@ -32,6 +48,9 @@ interface UrlData {
   type: string;
   avg_uptime_percentage: number;
   avg_response_time: number;
+  hasStatusPage: boolean;
+  heartbeats?: StatusPageHeartbeat[];
+  uptimeList?: { [key: string]: number };
 }
 
 interface UptimeData {
@@ -44,6 +63,8 @@ interface Domain {
   avg_uptime_percentage: number;
   urls: UrlData[];
   day_uptime: UptimeData[];
+  hasStatusPage: boolean;
+  uptimeList?: { [key: string]: number };
 }
 
 export async function onRequestGet(context: { env: Env, request: Request }): Promise<Response> {
@@ -51,6 +72,7 @@ export async function onRequestGet(context: { env: Env, request: Request }): Pro
     const { env, request } = context;
     const url = new URL(request.url);
     const debug = url.searchParams.get('debug') === 'true';
+    const test = url.searchParams.get('test') === 'true';
     
     const uptimeKumaSecret = env.UPTIME_KUMA_SECRET;
 
@@ -61,14 +83,28 @@ export async function onRequestGet(context: { env: Env, request: Request }): Pro
       });
     }
 
+    if (test) {
+      // Test the status page fetching for a specific network
+      const testNetwork = 'daisycon';
+      console.log(`Testing status page for ${testNetwork}`);
+      const testData = await fetchStatusPageData(testNetwork);
+      return new Response(JSON.stringify({ 
+        message: 'Test mode enabled',
+        testNetwork,
+        statusPageData: testData,
+        heartbeatCount: testData?.heartbeatList ? Object.values(testData.heartbeatList).reduce((sum: number, arr: any) => sum + (Array.isArray(arr) ? arr.length : 0), 0) : 0
+      }), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
     if (debug) {
       return new Response(JSON.stringify({ 
         message: 'Debug mode enabled',
         secret_configured: !!uptimeKumaSecret,
         secret_length: uptimeKumaSecret.length,
         endpoints_to_try: [
-          'http://152.42.135.243:3001/metrics',
-          'http://152.42.135.243:3001/api/status-page/affensus'
+          'http://152.42.135.243:3001/metrics'
         ]
       }), {
         headers: { 'Content-Type': 'application/json' }
@@ -103,32 +139,6 @@ export async function onRequestGet(context: { env: Env, request: Request }): Pro
       }
     } catch (error) {
       console.error('Error fetching metrics:', error);
-    }
-
-    // If metrics failed, try the status page API
-    if (!success) {
-      try {
-        const statusResponse = await fetch(`http://152.42.135.243:3001/api/status-page/affensus`, {
-          headers: {
-            'Accept': 'application/json'
-          }
-        });
-
-        if (statusResponse.ok) {
-          const statusData = await statusResponse.json();
-          console.log('Status page data:', statusData);
-          return new Response(JSON.stringify(processStatusPageData(statusData)), {
-            headers: {
-              'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': '*',
-              'Access-Control-Allow-Methods': 'GET, OPTIONS',
-              'Access-Control-Allow-Headers': 'Content-Type'
-            }
-          });
-        }
-      } catch (error) {
-        console.error('Error fetching status page:', error);
-      }
     }
 
     if (!success) {
@@ -183,69 +193,32 @@ export async function onRequestOptions(): Promise<Response> {
   });
 }
 
-async function processStatusPageData(statusData: any): Promise<Domain[]> {
-  console.log('Processing status page data:', statusData);
-  
-  // If we can't process the status page data, return empty array
-  if (!statusData || !statusData.publicGroupList) {
-    return [];
+async function fetchStatusPageData(networkName: string): Promise<StatusPageResponse | null> {
+  try {
+    const url = `http://152.42.135.243:3001/api/status-page/heartbeat/${networkName}?limit=10080`;
+    console.log(`Fetching status page from: ${url}`);
+    
+    const response = await fetch(url);
+    
+    console.log(`Status page response for ${networkName}:`, response.status, response.statusText);
+    
+    if (!response.ok) {
+      console.log(`Status page not found for ${networkName}: ${response.status}`);
+      return null;
+    }
+    
+    const data = await response.json();
+    console.log(`Status page data for ${networkName}:`, {
+      hasHeartbeatList: !!data.heartbeatList,
+      heartbeatKeys: data.heartbeatList ? Object.keys(data.heartbeatList) : [],
+      totalHeartbeats: data.heartbeatList ? Object.values(data.heartbeatList).reduce((sum: number, arr: any) => sum + (Array.isArray(arr) ? arr.length : 0), 0) : 0
+    });
+    
+    return data;
+  } catch (error) {
+    console.error(`Error fetching status page data for ${networkName}:`, error);
+    return null;
   }
-
-  const domains: Map<string, Domain> = new Map();
-
-  // Process public groups and monitors
-  statusData.publicGroupList.forEach((group: any) => {
-    if (group.monitorList) {
-      group.monitorList.forEach((monitor: any) => {
-        const domain = extractDomainFromMonitor(monitor.name || 'unknown');
-        const monitorType = extractTypeFromMonitor(monitor.name || 'unknown');
-
-        if (!domains.has(domain)) {
-          domains.set(domain, {
-            domain,
-            avg_uptime_percentage: 0,
-            urls: [],
-            day_uptime: []
-          });
-        }
-
-        const domainData = domains.get(domain)!;
-        
-        // Calculate uptime from monitor data
-        const uptime = monitor.uptime || 0;
-        const responseTime = monitor.avgPing || 0;
-        
-        // Convert uptime to percentage if it's a decimal (0-1), otherwise assume it's already a percentage
-        const uptimePercentage = uptime <= 1 ? uptime * 100 : uptime;
-        const uptimeDecimal = uptime <= 1 ? uptime : uptime / 100;
-
-        domainData.urls.push({
-          type: monitorType,
-          avg_uptime_percentage: uptimePercentage,
-          avg_response_time: responseTime
-        });
-
-        // Only include today's data since we don't have historical data
-        const today = new Date().toISOString().split('T')[0];
-        domainData.day_uptime.push({
-          type: monitorType,
-          day_uptime: [{
-            date: today,
-            uptime: uptimeDecimal
-          }]
-        });
-      });
-    }
-  });
-
-  // Calculate overall domain uptime
-  domains.forEach((domain) => {
-    if (domain.urls.length > 0) {
-      domain.avg_uptime_percentage = domain.urls.reduce((sum, url) => sum + url.avg_uptime_percentage, 0) / domain.urls.length;
-    }
-  });
-
-  return Array.from(domains.values());
 }
 
 async function processPrometheusMetrics(metricsText: string): Promise<Domain[]> {
@@ -298,7 +271,8 @@ async function processPrometheusMetrics(metricsText: string): Promise<Domain[]> 
         domain,
         avg_uptime_percentage: 0,
         urls: [],
-        day_uptime: []
+        day_uptime: [],
+        hasStatusPage: false
       });
     }
 
@@ -315,7 +289,8 @@ async function processPrometheusMetrics(metricsText: string): Promise<Domain[]> 
     domainData.urls.push({
       type: 'Tracking',
       avg_uptime_percentage: uptimePercentage,
-      avg_response_time: responseTime
+      avg_response_time: responseTime,
+      hasStatusPage: false
     });
 
     // Only include today's data since we don't have historical data
@@ -329,14 +304,82 @@ async function processPrometheusMetrics(metricsText: string): Promise<Domain[]> 
     });
   }
 
-  // Calculate overall domain uptime
-  domains.forEach((domain) => {
+  // Fetch status page data for each domain and only keep those with status pages
+  const domainsWithStatusPages: Domain[] = [];
+  
+  for (const domain of domains.values()) {
+    const networkName = domain.domain;
+    console.log(`Checking status page for network: ${networkName}`);
+    
+    const statusPageData = await fetchStatusPageData(networkName);
+    
+    if (statusPageData && statusPageData.heartbeatList && Object.keys(statusPageData.heartbeatList).length > 0) {
+      console.log(`Status page found for ${networkName}, heartbeats:`, Object.keys(statusPageData.heartbeatList).length);
+      
+      domain.hasStatusPage = true;
+      
+      // Add uptimeList to domain
+      if (statusPageData.uptimeList) {
+        domain.uptimeList = statusPageData.uptimeList;
+        console.log(`Added uptimeList to domain ${domain.domain}:`, statusPageData.uptimeList);
+      }
+      
+      // Update URLs with status page data
+      domain.urls.forEach(url => {
+        url.hasStatusPage = true;
+        
+        // Add uptimeList to each URL as well
+        if (statusPageData.uptimeList) {
+          url.uptimeList = statusPageData.uptimeList;
+          console.log(`Added uptimeList to URL ${url.type}:`, statusPageData.uptimeList);
+        }
+        
+        // Get heartbeats from all available monitors - each heartbeat should be a separate candle
+        const allHeartbeats: StatusPageHeartbeat[] = [];
+        console.log(`Processing heartbeats for ${domain.domain}, heartbeatList keys:`, Object.keys(statusPageData.heartbeatList));
+        
+        // Extract all individual heartbeats from all monitors
+        Object.entries(statusPageData.heartbeatList).forEach(([monitorId, heartbeatArray]) => {
+          console.log(`Monitor ${monitorId} heartbeats:`, Array.isArray(heartbeatArray) ? heartbeatArray.length : 'not array');
+          if (Array.isArray(heartbeatArray)) {
+            // Each heartbeat in the array should be a separate candle
+            heartbeatArray.forEach(heartbeat => {
+              if (heartbeat && typeof heartbeat === 'object' && 'status' in heartbeat) {
+                allHeartbeats.push(heartbeat as StatusPageHeartbeat);
+              }
+            });
+          }
+        });
+        
+        console.log(`Total individual heartbeats collected for ${domain.domain}:`, allHeartbeats.length);
+        
+        // Sort by time (newest first) and assign to URL
+        url.heartbeats = allHeartbeats.sort((a, b) => 
+          new Date(b.time).getTime() - new Date(a.time).getTime()
+        );
+        
+        console.log(`Final heartbeats assigned to ${domain.domain} ${url.type}:`, url.heartbeats.length);
+        if (url.heartbeats.length > 0) {
+          console.log(`Sample heartbeats:`, url.heartbeats.slice(0, 3));
+        }
+      });
+      
+      domainsWithStatusPages.push(domain);
+    } else {
+      console.log(`No status page found for ${networkName}`);
+    }
+  }
+
+  console.log(`Total domains with status pages: ${domainsWithStatusPages.length}`);
+
+  // Calculate overall domain uptime for domains with status pages
+  domainsWithStatusPages.forEach((domain) => {
     if (domain.urls.length > 0) {
       domain.avg_uptime_percentage = domain.urls.reduce((sum, url) => sum + url.avg_uptime_percentage, 0) / domain.urls.length;
     }
   });
 
-  return Array.from(domains.values());
+  return domainsWithStatusPages;
 }
 
 function extractDomainFromMonitor(monitorName: string): string {
@@ -344,7 +387,57 @@ function extractDomainFromMonitor(monitorName: string): string {
   // Expected format: "NetworkName - Homepage" or "NetworkName - API" etc.
   const parts = monitorName.split(' - ');
   if (parts.length > 0) {
-    return parts[0].toLowerCase().replace(/[^a-z0-9]/g, '');
+    // Clean up the network name and make it lowercase
+    let networkName = parts[0].toLowerCase().replace(/[^a-z0-9]/g, '');
+    
+    // Handle common variations
+    if (networkName === 'daisycon') return 'daisycon';
+    if (networkName === 'awin') return 'awin';
+    if (networkName === 'cj') return 'cj';
+    if (networkName === 'rakuten') return 'rakuten';
+    if (networkName === 'impact') return 'impact';
+    if (networkName === 'skimlinks') return 'skimlinks';
+    if (networkName === 'shareasale') return 'shareasale';
+    if (networkName === 'tradedoubler') return 'tradedoubler';
+    if (networkName === 'webgains') return 'webgains';
+    if (networkName === 'yieldkit') return 'yieldkit';
+    if (networkName === 'admitad') return 'admitad';
+    if (networkName === 'adtraction') return 'adtraction';
+    if (networkName === 'affilae') return 'affilae';
+    if (networkName === 'belboon') return 'belboon';
+    if (networkName === 'brandreward') return 'brandreward';
+    if (networkName === 'chinesean') return 'chinesean';
+    if (networkName === 'circlewise') return 'circlewise';
+    if (networkName === 'commissionfactory') return 'commissionfactory';
+    if (networkName === 'cuelinks') return 'cuelinks';
+    if (networkName === 'digidip') return 'digidip';
+    if (networkName === 'effiliation') return 'effiliation';
+    if (networkName === 'flexoffers') return 'flexoffers';
+    if (networkName === 'glopss') return 'glopss';
+    if (networkName === 'indoleads') return 'indoleads';
+    if (networkName === 'involveasia') return 'involveasia';
+    if (networkName === 'kelkoo') return 'kelkoo';
+    if (networkName === 'kwanko') return 'kwanko';
+    if (networkName === 'linkbux') return 'linkbux';
+    if (networkName === 'mcanism') return 'mcanism';
+    if (networkName === 'optimise') return 'optimise';
+    if (networkName === 'partnerads') return 'partner-ads';
+    if (networkName === 'partnerboost') return 'partnerboost';
+    if (networkName === 'partnerize') return 'partnerize';
+    if (networkName === 'retailads') return 'retailads';
+    if (networkName === 'salestring') return 'salestring';
+    if (networkName === 'smartresponse') return 'smartresponse';
+    if (networkName === 'sourceknowledge') return 'sourceknowledge';
+    if (networkName === 'takeads') return 'takeads';
+    if (networkName === 'timeone') return 'timeone';
+    if (networkName === 'tradetracker') return 'tradetracker';
+    if (networkName === 'yadore') return 'yadore';
+    if (networkName === 'accesstrade') return 'accesstrade';
+    if (networkName === 'addrevenue') return 'addrevenue';
+    if (networkName === 'adrecord') return 'adrecord';
+    if (networkName === 'adservice') return 'adservice';
+    
+    return networkName;
   }
   return monitorName.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
@@ -357,7 +450,3 @@ function extractTypeFromMonitor(monitorName: string): string {
   }
   return 'Homepage';
 }
-
-// Note: generateSampleDayUptime function removed since we only show real data from today
-
-// Mock data generation removed - only real data from Uptime Kuma is used

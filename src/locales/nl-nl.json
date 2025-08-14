@@ -35,8 +35,7 @@
         },
         "affiliateNetworkUptime": {
           "title": "Affiliate Netwerk Uptime Monitor | Real-time Status Tracking | Affensus",
-          "description": "Monitor affiliate netwerk uptime in real-time. Volg homepage, API en tracking URL status van belangrijke affiliate netwerken. Ontvang directe meldingen bij downtime.",
-          "keywords": "affiliate netwerk uptime, netwerk monitoring, affiliate tracking, uptime monitor, affiliate netwerk status"
+          "description": "Monitor affiliate netwerk uptime in real-time. Volg homepage, API en tracking URL status van belangrijke affiliate netwerken. Ontvang directe meldingen bij downtime."
         }
       },
       "auth": {
@@ -74,6 +73,10 @@
         "affiliateEarningsCalculator": {
           "title": "Affiliate Inkomsten Calculator",
           "description": "Schat je potentiële affiliate inkomsten"
+        },
+        "affiliateNetworkUptime": {
+          "title": "Affiliate Netwerk Uptime",
+          "description": "Monitor affiliate netwerk uptime en beschikbaarheid in real-time"
         }
       }
     },
@@ -665,6 +668,56 @@
         "whyUse": {
           "title": "Waarom QR codes gebruiken voor referrals?",
           "description": "QR codes bieden een snelle en eenvoudige manier voor mensen om toegang te krijgen tot je referral links, vooral in fysieke of offline contexten. Ze kunnen worden toegevoegd aan visitekaartjes, flyers, posters of ander marketingmateriaal, waardoor de kloof tussen offline en online marketing inspanningen wordt overbrugd."
+        }
+      }
+    },
+    "affiliateNetworkUptime": {
+      "title": "Netwerk Uptime Rapportage",
+      "description": "We monitoren affiliate netwerken elke 5 minuten om ervoor te zorgen dat de homepage, API en belangrijke tracking links operationeel zijn.",
+      "learnMore": "Lees meer over deze tool",
+      "searchPlaceholder": "Zoek Netwerken...",
+      "sortOptions": {
+        "default": "Standaard",
+        "uptime": "Hoogste Uptime",
+        "down": "Momenteel Uitgeschakeld",
+        "highestDowntime": "Hoogste Downtime"
+      },
+      "status": {
+        "allSystemsOperational": "Alle Systemen Operationeel",
+        "someSystemsDegraded": "Sommige Systemen Gedegradeerd",
+        "uptime": "Uptime",
+        "combinedUptime": "Gecombineerde Uptime",
+        "realTimeHeartbeats": "Real-time Heartbeats (Laatste 7 dagen)",
+        "averageResponseTime": "Gemiddelde Reactietijd",
+        "uptimeLabel": "Uptime",
+        "avgResponseTime": "Gem. Reactietijd"
+      },
+      "messages": {
+        "noDataAvailable": "Geen uptime gegevens beschikbaar op dit moment.",
+        "configuring": "Uptime monitoring wordt geconfigureerd en zal binnenkort beschikbaar zijn.",
+        "error": "Er is een fout opgetreden bij het verwerken van je verzoek."
+      },
+      "about": {
+        "title": "Affiliate Netwerk Uptime Monitor",
+        "whatDoesItTrack": {
+          "title": "Wat monitort onze Uptime Monitor?",
+          "description": "Onze Uptime Monitor volgt drie cruciale componenten van affiliate netwerken: Homepage, API en Tracking URLs. We controleren deze elementen continu elke 5 minuten om ervoor te zorgen dat je affiliate operaties soepel verlopen."
+        },
+        "coloredBars": {
+          "title": "Wat vertegenwoordigen de gekleurde balken?",
+          "description": "Groene balken duiden op optimale prestaties (99,9% uptime of hoger), oranje balken tonen potentiële problemen (97-99,8% uptime), en rode balken signaleren kritieke problemen (onder 97% uptime). De heartbeat balken tonen real-time status updates van ons monitoringsysteem."
+        },
+        "fiveNines": {
+          "title": "Wat betekent 99,999% uptime?",
+          "description": "99,999% uptime, vaak 'vijf negens' genoemd, betekent dat de dienst 99,999% van de tijd beschikbaar is. Dit vertaalt zich naar slechts 5,26 minuten downtime per jaar, wat uitzonderlijke betrouwbaarheid aangeeft. Voor affiliate netwerken is dit niveau van uptime cruciaal om verdiensten te maximaliseren en gebruikersvertrouwen te behouden."
+        },
+        "checkFrequency": {
+          "title": "Hoe vaak controleren we op uptime?",
+          "description": "We voeren controles uit elke 5 minuten, wat bijna real-time monitoring van je affiliate netwerk prestaties biedt. Deze frequente monitoring zorgt voor snelle detectie en reactie op eventuele problemen die zich kunnen voordoen."
+        },
+        "downtimeActions": {
+          "title": "Welke acties moet ik ondernemen als downtime wordt gedetecteerd?",
+          "description": "Wanneer significante downtime wordt gedetecteerd, raden we aan: 1) Het probleem aan jouw kant te verifiëren, 2) Contact op te nemen met het ondersteuningsteam van het affiliate netwerk, 3) Eventuele actieve campagnes tijdelijk te pauzeren, en 4) Je affiliates op de hoogte te houden van de situatie. Ons systeem biedt geautomatiseerde waarschuwingen om je te helpen snel te reageren op eventuele verstoringen."
         }
       }
     }

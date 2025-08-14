@@ -54,7 +54,7 @@ export default function Hero() {
         </div>
       </div>
       
-      <div className="flex-1 flex justify-center lg:justify-end relative -mt-25">
+      <div className="flex-1 flex justify-center lg:justify-end relative -mt-20">
         <Image
           src="/images/hero-image.webp"
           alt="Hero image"

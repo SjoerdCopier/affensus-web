@@ -8,8 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import Header from '@/components/header';
 import Footer from '@/components/footer';
-
-
+import { useLocaleTranslations } from '@/hooks/use-locale-translations';
+import Head from 'next/head';
 
 // HoverCard components for uptime details
 const HoverCard = ({ children }: { children: React.ReactNode }) => {
@@ -43,62 +43,103 @@ const HoverCardContent = ({ children }: { children: React.ReactNode }) => (
   </div>
 );
 
-interface DayUptime {
-  date: string;
-  uptime: number | null;
+interface StatusPageHeartbeat {
+  status: number;
+  time: string;
+  msg: string;
+  ping: number;
+}
+
+interface UptimeList {
+  [key: string]: number; // e.g., "5": 0.9980276134122288
 }
 
 interface UrlData {
   type: string;
   avg_uptime_percentage: number;
   avg_response_time: number;
-}
-
-interface UptimeData {
-  type: string;
-  day_uptime: DayUptime[];
+  hasStatusPage: boolean;
+  heartbeats?: StatusPageHeartbeat[];
+  uptimeList?: UptimeList;
 }
 
 interface Domain {
   domain: string;
   avg_uptime_percentage: number;
   urls: UrlData[];
-  day_uptime: UptimeData[];
+  uptimeList?: UptimeList;
+  hasStatusPage: boolean;
 }
 
-const UptimeBar = ({ dayUptime }: { dayUptime: DayUptime[] }) => {
-  const renderBar = (date: string, uptime: number | null) => (
-    <HoverCard key={date}>
+const UptimeBar = ({ uptimeList }: { uptimeList?: UptimeList }) => {
+  const renderBar = (day: string, uptime: number) => (
+    <HoverCard key={day}>
       <HoverCardTrigger>
         <div 
           className={`w-1 h-4 mr-0.5 rounded cursor-pointer ${
-            uptime === null ? 'bg-green-500' : 
-            uptime === 1 ? 'bg-green-500' : 
+            uptime >= 0.999 ? 'bg-green-500' : 
             uptime >= 0.97 ? 'bg-orange-500' : 'bg-red-500'
           }`}
         ></div>
       </HoverCardTrigger>
       <HoverCardContent>
         <div className="space-y-2">
-          <h4 className="text-sm font-semibold">{date}</h4>
-          <p>Uptime: {uptime !== null ? `${(uptime * 100).toFixed(2)}%` : 'N/A'}</p>
+          <h4 className="text-sm font-semibold">Day {day}</h4>
+          <p>Uptime: {(uptime * 100).toFixed(3)}%</p>
         </div>
       </HoverCardContent>
     </HoverCard>
   );
 
-  const generateLast60Days = () => {
-    // Use the provided dayUptime data directly
-    return dayUptime
-      .sort((a, b) => a.date.localeCompare(b.date))
-      .slice(-60); // Take last 60 days
-  };
+  if (!uptimeList) {
+    return <div className="text-gray-500 text-sm">No uptime data available</div>;
+  }
 
-  const last60DaysData = generateLast60Days();
+  // Convert uptimeList to array and sort by day number
+  const sortedUptime = Object.entries(uptimeList)
+    .sort(([a], [b]) => parseInt(a) - parseInt(b))
+    .slice(-60); // Take last 60 days
 
   return (
     <div className="flex">
-      {last60DaysData.map(({ date, uptime }) => renderBar(date, uptime))}
+      {sortedUptime.map(([day, uptime]) => renderBar(day, uptime))}
+    </div>
+  );
+};
+
+const HeartbeatBar = ({ heartbeats }: { heartbeats: StatusPageHeartbeat[] }) => {
+  console.log('HeartbeatBar received heartbeats:', heartbeats?.length, heartbeats);
+  
+  const renderHeartbeatBar = (heartbeat: StatusPageHeartbeat, index: number) => (
+    <HoverCard key={index}>
+      <HoverCardTrigger>
+        <div 
+          className={`w-1 h-4 mr-0.5 rounded cursor-pointer ${
+            heartbeat.status === 1 ? 'bg-green-500' : 'bg-red-500'
+          }`}
+        ></div>
+      </HoverCardTrigger>
+      <HoverCardContent>
+        <div className="space-y-2">
+          <h4 className="text-sm font-semibold">{heartbeat.time}</h4>
+          <p>Status: {heartbeat.status === 1 ? 'UP' : 'DOWN'}</p>
+          <p>Ping: {heartbeat.ping}ms</p>
+          {heartbeat.msg && <p>Message: {heartbeat.msg}</p>}
+        </div>
+      </HoverCardContent>
+    </HoverCard>
+  );
+
+  // Show last 7 days of heartbeats (approximately 2016 heartbeats at 5-minute intervals)
+  const recentHeartbeats = heartbeats
+    .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())
+    .slice(0, 2016);
+
+  console.log('Recent heartbeats to render:', recentHeartbeats.length);
+
+  return (
+    <div className="flex">
+      {recentHeartbeats.map((heartbeat, index) => renderHeartbeatBar(heartbeat, index))}
     </div>
   );
 };
@@ -119,6 +160,7 @@ const SkeletonCard = () => (
 );
 
 function AffiliateNetworkUptimeContent() {
+  const { t, currentLocale } = useLocaleTranslations();
   const [domains, setDomains] = useState<Domain[]>([]);
   const [expandedDomain, setExpandedDomain] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -150,6 +192,21 @@ function AffiliateNetworkUptimeContent() {
         
         if (!data || data.length === 0) {
           console.warn('No data returned from API');
+        }
+        console.log('API response data:', data);
+        console.log('First domain data:', data[0]);
+        console.log('First domain uptimeList:', data[0]?.uptimeList);
+        console.log('First domain URLs:', data[0]?.urls);
+        
+        if (data[0]?.urls) {
+          data[0].urls.forEach((url: UrlData, index: number) => {
+            console.log(`URL ${index} full data:`, url);
+            console.log(`URL ${index} uptimeList:`, url.uptimeList);
+            console.log(`URL ${index} avg_uptime_percentage:`, url.avg_uptime_percentage);
+            if (url.heartbeats) {
+              console.log(`URL ${index} heartbeats:`, url.heartbeats.length, url.heartbeats.slice(0, 3));
+            }
+          });
         }
         setDomains(data);
       } catch (err: unknown) {
@@ -201,16 +258,54 @@ function AffiliateNetworkUptimeContent() {
     return urls.length > 0 ? totalResponseTime / urls.length : 0;
   };
 
-  const getCombinedUptimeData = (dayUptimeArray: UptimeData[]) => {
+  const calculateUptimeFromList = (uptimeList?: UptimeList, fallbackPercentage?: number): number => {
+    console.log('calculateUptimeFromList called with:', uptimeList, 'fallback:', fallbackPercentage);
+    
+    if (!uptimeList || Object.keys(uptimeList).length === 0) {
+      console.log('No uptimeList data, using fallback:', fallbackPercentage);
+      // If no uptimeList, use fallback percentage (convert from percentage to decimal)
+      return fallbackPercentage ? fallbackPercentage / 100 : 0;
+    }
+    
+    const uptimeValues = Object.values(uptimeList);
+    console.log('Uptime values:', uptimeValues);
+    
+    const totalUptime = uptimeValues.reduce((sum, uptime) => sum + uptime, 0);
+    const averageUptime = totalUptime / uptimeValues.length;
+    
+    console.log('Total uptime:', totalUptime, 'Average uptime:', averageUptime);
+    return averageUptime;
+  };
+
+  const getUptimeDisplay = (uptimeList?: UptimeList): string => {
+    if (!uptimeList || Object.keys(uptimeList).length === 0) {
+      return 'N/A';
+    }
+    
+    // Get the first (and likely only) uptime value from the list
+    const uptimeValue = Object.values(uptimeList)[0];
+    return `${(uptimeValue * 100).toFixed(3)}%`;
+  };
+
+  const getUptimeValue = (uptimeList?: UptimeList): number => {
+    if (!uptimeList || Object.keys(uptimeList).length === 0) {
+      return 0;
+    }
+    
+    // Get the first (and likely only) uptime value from the list
+    return Object.values(uptimeList)[0];
+  };
+
+  const getCombinedUptimeData = (uptimeListArray: UptimeList[]) => {
     const combinedData = new Map<string, number>();
     
     // For each date, find the minimum uptime across all types (worst case scenario)
-    dayUptimeArray.forEach(type => {
-      type.day_uptime.forEach(day => {
-        if (day.uptime !== null) {
-          const currentMin = combinedData.get(day.date);
-          if (currentMin === undefined || day.uptime < currentMin) {
-            combinedData.set(day.date, day.uptime);
+    uptimeListArray.forEach(uptimeList => {
+      Object.entries(uptimeList).forEach(([day, uptime]) => {
+        if (uptime !== null) {
+          const currentMin = combinedData.get(day);
+          if (currentMin === undefined || uptime < currentMin) {
+            combinedData.set(day, uptime);
           }
         }
       });
@@ -222,8 +317,21 @@ function AffiliateNetworkUptimeContent() {
       .slice(-60); // Take last 60 days
   };
 
+  const capitalizeNetworkName = (networkName: string): string => {
+    // Simple dynamic capitalization that works for any network name
+    return networkName
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+  };
+
   return (
     <div className="min-h-screen bg-white">
+      <Head>
+        <title>{t('metadata.tools.affiliateNetworkUptime.title')}</title>
+        <meta name="description" content={t('metadata.tools.affiliateNetworkUptime.description')} />
+      </Head>
+      
       <div className="container mx-auto px-4 py-8">
         <Header />
       </div>
@@ -249,18 +357,18 @@ function AffiliateNetworkUptimeContent() {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-8">
             <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-6 text-gray-800">
-              Network <span className="underline decoration-[#6ca979]">Uptime</span> Reporting
+              {t('tools.affiliateNetworkUptime.title')}
             </h1>
             <p className="max-w-5xl mx-auto text-sm opacity-90 leading-relaxed mb-6 text-black">
-              We monitor affiliate networks every 5 minutes, ensuring the homepage, API, and key tracking links are operational.
+              {t('tools.affiliateNetworkUptime.description')}
               <br />
-              Get notified of any outages via email. <a href="#about" className="text-black underline">Learn more about this tool</a>
+              Get notified of any outages via email. <a href="#about" className="text-black underline">{t('tools.affiliateNetworkUptime.learnMore')}</a>
             </p>
             
             <div className="mb-6 flex justify-between items-center">
               <Input
                 type="text"
-                placeholder="Search Networks..."
+                placeholder={t('tools.affiliateNetworkUptime.searchPlaceholder')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-64"
@@ -270,10 +378,10 @@ function AffiliateNetworkUptimeContent() {
                 onChange={(e) => setSortOption(e.target.value)}
                 className="w-[180px] px-3 py-2 border border-gray-300 rounded-md bg-white"
               >
-                <option value="default">Default</option>
-                <option value="uptime">Highest Uptime</option>
-                <option value="down">Currently Down</option>
-                <option value="highest-downtime">Highest Downtime</option>
+                <option value="default">{t('tools.affiliateNetworkUptime.sortOptions.default')}</option>
+                <option value="uptime">{t('tools.affiliateNetworkUptime.sortOptions.uptime')}</option>
+                <option value="down">{t('tools.affiliateNetworkUptime.sortOptions.down')}</option>
+                <option value="highest-downtime">{t('tools.affiliateNetworkUptime.sortOptions.highestDowntime')}</option>
               </select>
             </div>
             
@@ -286,11 +394,11 @@ function AffiliateNetworkUptimeContent() {
                   <SkeletonCard />
                 </>
               ) : error ? (
-                <div className="col-span-2 text-red-500">{error}</div>
+                <div className="col-span-2 text-red-500">{t('tools.affiliateNetworkUptime.messages.error')}</div>
               ) : filteredDomains.length === 0 ? (
                 <div className="col-span-2 text-center text-gray-500">
-                  <p>No uptime data available at the moment.</p>
-                  <p className="text-sm mt-2">Uptime monitoring is being configured and will be available soon.</p>
+                  <p>{t('tools.affiliateNetworkUptime.messages.noDataAvailable')}</p>
+                  <p className="text-sm mt-2">{t('tools.affiliateNetworkUptime.messages.configuring')}</p>
                 </div>
               ) : (
                 <>
@@ -299,10 +407,10 @@ function AffiliateNetworkUptimeContent() {
                       <Card key={domain.domain}>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                           <CardTitle className="text-sm font-medium">
-                            {domain.avg_uptime_percentage > 99.9 ? 'All Systems Operational' : 'Some Systems Degraded'}
+                            {getUptimeValue(domain.uptimeList) > 0.999 ? t('tools.affiliateNetworkUptime.status.allSystemsOperational') : t('tools.affiliateNetworkUptime.status.someSystemsDegraded')}
                           </CardTitle>
                           <div className="text-sm text-muted-foreground">
-                            {domain.avg_uptime_percentage.toFixed(3)}% Uptime
+                            {getUptimeDisplay(domain.uptimeList)} {t('tools.affiliateNetworkUptime.status.uptime')}
                           </div>
                           <button onClick={() => toggleDomain(domain.domain)}>
                             {expandedDomain === domain.domain ? <ChevronUp /> : <ChevronDown />}
@@ -310,29 +418,48 @@ function AffiliateNetworkUptimeContent() {
                         </CardHeader>
                         <CardContent>
                           <div className="text-2xl font-bold mb-4 text-left">
-                            {domain.domain}
+                            {capitalizeNetworkName(domain.domain)}
                           </div>
                           <div className="mb-4">
-                            <h3 className="text-lg text-left font-semibold">Combined Uptime</h3>
-                            <UptimeBar dayUptime={getCombinedUptimeData(domain.day_uptime)} />
-                            <p className="text-left pt-3">Average Response Time: {calculateAverageResponseTime(domain.urls).toFixed(2)} ms</p>
+                            <h3 className="text-lg text-left font-semibold">{t('tools.affiliateNetworkUptime.status.combinedUptime')}</h3>
+                            {domain.hasStatusPage && domain.urls.some(url => url.heartbeats) ? (
+                              <div className="mb-2">
+                                <h4 className="text-sm font-medium text-gray-600 mb-2">{t('tools.affiliateNetworkUptime.status.realTimeHeartbeats')}</h4>
+                                {(() => { 
+                                  const totalHeartbeats = domain.urls.reduce((sum, url) => sum + (url.heartbeats?.length || 0), 0);
+                                  console.log(`Main view heartbeats for ${domain.domain}:`, totalHeartbeats);
+                                  return null; 
+                                })()}
+                                <HeartbeatBar heartbeats={domain.urls.find(url => url.heartbeats)?.heartbeats || []} />
+                              </div>
+                            ) : (
+                              <UptimeBar uptimeList={domain.uptimeList} />
+                            )}
+                            <p className="text-left pt-3">{t('tools.affiliateNetworkUptime.status.averageResponseTime')}: {calculateAverageResponseTime(domain.urls).toFixed(2)} ms</p>
                           </div>
                           {expandedDomain === domain.domain && (
-                            domain.day_uptime.map((uptimeData) => {
-                              const urlData = domain.urls.find(url => url.type === uptimeData.type);
-                              return (
-                                <div key={uptimeData.type} className="mb-4 text-left">
-                                  <h3 className="text-lg font-semibold">{uptimeData.type}</h3>
-                                  <UptimeBar dayUptime={uptimeData.day_uptime} />
-                                  {urlData && (
-                                    <>
-                                      <p>Uptime: {(urlData.avg_uptime_percentage).toFixed(3)}%</p>
-                                      <p>Avg Response Time: {urlData.avg_response_time.toFixed(2)} ms</p>
-                                    </>
-                                  )}
-                                </div>
-                              );
-                            })
+                            domain.urls.map((urlData) => (
+                              <div key={urlData.type} className="mb-4 text-left">
+                                <h3 className="text-lg font-semibold">{urlData.type}</h3>
+                                {urlData.hasStatusPage && urlData.heartbeats ? (
+                                  <>
+                                    <div className="mb-2">
+                                      <h4 className="text-sm font-medium text-gray-600">{t('tools.affiliateNetworkUptime.status.realTimeHeartbeats')}</h4>
+                                      {(() => { console.log(`Rendering heartbeats for ${domain.domain} ${urlData.type}:`, urlData.heartbeats?.length); return null; })()}
+                                      <HeartbeatBar heartbeats={urlData.heartbeats} />
+                                    </div>
+                                    <p className="text-sm text-gray-600">{t('tools.affiliateNetworkUptime.status.uptimeLabel')}: {getUptimeDisplay(urlData.uptimeList)}</p>
+                                    <p className="text-sm text-gray-600">{t('tools.affiliateNetworkUptime.status.avgResponseTime')}: {urlData.avg_response_time.toFixed(2)} ms</p>
+                                  </>
+                                ) : (
+                                  <>
+                                    <UptimeBar uptimeList={urlData.uptimeList} />
+                                    <p>{t('tools.affiliateNetworkUptime.status.uptimeLabel')}: {getUptimeDisplay(urlData.uptimeList)}</p>
+                                    <p>{t('tools.affiliateNetworkUptime.status.avgResponseTime')}: {urlData.avg_response_time.toFixed(2)} ms</p>
+                                  </>
+                                )}
+                              </div>
+                            ))
                           )}
                         </CardContent>
                       </Card>
@@ -343,10 +470,10 @@ function AffiliateNetworkUptimeContent() {
                       <Card key={domain.domain}>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                           <CardTitle className="text-sm font-medium">
-                            {domain.avg_uptime_percentage > 99.9 ? 'All Systems Operational' : 'Some Systems Degraded'}
+                            {getUptimeValue(domain.uptimeList) > 0.999 ? t('tools.affiliateNetworkUptime.status.allSystemsOperational') : t('tools.affiliateNetworkUptime.status.someSystemsDegraded')}
                           </CardTitle>
                           <div className="text-sm text-muted-foreground">
-                            {domain.avg_uptime_percentage.toFixed(3)}% Uptime
+                            {getUptimeDisplay(domain.uptimeList)} {t('tools.affiliateNetworkUptime.status.uptime')}
                           </div>
                           <button onClick={() => toggleDomain(domain.domain)}>
                             {expandedDomain === domain.domain ? <ChevronUp /> : <ChevronDown />}
@@ -354,29 +481,48 @@ function AffiliateNetworkUptimeContent() {
                         </CardHeader>
                         <CardContent>
                           <div className="text-2xl font-bold mb-4 text-left">
-                            {domain.domain}
+                            {capitalizeNetworkName(domain.domain)}
                           </div>
                           <div className="mb-4">
-                            <h3 className="text-lg text-left font-semibold">Combined Uptime</h3>
-                            <UptimeBar dayUptime={getCombinedUptimeData(domain.day_uptime)} />
-                            <p className="text-left pt-3">Average Response Time: {calculateAverageResponseTime(domain.urls).toFixed(2)} ms</p>
+                            <h3 className="text-lg text-left font-semibold">{t('tools.affiliateNetworkUptime.status.combinedUptime')}</h3>
+                            {domain.hasStatusPage && domain.urls.some(url => url.heartbeats) ? (
+                              <div className="mb-2">
+                                <h4 className="text-sm font-medium text-gray-600 mb-2">{t('tools.affiliateNetworkUptime.status.realTimeHeartbeats')}</h4>
+                                {(() => { 
+                                  const totalHeartbeats = domain.urls.reduce((sum, url) => sum + (url.heartbeats?.length || 0), 0);
+                                  console.log(`Main view heartbeats:`, totalHeartbeats);
+                                  return null; 
+                                })()}
+                                <HeartbeatBar heartbeats={domain.urls.find(url => url.heartbeats)?.heartbeats || []} />
+                              </div>
+                            ) : (
+                              <UptimeBar uptimeList={domain.uptimeList} />
+                            )}
+                            <p className="text-left pt-3">{t('tools.affiliateNetworkUptime.status.averageResponseTime')}: {calculateAverageResponseTime(domain.urls).toFixed(2)} ms</p>
                           </div>
                           {expandedDomain === domain.domain && (
-                            domain.day_uptime.map((uptimeData) => {
-                              const urlData = domain.urls.find(url => url.type === uptimeData.type);
-                              return (
-                                <div key={uptimeData.type} className="mb-4 text-left">
-                                  <h3 className="text-lg font-semibold">{uptimeData.type}</h3>
-                                  <UptimeBar dayUptime={uptimeData.day_uptime} />
-                                  {urlData && (
-                                    <>
-                                      <p>Uptime: {(urlData.avg_uptime_percentage).toFixed(3)}%</p>
-                                      <p>Avg Response Time: {urlData.avg_response_time.toFixed(2)} ms</p>
-                                    </>
-                                  )}
-                                </div>
-                              );
-                            })
+                            domain.urls.map((urlData) => (
+                              <div key={urlData.type} className="mb-4 text-left">
+                                <h3 className="text-lg font-semibold">{urlData.type}</h3>
+                                {urlData.hasStatusPage && urlData.heartbeats ? (
+                                  <>
+                                    <div className="mb-2">
+                                      <h4 className="text-sm font-medium text-gray-600">{t('tools.affiliateNetworkUptime.status.realTimeHeartbeats')}</h4>
+                                      {(() => { console.log(`Rendering heartbeats for ${domain.domain} ${urlData.type}:`, urlData.heartbeats?.length); return null; })()}
+                                      <HeartbeatBar heartbeats={urlData.heartbeats} />
+                                    </div>
+                                    <p className="text-sm text-gray-600">{t('tools.affiliateNetworkUptime.status.uptimeLabel')}: {getUptimeDisplay(urlData.uptimeList)}</p>
+                                    <p className="text-sm text-gray-600">{t('tools.affiliateNetworkUptime.status.avgResponseTime')}: {urlData.avg_response_time.toFixed(2)} ms</p>
+                                  </>
+                                ) : (
+                                  <>
+                                    <UptimeBar uptimeList={urlData.uptimeList} />
+                                    <p>{t('tools.affiliateNetworkUptime.status.uptimeLabel')}: {getUptimeDisplay(urlData.uptimeList)}</p>
+                                    <p>{t('tools.affiliateNetworkUptime.status.avgResponseTime')}: {urlData.avg_response_time.toFixed(2)} ms</p>
+                                  </>
+                                )}
+                              </div>
+                            ))
                           )}
                         </CardContent>
                       </Card>
@@ -392,37 +538,37 @@ function AffiliateNetworkUptimeContent() {
         <div className="bg-white px-6 pb-32 lg:px-8" id="about">
           <div className="mx-auto max-w-3xl text-base leading-7 text-gray-700">
             <p className="text-base font-medium leading-7 text-[#6ca979]">
-              Affiliate Network Uptime Monitor
+              {t('tools.affiliateNetworkUptime.about.title')}
             </p>
             <h2 className="mt-4 text-xl font-bold tracking-tight text-[#6ca979] sm:text-2xl">
-              What does our Uptime Monitor track?
+              {t('tools.affiliateNetworkUptime.about.whatDoesItTrack.title')}
             </h2>
             <p>
-              Our Uptime Monitor will track three crucial components of affiliate networks: Homepage, API, and Tracking URLs. We will continuously check these elements to ensure your affiliate operations run smoothly once the system is fully implemented.
+              {t('tools.affiliateNetworkUptime.about.whatDoesItTrack.description')}
             </p>
             <h2 className="mt-4 text-xl font-bold tracking-tight text-[#6ca979] pt-5 sm:text-2xl">
-              What do the colored bars represent?
+              {t('tools.affiliateNetworkUptime.about.coloredBars.title')}
             </h2>
             <p>
-              Green bars indicate optimal performance (99.9% uptime or higher), orange bars show potential issues (97-99.8% uptime), and red bars signal critical problems (below 97% uptime). These visual cues help you quickly assess the health of your affiliate networks.
+              {t('tools.affiliateNetworkUptime.about.coloredBars.description')}
             </p>
             <h2 className="mt-4 text-xl font-bold tracking-tight text-[#6ca979] pt-5 sm:text-2xl">
-              What does 99.999% uptime mean?
+              {t('tools.affiliateNetworkUptime.about.fiveNines.title')}
             </h2>
             <p>
-              99.999% uptime, often called &ldquo;five nines,&rdquo; means the service is available 99.999% of the time. This translates to only 5.26 minutes of downtime per year, indicating exceptional reliability. For affiliate networks, this level of uptime is crucial to maximize earnings and maintain user trust.
+              {t('tools.affiliateNetworkUptime.about.fiveNines.description')}
             </p>
             <h2 className="mt-4 text-xl font-bold tracking-tight text-[#6ca979] pt-5 sm:text-2xl">
-              How often do we check for uptime?
+              {t('tools.affiliateNetworkUptime.about.checkFrequency.title')}
             </h2>
             <p>
-              Once fully implemented, we will perform checks every 5 minutes, providing near real-time monitoring of your affiliate network&apos;s performance. This frequent monitoring will allow for quick detection and response to any issues that may arise.
+              {t('tools.affiliateNetworkUptime.about.checkFrequency.description')}
             </p>
             <h2 className="mt-4 text-xl font-bold tracking-tight text-[#6ca979] pt-5 sm:text-2xl">
-              What actions should I take if downtime is detected?
+              {t('tools.affiliateNetworkUptime.about.downtimeActions.title')}
             </h2>
             <p>
-              When the monitoring system is active and significant downtime is detected, we recommend: 1) Verifying the issue on your end, 2) Contacting the affiliate network&apos;s support team, 3) Temporarily pausing any active campaigns, and 4) Keeping your affiliates informed about the situation. Our system will also provide automated alerts to help you respond quickly to any disruptions.
+              {t('tools.affiliateNetworkUptime.about.downtimeActions.description')}
             </p>
           </div>
         </div>

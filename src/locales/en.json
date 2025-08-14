@@ -35,8 +35,7 @@
       },
       "affiliateNetworkUptime": {
         "title": "Affiliate Network Uptime Monitor | Real-time Status Tracking | Affensus",
-        "description": "Monitor affiliate network uptime in real-time. Track homepage, API, and tracking URL status across major affiliate networks. Get instant alerts for downtime.",
-        "keywords": "affiliate network uptime, network monitoring, affiliate tracking, uptime monitor, affiliate network status"
+        "description": "Monitor affiliate network uptime in real-time. Track homepage, API, and tracking URL status across major affiliate networks. Get instant alerts for downtime."
       }
     },
     "auth": {
@@ -74,6 +73,10 @@
       "affiliateEarningsCalculator": {
         "title": "Affiliate Earnings Calculator",
         "description": "Estimate your potential affiliate earnings"
+      },
+      "affiliateNetworkUptime": {
+        "title": "Affiliate Network Uptime",
+        "description": "Monitor affiliate network uptime and availability in real-time"
       }
     }
   },
@@ -815,6 +818,56 @@
         "whyUse": {
           "title": "Why use QR codes for referrals?",
           "description": "QR codes provide a quick and easy way for people to access your referral links, especially in physical or offline contexts. They can be added to business cards, flyers, posters, or any other marketing material, bridging the gap between offline and online marketing efforts."
+        }
+      }
+    },
+    "affiliateNetworkUptime": {
+      "title": "Network Uptime Reporting",
+      "description": "We monitor affiliate networks every 5 minutes, ensuring the homepage, API, and key tracking links are operational.",
+      "learnMore": "Learn more about this tool",
+      "searchPlaceholder": "Search Networks...",
+      "sortOptions": {
+        "default": "Default",
+        "uptime": "Highest Uptime",
+        "down": "Currently Down",
+        "highestDowntime": "Highest Downtime"
+      },
+      "status": {
+        "allSystemsOperational": "All Systems Operational",
+        "someSystemsDegraded": "Some Systems Degraded",
+        "uptime": "Uptime",
+        "combinedUptime": "Combined Uptime",
+        "realTimeHeartbeats": "Real-time Heartbeats (Last 7 days)",
+        "averageResponseTime": "Average Response Time",
+        "uptimeLabel": "Uptime",
+        "avgResponseTime": "Avg Response Time"
+      },
+      "messages": {
+        "noDataAvailable": "No uptime data available at the moment.",
+        "configuring": "Uptime monitoring is being configured and will be available soon.",
+        "error": "An error occurred while processing your request."
+      },
+      "about": {
+        "title": "Affiliate Network Uptime Monitor",
+        "whatDoesItTrack": {
+          "title": "What does our Uptime Monitor track?",
+          "description": "Our Uptime Monitor tracks three crucial components of affiliate networks: Homepage, API, and Tracking URLs. We continuously check these elements every 5 minutes to ensure your affiliate operations run smoothly."
+        },
+        "coloredBars": {
+          "title": "What do the colored bars represent?",
+          "description": "Green bars indicate optimal performance (99.9% uptime or higher), orange bars show potential issues (97-99.8% uptime), and red bars signal critical problems (below 97% uptime). The heartbeat bars show real-time status updates from our monitoring system."
+        },
+        "fiveNines": {
+          "title": "What does 99.999% uptime mean?",
+          "description": "99.999% uptime, often called \"five nines,\" means the service is available 99.999% of the time. This translates to only 5.26 minutes of downtime per year, indicating exceptional reliability. For affiliate networks, this level of uptime is crucial to maximize earnings and maintain user trust."
+        },
+        "checkFrequency": {
+          "title": "How often do we check for uptime?",
+          "description": "We perform checks every 5 minutes, providing near real-time monitoring of your affiliate network's performance. This frequent monitoring allows for quick detection and response to any issues that may arise."
+        },
+        "downtimeActions": {
+          "title": "What actions should I take if downtime is detected?",
+          "description": "When significant downtime is detected, we recommend: 1) Verifying the issue on your end, 2) Contacting the affiliate network's support team, 3) Temporarily pausing any active campaigns, and 4) Keeping your affiliates informed about the situation. Our system provides automated alerts to help you respond quickly to any disruptions."
         }
       }
     }

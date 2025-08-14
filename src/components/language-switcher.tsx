@@ -27,16 +27,11 @@ export default function LanguageSwitcher() {
         <Link
           key={key}
           href={getLocalizedPath(key)}
-          className={`px-3 py-2 rounded-md text-sm font-medium transition-colors border ${
+          className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
             currentLocale === key
-              ? 'text-white'
-              : 'hover:bg-gray-100'
+              ? 'bg-blue-600 text-white'
+              : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
           }`}
-          style={{
-            backgroundColor: currentLocale === key ? '#6ca979' : 'transparent',
-            color: currentLocale === key ? 'white' : '#6ca979',
-            borderColor: '#6ca979'
-          }}
         >
           <span className="mr-2">{locale.flag}</span>
           {locale.label}
