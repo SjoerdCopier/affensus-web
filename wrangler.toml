@@ -8,6 +8,14 @@ output_directory = "out"
 [env.production]
 name = "affensus-web"
 
+[env.production.vars]
+# Add your production environment variables here
+# UPTIME_KUMA_URL = "https://your-uptime-kuma-domain.com"
+
 [env.staging]
 name = "affensus-web-staging"
+
+[env.staging.vars]
+# Add your staging environment variables here  
+# UPTIME_KUMA_URL = "https://your-staging-uptime-kuma-domain.com"
 

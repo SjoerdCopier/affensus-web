@@ -1,5 +1,6 @@
 export interface Env {
   UPTIME_KUMA_SECRET: string;
+  UPTIME_KUMA_URL?: string;
 }
 
 interface UptimeKumaMonitor {
@@ -87,7 +88,7 @@ export async function onRequestGet(context: { env: Env, request: Request }): Pro
       // Test the status page fetching for a specific network
       const testNetwork = 'daisycon';
       console.log(`Testing status page for ${testNetwork}`);
-      const testData = await fetchStatusPageData(testNetwork);
+      const testData = await fetchStatusPageData(testNetwork, env.UPTIME_KUMA_URL);
       return new Response(JSON.stringify({ 
         message: 'Test mode enabled',
         testNetwork,
@@ -104,7 +105,7 @@ export async function onRequestGet(context: { env: Env, request: Request }): Pro
         secret_configured: !!uptimeKumaSecret,
         secret_length: uptimeKumaSecret.length,
         endpoints_to_try: [
-          'http://152.42.135.243:3001/metrics'
+          `${env.UPTIME_KUMA_URL || 'http://152.42.135.243:3001'}/metrics`
         ]
       }), {
         headers: { 'Content-Type': 'application/json' }
@@ -117,7 +118,7 @@ export async function onRequestGet(context: { env: Env, request: Request }): Pro
 
     // First try the metrics endpoint with Basic Auth
     try {
-      const monitorsResponse = await fetch(`http://152.42.135.243:3001/metrics`, {
+      const monitorsResponse = await fetch(`${env.UPTIME_KUMA_URL || 'http://152.42.135.243:3001'}/metrics`, {
         headers: {
           'Authorization': `Basic ${btoa(':' + uptimeKumaSecret)}`,
           'Accept': 'text/plain'
@@ -142,8 +143,25 @@ export async function onRequestGet(context: { env: Env, request: Request }): Pro
     }
 
     if (!success) {
-      console.log('All API attempts failed');
-      return new Response(JSON.stringify({ error: 'Unable to fetch data from Uptime Kuma - no real data available' }), {
+      console.log('All API attempts failed - providing fallback response');
+      
+      // Check if we're in Cloudflare environment and the issue is network access
+      const isCloudflareEnv = typeof caches !== 'undefined';
+      const usingPrivateIp = !env.UPTIME_KUMA_URL && isCloudflareEnv;
+      
+      let errorMessage = 'Unable to fetch data from Uptime Kuma';
+      if (usingPrivateIp) {
+        errorMessage += ' - Private IP access blocked in production. Please configure UPTIME_KUMA_URL environment variable with a public domain.';
+      }
+      
+      return new Response(JSON.stringify({ 
+        error: errorMessage,
+        debug: {
+          environment: isCloudflareEnv ? 'cloudflare' : 'local',
+          hasPublicUrl: !!env.UPTIME_KUMA_URL,
+          suggestedAction: usingPrivateIp ? 'Configure UPTIME_KUMA_URL environment variable' : 'Check network connectivity'
+        }
+      }), {
         status: 503,
         headers: {
           'Content-Type': 'application/json',
@@ -155,7 +173,7 @@ export async function onRequestGet(context: { env: Env, request: Request }): Pro
     }
 
     // Process the Prometheus metrics to match our expected format
-    const processedDomains = await processPrometheusMetrics(metricsText);
+    const processedDomains = await processPrometheusMetrics(metricsText, env.UPTIME_KUMA_URL);
 
     return new Response(JSON.stringify(processedDomains), {
       headers: {
@@ -193,9 +211,9 @@ export async function onRequestOptions(): Promise<Response> {
   });
 }
 
-async function fetchStatusPageData(networkName: string): Promise<StatusPageResponse | null> {
+async function fetchStatusPageData(networkName: string, uptimeKumaUrl?: string): Promise<StatusPageResponse | null> {
   try {
-    const url = `http://152.42.135.243:3001/api/status-page/heartbeat/${networkName}?limit=10080`;
+    const url = `${uptimeKumaUrl || 'http://152.42.135.243:3001'}/api/status-page/heartbeat/${networkName}?limit=10080`;
     console.log(`Fetching status page from: ${url}`);
     
     const response = await fetch(url);
@@ -221,7 +239,7 @@ async function fetchStatusPageData(networkName: string): Promise<StatusPageRespo
   }
 }
 
-async function processPrometheusMetrics(metricsText: string): Promise<Domain[]> {
+async function processPrometheusMetrics(metricsText: string, uptimeKumaUrl?: string): Promise<Domain[]> {
   const domains: Map<string, Domain> = new Map();
   const lines = metricsText.split('\n');
 
@@ -311,7 +329,7 @@ async function processPrometheusMetrics(metricsText: string): Promise<Domain[]> 
     const networkName = domain.domain;
     console.log(`Checking status page for network: ${networkName}`);
     
-    const statusPageData = await fetchStatusPageData(networkName);
+    const statusPageData = await fetchStatusPageData(networkName, uptimeKumaUrl);
     
     if (statusPageData && statusPageData.heartbeatList && Object.keys(statusPageData.heartbeatList).length > 0) {
       console.log(`Status page found for ${networkName}, heartbeats:`, Object.keys(statusPageData.heartbeatList).length);
