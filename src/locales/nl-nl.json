@@ -673,7 +673,7 @@
     },
     "affiliateNetworkUptime": {
       "title": "Netwerk Uptime Rapportage",
-      "description": "We monitoren affiliate netwerken elke 5 minuten om ervoor te zorgen dat de homepage, API en belangrijke tracking links operationeel zijn.",
+      "description": "We monitoren affiliate netwerken elke 1 minuut om ervoor te zorgen dat de belangrijke tracking links operationeel zijn.",
       "learnMore": "Lees meer over deze tool",
       "searchPlaceholder": "Zoek Netwerken...",
       "sortOptions": {
@@ -686,7 +686,7 @@
         "allSystemsOperational": "Alle Systemen Operationeel",
         "someSystemsDegraded": "Sommige Systemen Gedegradeerd",
         "uptime": "Uptime",
-        "combinedUptime": "Gecombineerde Uptime",
+
         "realTimeHeartbeats": "Real-time Heartbeats (Laatste 7 dagen)",
         "averageResponseTime": "Gemiddelde Reactietijd",
         "uptimeLabel": "Uptime",
@@ -701,7 +701,7 @@
         "title": "Affiliate Netwerk Uptime Monitor",
         "whatDoesItTrack": {
           "title": "Wat monitort onze Uptime Monitor?",
-          "description": "Onze Uptime Monitor volgt drie cruciale componenten van affiliate netwerken: Homepage, API en Tracking URLs. We controleren deze elementen continu elke 5 minuten om ervoor te zorgen dat je affiliate operaties soepel verlopen."
+          "description": "Onze Uptime Monitor volgt de cruciale tracking links van affiliate netwerken. We controleren deze elementen continu elke 1 minuut om ervoor te zorgen dat je affiliate operaties soepel verlopen."
         },
         "coloredBars": {
           "title": "Wat vertegenwoordigen de gekleurde balken?",
@@ -713,7 +713,7 @@
         },
         "checkFrequency": {
           "title": "Hoe vaak controleren we op uptime?",
-          "description": "We voeren controles uit elke 5 minuten, wat bijna real-time monitoring van je affiliate netwerk prestaties biedt. Deze frequente monitoring zorgt voor snelle detectie en reactie op eventuele problemen die zich kunnen voordoen."
+          "description": "We voeren controles uit elke 1 minuut, wat bijna real-time monitoring van je affiliate netwerk prestaties biedt. Deze frequente monitoring zorgt voor snelle detectie en reactie op eventuele problemen die zich kunnen voordoen."
         },
         "downtimeActions": {
           "title": "Welke acties moet ik ondernemen als downtime wordt gedetecteerd?",

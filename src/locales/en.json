@@ -823,7 +823,7 @@
     },
     "affiliateNetworkUptime": {
       "title": "Network Uptime Reporting",
-      "description": "We monitor affiliate networks every 5 minutes, ensuring the homepage, API, and key tracking links are operational.",
+      "description": "We monitor affiliate networks every 1 minute, ensuring the key tracking links are operational.",
       "learnMore": "Learn more about this tool",
       "searchPlaceholder": "Search Networks...",
       "sortOptions": {
@@ -836,7 +836,7 @@
         "allSystemsOperational": "All Systems Operational",
         "someSystemsDegraded": "Some Systems Degraded",
         "uptime": "Uptime",
-        "combinedUptime": "Combined Uptime",
+
         "realTimeHeartbeats": "Real-time Heartbeats (Last 7 days)",
         "averageResponseTime": "Average Response Time",
         "uptimeLabel": "Uptime",
@@ -851,7 +851,7 @@
         "title": "Affiliate Network Uptime Monitor",
         "whatDoesItTrack": {
           "title": "What does our Uptime Monitor track?",
-          "description": "Our Uptime Monitor tracks three crucial components of affiliate networks: Homepage, API, and Tracking URLs. We continuously check these elements every 5 minutes to ensure your affiliate operations run smoothly."
+          "description": "Our Uptime Monitor tracks the crucial tracking links of affiliate networks. We continuously check these elements every 1 minute to ensure your affiliate operations run smoothly."
         },
         "coloredBars": {
           "title": "What do the colored bars represent?",
@@ -863,7 +863,7 @@
         },
         "checkFrequency": {
           "title": "How often do we check for uptime?",
-          "description": "We perform checks every 5 minutes, providing near real-time monitoring of your affiliate network's performance. This frequent monitoring allows for quick detection and response to any issues that may arise."
+          "description": "We perform checks every 1 minute, providing near real-time monitoring of your affiliate network's performance. This frequent monitoring allows for quick detection and response to any issues that may arise."
         },
         "downtimeActions": {
           "title": "What actions should I take if downtime is detected?",

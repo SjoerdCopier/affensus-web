@@ -1,8 +1,15 @@
 var __defProp = Object.defineProperty;
+var __getOwnPropNames = Object.getOwnPropertyNames;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
+var __esm = (fn, res) => function __init() {
+  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+};
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
 
-// .wrangler/tmp/bundle-SOKjpu/checked-fetch.js
-var urls = /* @__PURE__ */ new Set();
+// ../.wrangler/tmp/bundle-4BsSZr/checked-fetch.js
 function checkURL(request, init) {
   const url = request instanceof URL ? request : new URL(
     (typeof request === "string" ? new Request(request, init) : request).url
@@ -18,60 +25,26 @@ function checkURL(request, init) {
     }
   }
 }
-__name(checkURL, "checkURL");
-globalThis.fetch = new Proxy(globalThis.fetch, {
-  apply(target, thisArg, argArray) {
-    const [request, init] = argArray;
-    checkURL(request, init);
-    return Reflect.apply(target, thisArg, argArray);
-  }
-});
-
-// .wrangler/tmp/pages-lJFpzp/functionsWorker-0.19667948849676842.mjs
-var __defProp2 = Object.defineProperty;
-var __getOwnPropNames = Object.getOwnPropertyNames;
-var __name2 = /* @__PURE__ */ __name((target, value) => __defProp2(target, "name", { value, configurable: true }), "__name");
-var __esm = /* @__PURE__ */ __name((fn, res) => /* @__PURE__ */ __name(function __init() {
-  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
-}, "__init"), "__esm");
-var __export = /* @__PURE__ */ __name((target, all) => {
-  for (var name in all)
-    __defProp2(target, name, { get: all[name], enumerable: true });
-}, "__export");
-function checkURL2(request, init) {
-  const url = request instanceof URL ? request : new URL(
-    (typeof request === "string" ? new Request(request, init) : request).url
-  );
-  if (url.port && url.port !== "443" && url.protocol === "https:") {
-    if (!urls2.has(url.toString())) {
-      urls2.add(url.toString());
-      console.warn(
-        `WARNING: known issue with \`fetch()\` requests to custom HTTPS ports in published Workers:
- - ${url.toString()} - the custom port will be ignored when the Worker is published using the \`wrangler deploy\` command.
-`
-      );
-    }
-  }
-}
-__name(checkURL2, "checkURL");
-var urls2;
+var urls;
 var init_checked_fetch = __esm({
-  "../.wrangler/tmp/bundle-wemBOa/checked-fetch.js"() {
+  "../.wrangler/tmp/bundle-4BsSZr/checked-fetch.js"() {
     "use strict";
-    urls2 = /* @__PURE__ */ new Set();
-    __name2(checkURL2, "checkURL");
+    urls = /* @__PURE__ */ new Set();
+    __name(checkURL, "checkURL");
     globalThis.fetch = new Proxy(globalThis.fetch, {
       apply(target, thisArg, argArray) {
         const [request, init] = argArray;
-        checkURL2(request, init);
+        checkURL(request, init);
         return Reflect.apply(target, thisArg, argArray);
       }
     });
   }
 });
+
+// api/auth/shared/email-notifications.ts
 var email_notifications_exports = {};
 __export(email_notifications_exports, {
-  sendNewUserNotification: /* @__PURE__ */ __name(() => sendNewUserNotification, "sendNewUserNotification")
+  sendNewUserNotification: () => sendNewUserNotification
 });
 async function sendNewUserNotification(userEmail, loginMethod, resendApiKey) {
   const response = await fetch("https://api.resend.com/emails", {
@@ -132,15 +105,16 @@ This is an automated notification from MorseXpress.
   console.log("New user notification sent successfully:", result);
   return true;
 }
-__name(sendNewUserNotification, "sendNewUserNotification");
 var init_email_notifications = __esm({
   "api/auth/shared/email-notifications.ts"() {
     "use strict";
-    init_functionsRoutes_0_677495202222103();
+    init_functionsRoutes_0_7046503546124637();
     init_checked_fetch();
-    __name2(sendNewUserNotification, "sendNewUserNotification");
+    __name(sendNewUserNotification, "sendNewUserNotification");
   }
 });
+
+// api/auth/facebook/callback.ts
 function parseCookies(cookieHeader) {
   const cookies = {};
   if (!cookieHeader) return cookies;
@@ -152,7 +126,6 @@ function parseCookies(cookieHeader) {
   });
   return cookies;
 }
-__name(parseCookies, "parseCookies");
 async function signJwt(payload, secret, expiresIn) {
   const header = { alg: "HS256", typ: "JWT" };
   const now = Math.floor(Date.now() / 1e3);
@@ -176,7 +149,6 @@ async function signJwt(payload, secret, expiresIn) {
   const signatureB64 = btoa(String.fromCharCode(...new Uint8Array(signatureArrayBuffer))).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
   return `${headerB64}.${payloadB64}.${signatureB64}`;
 }
-__name(signJwt, "signJwt");
 async function onRequestGet(context) {
   try {
     const { request, env } = context;
@@ -252,7 +224,7 @@ async function onRequestGet(context) {
         headers: { "Location": `${env.SITE_URL || "http://localhost:3000"}/auth?error=database_not_available` }
       });
     }
-    const createUser = /* @__PURE__ */ __name2(async (db2, email, loginMethod = "facebook") => {
+    const createUser = /* @__PURE__ */ __name(async (db2, email, loginMethod = "facebook") => {
       const stmt = db2.prepare(`
         INSERT OR IGNORE INTO users (email, preferred_login_method, created_at, updated_at)
         VALUES (?, ?, datetime('now'), datetime('now'))
@@ -262,7 +234,7 @@ async function onRequestGet(context) {
       const isNewUser2 = result.changes > 0;
       return { user: user2, isNewUser: isNewUser2 };
     }, "createUser");
-    const updatePreferredLoginMethod = /* @__PURE__ */ __name2(async (db2, email, method) => {
+    const updatePreferredLoginMethod = /* @__PURE__ */ __name(async (db2, email, method) => {
       await db2.prepare(`
         UPDATE users 
         SET preferred_login_method = ?, updated_at = datetime('now')
@@ -336,17 +308,18 @@ async function onRequestGet(context) {
     });
   }
 }
-__name(onRequestGet, "onRequestGet");
 var init_callback = __esm({
   "api/auth/facebook/callback.ts"() {
     "use strict";
-    init_functionsRoutes_0_677495202222103();
+    init_functionsRoutes_0_7046503546124637();
     init_checked_fetch();
-    __name2(parseCookies, "parseCookies");
-    __name2(signJwt, "signJwt");
-    __name2(onRequestGet, "onRequestGet");
+    __name(parseCookies, "parseCookies");
+    __name(signJwt, "signJwt");
+    __name(onRequestGet, "onRequestGet");
   }
 });
+
+// api/auth/github/callback.ts
 function parseCookies2(cookieHeader) {
   const cookies = {};
   if (!cookieHeader) return cookies;
@@ -358,7 +331,6 @@ function parseCookies2(cookieHeader) {
   });
   return cookies;
 }
-__name(parseCookies2, "parseCookies2");
 async function signJwt2(payload, secret, expiresIn) {
   const header = { alg: "HS256", typ: "JWT" };
   const now = Math.floor(Date.now() / 1e3);
@@ -382,7 +354,6 @@ async function signJwt2(payload, secret, expiresIn) {
   const signatureB64 = btoa(String.fromCharCode(...new Uint8Array(signatureArrayBuffer))).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
   return `${headerB64}.${payloadB64}.${signatureB64}`;
 }
-__name(signJwt2, "signJwt2");
 async function processPendingPayments(db, email, userId, stripeSecretKey) {
   try {
     const pendingPayments = await db.prepare(`
@@ -451,7 +422,6 @@ async function processPendingPayments(db, email, userId, stripeSecretKey) {
     console.error("Error checking for pending payments:", error);
   }
 }
-__name(processPendingPayments, "processPendingPayments");
 async function onRequestGet2(context) {
   try {
     const { request, env } = context;
@@ -561,7 +531,7 @@ async function onRequestGet2(context) {
         headers: { "Location": `${env.SITE_URL || "http://localhost:3000"}/auth?error=database_not_available` }
       });
     }
-    const createUser = /* @__PURE__ */ __name2(async (db2, email, loginMethod = "github") => {
+    const createUser = /* @__PURE__ */ __name(async (db2, email, loginMethod = "github") => {
       const stmt = db2.prepare(`
         INSERT OR IGNORE INTO users (email, preferred_login_method, created_at, updated_at)
         VALUES (?, ?, datetime('now'), datetime('now'))
@@ -571,7 +541,7 @@ async function onRequestGet2(context) {
       const isNewUser2 = result.changes > 0;
       return { user: user2, isNewUser: isNewUser2 };
     }, "createUser");
-    const updatePreferredLoginMethod = /* @__PURE__ */ __name2(async (db2, email, method) => {
+    const updatePreferredLoginMethod = /* @__PURE__ */ __name(async (db2, email, method) => {
       await db2.prepare(`
         UPDATE users 
         SET preferred_login_method = ?, updated_at = datetime('now')
@@ -646,18 +616,19 @@ async function onRequestGet2(context) {
     });
   }
 }
-__name(onRequestGet2, "onRequestGet2");
 var init_callback2 = __esm({
   "api/auth/github/callback.ts"() {
     "use strict";
-    init_functionsRoutes_0_677495202222103();
+    init_functionsRoutes_0_7046503546124637();
     init_checked_fetch();
-    __name2(parseCookies2, "parseCookies");
-    __name2(signJwt2, "signJwt");
-    __name2(processPendingPayments, "processPendingPayments");
-    __name2(onRequestGet2, "onRequestGet");
+    __name(parseCookies2, "parseCookies");
+    __name(signJwt2, "signJwt");
+    __name(processPendingPayments, "processPendingPayments");
+    __name(onRequestGet2, "onRequestGet");
   }
 });
+
+// api/auth/google/callback.ts
 function parseCookies3(cookieHeader) {
   const cookies = {};
   if (!cookieHeader) return cookies;
@@ -669,7 +640,6 @@ function parseCookies3(cookieHeader) {
   });
   return cookies;
 }
-__name(parseCookies3, "parseCookies3");
 async function signJwt3(payload, secret, expiresIn) {
   const header = { alg: "HS256", typ: "JWT" };
   const now = Math.floor(Date.now() / 1e3);
@@ -693,7 +663,6 @@ async function signJwt3(payload, secret, expiresIn) {
   const signatureB64 = btoa(String.fromCharCode(...new Uint8Array(signatureArrayBuffer))).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
   return `${headerB64}.${payloadB64}.${signatureB64}`;
 }
-__name(signJwt3, "signJwt3");
 async function processPendingPayments2(db, email, userId, stripeSecretKey) {
   try {
     const pendingPayments = await db.prepare(`
@@ -762,7 +731,6 @@ async function processPendingPayments2(db, email, userId, stripeSecretKey) {
     console.error("Error checking for pending payments:", error);
   }
 }
-__name(processPendingPayments2, "processPendingPayments2");
 async function onRequestGet3(context) {
   try {
     const { request, env } = context;
@@ -850,7 +818,7 @@ async function onRequestGet3(context) {
         headers: { "Location": `${env.SITE_URL || "http://localhost:3000"}/auth?error=database_not_available` }
       });
     }
-    const createUser = /* @__PURE__ */ __name2(async (db2, email, loginMethod = "google") => {
+    const createUser = /* @__PURE__ */ __name(async (db2, email, loginMethod = "google") => {
       const stmt = db2.prepare(`
         INSERT OR IGNORE INTO users (email, preferred_login_method, created_at, updated_at)
         VALUES (?, ?, datetime('now'), datetime('now'))
@@ -860,7 +828,7 @@ async function onRequestGet3(context) {
       const isNewUser2 = result.changes > 0;
       return { user: user2, isNewUser: isNewUser2 };
     }, "createUser");
-    const updatePreferredLoginMethod = /* @__PURE__ */ __name2(async (db2, email, method) => {
+    const updatePreferredLoginMethod = /* @__PURE__ */ __name(async (db2, email, method) => {
       await db2.prepare(`
         UPDATE users 
         SET preferred_login_method = ?, updated_at = datetime('now')
@@ -965,18 +933,19 @@ async function onRequestGet3(context) {
     });
   }
 }
-__name(onRequestGet3, "onRequestGet3");
 var init_callback3 = __esm({
   "api/auth/google/callback.ts"() {
     "use strict";
-    init_functionsRoutes_0_677495202222103();
+    init_functionsRoutes_0_7046503546124637();
     init_checked_fetch();
-    __name2(parseCookies3, "parseCookies");
-    __name2(signJwt3, "signJwt");
-    __name2(processPendingPayments2, "processPendingPayments");
-    __name2(onRequestGet3, "onRequestGet");
+    __name(parseCookies3, "parseCookies");
+    __name(signJwt3, "signJwt");
+    __name(processPendingPayments2, "processPendingPayments");
+    __name(onRequestGet3, "onRequestGet");
   }
 });
+
+// api/auth/facebook/index.ts
 async function onRequestGet4(context) {
   try {
     const { request, env } = context;
@@ -1007,21 +976,21 @@ async function onRequestGet4(context) {
     });
   }
 }
-__name(onRequestGet4, "onRequestGet4");
 var init_facebook = __esm({
   "api/auth/facebook/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_677495202222103();
+    init_functionsRoutes_0_7046503546124637();
     init_checked_fetch();
-    __name2(onRequestGet4, "onRequestGet");
+    __name(onRequestGet4, "onRequestGet");
   }
 });
+
+// api/auth/github/index.ts
 function generateState() {
   const array = new Uint8Array(32);
   crypto.getRandomValues(array);
   return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
-__name(generateState, "generateState");
 async function onRequestGet5(context) {
   try {
     const { env } = context;
@@ -1050,16 +1019,17 @@ async function onRequestGet5(context) {
     });
   }
 }
-__name(onRequestGet5, "onRequestGet5");
 var init_github = __esm({
   "api/auth/github/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_677495202222103();
+    init_functionsRoutes_0_7046503546124637();
     init_checked_fetch();
-    __name2(generateState, "generateState");
-    __name2(onRequestGet5, "onRequestGet");
+    __name(generateState, "generateState");
+    __name(onRequestGet5, "onRequestGet");
   }
 });
+
+// api/auth/google/index.ts
 async function onRequestGet6(context) {
   try {
     const { request, env } = context;
@@ -1090,15 +1060,16 @@ async function onRequestGet6(context) {
     });
   }
 }
-__name(onRequestGet6, "onRequestGet6");
 var init_google = __esm({
   "api/auth/google/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_677495202222103();
+    init_functionsRoutes_0_7046503546124637();
     init_checked_fetch();
-    __name2(onRequestGet6, "onRequestGet");
+    __name(onRequestGet6, "onRequestGet");
   }
 });
+
+// api/tools/affiliate-link-checker.ts
 async function onRequestPost(context) {
   try {
     const body = await context.request.json();
@@ -1316,12 +1287,11 @@ async function onRequestPost(context) {
     });
   }
 }
-__name(onRequestPost, "onRequestPost");
 var regexPatterns;
 var init_affiliate_link_checker = __esm({
   "api/tools/affiliate-link-checker.ts"() {
     "use strict";
-    init_functionsRoutes_0_677495202222103();
+    init_functionsRoutes_0_7046503546124637();
     init_checked_fetch();
     regexPatterns = [
       { name: "Daisycon", pattern: /c\/\?si=(\d+)|ds1\.nl\/c\/.*?si=(\d+)|lt45\.net\/c\/.*?si=(\d+)|\/csd\/\?si=(\d+)&li=(\d+)&wi=(\d+)|jf79\.net\/c\/.*?si=(\d+)/, matches: [], networkId: 1 },
@@ -1388,44 +1358,18 @@ var init_affiliate_link_checker = __esm({
       { name: "DigiDum", pattern: /digidum/, matches: [], networkId: 986 },
       { name: "AdIndex", pattern: /adindex/, matches: [], networkId: 985 }
     ];
-    __name2(onRequestPost, "onRequestPost");
+    __name(onRequestPost, "onRequestPost");
   }
 });
+
+// api/tools/affiliate-network-uptime.ts
 async function onRequestGet7(context) {
   try {
-    const { env, request } = context;
-    const url = new URL(request.url);
-    const debug = url.searchParams.get("debug") === "true";
-    const test = url.searchParams.get("test") === "true";
+    const { env } = context;
     const uptimeKumaSecret = env.UPTIME_KUMA_SECRET;
     if (!uptimeKumaSecret) {
       return new Response(JSON.stringify({ error: "Uptime Kuma secret not configured" }), {
         status: 500,
-        headers: { "Content-Type": "application/json" }
-      });
-    }
-    if (test) {
-      const testNetwork = "daisycon";
-      console.log(`Testing status page for ${testNetwork}`);
-      const testData = await fetchStatusPageData(testNetwork, env.UPTIME_KUMA_URL);
-      return new Response(JSON.stringify({
-        message: "Test mode enabled",
-        testNetwork,
-        statusPageData: testData,
-        heartbeatCount: testData?.heartbeatList ? Object.values(testData.heartbeatList).reduce((sum, arr) => sum + (Array.isArray(arr) ? arr.length : 0), 0) : 0
-      }), {
-        headers: { "Content-Type": "application/json" }
-      });
-    }
-    if (debug) {
-      return new Response(JSON.stringify({
-        message: "Debug mode enabled",
-        secret_configured: !!uptimeKumaSecret,
-        secret_length: uptimeKumaSecret.length,
-        endpoints_to_try: [
-          `${env.UPTIME_KUMA_URL || "http://152.42.135.243:3001"}/metrics`
-        ]
-      }), {
         headers: { "Content-Type": "application/json" }
       });
     }
@@ -1499,7 +1443,6 @@ async function onRequestGet7(context) {
     });
   }
 }
-__name(onRequestGet7, "onRequestGet7");
 async function onRequestOptions() {
   return new Response(null, {
     status: 200,
@@ -1510,7 +1453,17 @@ async function onRequestOptions() {
     }
   });
 }
-__name(onRequestOptions, "onRequestOptions");
+function formatNetworkDisplayName(networkName) {
+  const nameMappings = {
+    "involveasia": "Involve Asia",
+    "partnerads": "Partner Ads",
+    "retailads": "Retail Ads",
+    "smartresponse": "Smart Response",
+    "takeads": "Take Ads"
+  };
+  const normalizedName = networkName.toLowerCase().replace(/[^a-z0-9]/g, "");
+  return nameMappings[normalizedName] || networkName;
+}
 async function fetchStatusPageData(networkName, uptimeKumaUrl) {
   try {
     const url = `${uptimeKumaUrl || "http://152.42.135.243:3001"}/api/status-page/heartbeat/${networkName}?limit=10080`;
@@ -1533,7 +1486,6 @@ async function fetchStatusPageData(networkName, uptimeKumaUrl) {
     return null;
   }
 }
-__name(fetchStatusPageData, "fetchStatusPageData");
 async function processPrometheusMetrics(metricsText, uptimeKumaUrl) {
   const domains = /* @__PURE__ */ new Map();
   const lines = metricsText.split("\n");
@@ -1562,10 +1514,11 @@ async function processPrometheusMetrics(metricsText, uptimeKumaUrl) {
     monitor.metrics[metricName] = parseFloat(value);
   }
   for (const monitor of monitors.values()) {
-    const domain = extractDomainFromMonitor(monitor.name);
+    const domain = monitor.name.toLowerCase().replace(/[^a-z0-9]/g, "");
     if (!domains.has(domain)) {
       domains.set(domain, {
         domain,
+        displayName: formatNetworkDisplayName(monitor.name),
         avg_uptime_percentage: 0,
         urls: [],
         day_uptime: [],
@@ -1643,76 +1596,23 @@ async function processPrometheusMetrics(metricsText, uptimeKumaUrl) {
   });
   return domainsWithStatusPages;
 }
-__name(processPrometheusMetrics, "processPrometheusMetrics");
-function extractDomainFromMonitor(monitorName) {
-  const parts = monitorName.split(" - ");
-  if (parts.length > 0) {
-    let networkName = parts[0].toLowerCase().replace(/[^a-z0-9]/g, "");
-    if (networkName === "daisycon") return "daisycon";
-    if (networkName === "awin") return "awin";
-    if (networkName === "cj") return "cj";
-    if (networkName === "rakuten") return "rakuten";
-    if (networkName === "impact") return "impact";
-    if (networkName === "skimlinks") return "skimlinks";
-    if (networkName === "shareasale") return "shareasale";
-    if (networkName === "tradedoubler") return "tradedoubler";
-    if (networkName === "webgains") return "webgains";
-    if (networkName === "yieldkit") return "yieldkit";
-    if (networkName === "admitad") return "admitad";
-    if (networkName === "adtraction") return "adtraction";
-    if (networkName === "affilae") return "affilae";
-    if (networkName === "belboon") return "belboon";
-    if (networkName === "brandreward") return "brandreward";
-    if (networkName === "chinesean") return "chinesean";
-    if (networkName === "circlewise") return "circlewise";
-    if (networkName === "commissionfactory") return "commissionfactory";
-    if (networkName === "cuelinks") return "cuelinks";
-    if (networkName === "digidip") return "digidip";
-    if (networkName === "effiliation") return "effiliation";
-    if (networkName === "flexoffers") return "flexoffers";
-    if (networkName === "glopss") return "glopss";
-    if (networkName === "indoleads") return "indoleads";
-    if (networkName === "involveasia") return "involveasia";
-    if (networkName === "kelkoo") return "kelkoo";
-    if (networkName === "kwanko") return "kwanko";
-    if (networkName === "linkbux") return "linkbux";
-    if (networkName === "mcanism") return "mcanism";
-    if (networkName === "optimise") return "optimise";
-    if (networkName === "partnerads") return "partner-ads";
-    if (networkName === "partnerboost") return "partnerboost";
-    if (networkName === "partnerize") return "partnerize";
-    if (networkName === "retailads") return "retailads";
-    if (networkName === "salestring") return "salestring";
-    if (networkName === "smartresponse") return "smartresponse";
-    if (networkName === "sourceknowledge") return "sourceknowledge";
-    if (networkName === "takeads") return "takeads";
-    if (networkName === "timeone") return "timeone";
-    if (networkName === "tradetracker") return "tradetracker";
-    if (networkName === "yadore") return "yadore";
-    if (networkName === "accesstrade") return "accesstrade";
-    if (networkName === "addrevenue") return "addrevenue";
-    if (networkName === "adrecord") return "adrecord";
-    if (networkName === "adservice") return "adservice";
-    return networkName;
-  }
-  return monitorName.toLowerCase().replace(/[^a-z0-9]/g, "");
-}
-__name(extractDomainFromMonitor, "extractDomainFromMonitor");
 var init_affiliate_network_uptime = __esm({
   "api/tools/affiliate-network-uptime.ts"() {
     "use strict";
-    init_functionsRoutes_0_677495202222103();
+    init_functionsRoutes_0_7046503546124637();
     init_checked_fetch();
-    __name2(onRequestGet7, "onRequestGet");
-    __name2(onRequestOptions, "onRequestOptions");
-    __name2(fetchStatusPageData, "fetchStatusPageData");
-    __name2(processPrometheusMetrics, "processPrometheusMetrics");
-    __name2(extractDomainFromMonitor, "extractDomainFromMonitor");
+    __name(onRequestGet7, "onRequestGet");
+    __name(onRequestOptions, "onRequestOptions");
+    __name(formatNetworkDisplayName, "formatNetworkDisplayName");
+    __name(fetchStatusPageData, "fetchStatusPageData");
+    __name(processPrometheusMetrics, "processPrometheusMetrics");
   }
 });
+
+// ../.wrangler/tmp/pages-YbHtLE/functionsRoutes-0.7046503546124637.mjs
 var routes;
-var init_functionsRoutes_0_677495202222103 = __esm({
-  "../.wrangler/tmp/pages-lJFpzp/functionsRoutes-0.677495202222103.mjs"() {
+var init_functionsRoutes_0_7046503546124637 = __esm({
+  "../.wrangler/tmp/pages-YbHtLE/functionsRoutes-0.7046503546124637.mjs"() {
     "use strict";
     init_callback();
     init_callback2();
@@ -1790,13 +1690,21 @@ var init_functionsRoutes_0_677495202222103 = __esm({
     ];
   }
 });
-init_functionsRoutes_0_677495202222103();
+
+// ../.wrangler/tmp/bundle-4BsSZr/middleware-loader.entry.ts
+init_functionsRoutes_0_7046503546124637();
 init_checked_fetch();
-init_functionsRoutes_0_677495202222103();
+
+// ../.wrangler/tmp/bundle-4BsSZr/middleware-insertion-facade.js
+init_functionsRoutes_0_7046503546124637();
 init_checked_fetch();
-init_functionsRoutes_0_677495202222103();
+
+// ../node_modules/wrangler/templates/pages-template-worker.ts
+init_functionsRoutes_0_7046503546124637();
 init_checked_fetch();
-init_functionsRoutes_0_677495202222103();
+
+// ../node_modules/path-to-regexp/dist.es2015/index.js
+init_functionsRoutes_0_7046503546124637();
 init_checked_fetch();
 function lexer(str) {
   var tokens = [];
@@ -1882,7 +1790,6 @@ function lexer(str) {
   return tokens;
 }
 __name(lexer, "lexer");
-__name2(lexer, "lexer");
 function parse(str, options) {
   if (options === void 0) {
     options = {};
@@ -1893,18 +1800,18 @@ function parse(str, options) {
   var key = 0;
   var i = 0;
   var path = "";
-  var tryConsume = /* @__PURE__ */ __name2(function(type) {
+  var tryConsume = /* @__PURE__ */ __name(function(type) {
     if (i < tokens.length && tokens[i].type === type)
       return tokens[i++].value;
   }, "tryConsume");
-  var mustConsume = /* @__PURE__ */ __name2(function(type) {
+  var mustConsume = /* @__PURE__ */ __name(function(type) {
     var value2 = tryConsume(type);
     if (value2 !== void 0)
       return value2;
     var _a2 = tokens[i], nextType = _a2.type, index = _a2.index;
     throw new TypeError("Unexpected ".concat(nextType, " at ").concat(index, ", expected ").concat(type));
   }, "mustConsume");
-  var consumeText = /* @__PURE__ */ __name2(function() {
+  var consumeText = /* @__PURE__ */ __name(function() {
     var result2 = "";
     var value2;
     while (value2 = tryConsume("CHAR") || tryConsume("ESCAPED_CHAR")) {
@@ -1912,7 +1819,7 @@ function parse(str, options) {
     }
     return result2;
   }, "consumeText");
-  var isSafe = /* @__PURE__ */ __name2(function(value2) {
+  var isSafe = /* @__PURE__ */ __name(function(value2) {
     for (var _i = 0, delimiter_1 = delimiter; _i < delimiter_1.length; _i++) {
       var char2 = delimiter_1[_i];
       if (value2.indexOf(char2) > -1)
@@ -1920,7 +1827,7 @@ function parse(str, options) {
     }
     return false;
   }, "isSafe");
-  var safePattern = /* @__PURE__ */ __name2(function(prefix2) {
+  var safePattern = /* @__PURE__ */ __name(function(prefix2) {
     var prev = result[result.length - 1];
     var prevText = prefix2 || (prev && typeof prev === "string" ? prev : "");
     if (prev && !prevText) {
@@ -1983,14 +1890,12 @@ function parse(str, options) {
   return result;
 }
 __name(parse, "parse");
-__name2(parse, "parse");
 function match(str, options) {
   var keys = [];
   var re = pathToRegexp(str, keys, options);
   return regexpToFunction(re, keys, options);
 }
 __name(match, "match");
-__name2(match, "match");
 function regexpToFunction(re, keys, options) {
   if (options === void 0) {
     options = {};
@@ -2004,7 +1909,7 @@ function regexpToFunction(re, keys, options) {
       return false;
     var path = m[0], index = m.index;
     var params = /* @__PURE__ */ Object.create(null);
-    var _loop_1 = /* @__PURE__ */ __name2(function(i2) {
+    var _loop_1 = /* @__PURE__ */ __name(function(i2) {
       if (m[i2] === void 0)
         return "continue";
       var key = keys[i2 - 1];
@@ -2023,17 +1928,14 @@ function regexpToFunction(re, keys, options) {
   };
 }
 __name(regexpToFunction, "regexpToFunction");
-__name2(regexpToFunction, "regexpToFunction");
 function escapeString(str) {
   return str.replace(/([.+*?=^!:${}()[\]|/\\])/g, "\\$1");
 }
 __name(escapeString, "escapeString");
-__name2(escapeString, "escapeString");
 function flags(options) {
   return options && options.sensitive ? "" : "i";
 }
 __name(flags, "flags");
-__name2(flags, "flags");
 function regexpToRegexp(path, keys) {
   if (!keys)
     return path;
@@ -2054,7 +1956,6 @@ function regexpToRegexp(path, keys) {
   return path;
 }
 __name(regexpToRegexp, "regexpToRegexp");
-__name2(regexpToRegexp, "regexpToRegexp");
 function arrayToRegexp(paths, keys, options) {
   var parts = paths.map(function(path) {
     return pathToRegexp(path, keys, options).source;
@@ -2062,12 +1963,10 @@ function arrayToRegexp(paths, keys, options) {
   return new RegExp("(?:".concat(parts.join("|"), ")"), flags(options));
 }
 __name(arrayToRegexp, "arrayToRegexp");
-__name2(arrayToRegexp, "arrayToRegexp");
 function stringToRegexp(path, keys, options) {
   return tokensToRegexp(parse(path, options), keys, options);
 }
 __name(stringToRegexp, "stringToRegexp");
-__name2(stringToRegexp, "stringToRegexp");
 function tokensToRegexp(tokens, keys, options) {
   if (options === void 0) {
     options = {};
@@ -2123,7 +2022,6 @@ function tokensToRegexp(tokens, keys, options) {
   return new RegExp(route, flags(options));
 }
 __name(tokensToRegexp, "tokensToRegexp");
-__name2(tokensToRegexp, "tokensToRegexp");
 function pathToRegexp(path, keys, options) {
   if (path instanceof RegExp)
     return regexpToRegexp(path, keys);
@@ -2132,7 +2030,8 @@ function pathToRegexp(path, keys, options) {
   return stringToRegexp(path, keys, options);
 }
 __name(pathToRegexp, "pathToRegexp");
-__name2(pathToRegexp, "pathToRegexp");
+
+// ../node_modules/wrangler/templates/pages-template-worker.ts
 var escapeRegex = /[.+?^${}()|[\]\\]/g;
 function* executeRequest(request) {
   const requestPath = new URL(request.url).pathname;
@@ -2183,14 +2082,13 @@ function* executeRequest(request) {
   }
 }
 __name(executeRequest, "executeRequest");
-__name2(executeRequest, "executeRequest");
 var pages_template_worker_default = {
   async fetch(originalRequest, env, workerContext) {
     let request = originalRequest;
     const handlerIterator = executeRequest(request);
     let data = {};
     let isFailOpen = false;
-    const next = /* @__PURE__ */ __name2(async (input, init) => {
+    const next = /* @__PURE__ */ __name(async (input, init) => {
       if (input !== void 0) {
         let url = input;
         if (typeof input === "string") {
@@ -2217,7 +2115,7 @@ var pages_template_worker_default = {
           },
           env,
           waitUntil: workerContext.waitUntil.bind(workerContext),
-          passThroughOnException: /* @__PURE__ */ __name2(() => {
+          passThroughOnException: /* @__PURE__ */ __name(() => {
             isFailOpen = true;
           }, "passThroughOnException")
         };
@@ -2245,16 +2143,18 @@ var pages_template_worker_default = {
     }
   }
 };
-var cloneResponse = /* @__PURE__ */ __name2((response) => (
+var cloneResponse = /* @__PURE__ */ __name((response) => (
   // https://fetch.spec.whatwg.org/#null-body-status
   new Response(
     [101, 204, 205, 304].includes(response.status) ? null : response.body,
     response
   )
 ), "cloneResponse");
-init_functionsRoutes_0_677495202222103();
+
+// ../node_modules/wrangler/templates/middleware/middleware-ensure-req-body-drained.ts
+init_functionsRoutes_0_7046503546124637();
 init_checked_fetch();
-var drainBody = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx) => {
+var drainBody = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
   try {
     return await middlewareCtx.next(request, env);
   } finally {
@@ -2270,7 +2170,9 @@ var drainBody = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx
   }
 }, "drainBody");
 var middleware_ensure_req_body_drained_default = drainBody;
-init_functionsRoutes_0_677495202222103();
+
+// ../node_modules/wrangler/templates/middleware/middleware-miniflare3-json-error.ts
+init_functionsRoutes_0_7046503546124637();
 init_checked_fetch();
 function reduceError(e) {
   return {
@@ -2281,8 +2183,7 @@ function reduceError(e) {
   };
 }
 __name(reduceError, "reduceError");
-__name2(reduceError, "reduceError");
-var jsonError = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx) => {
+var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
   try {
     return await middlewareCtx.next(request, env);
   } catch (e) {
@@ -2294,19 +2195,22 @@ var jsonError = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx
   }
 }, "jsonError");
 var middleware_miniflare3_json_error_default = jsonError;
+
+// ../.wrangler/tmp/bundle-4BsSZr/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_ensure_req_body_drained_default,
   middleware_miniflare3_json_error_default
 ];
 var middleware_insertion_facade_default = pages_template_worker_default;
-init_functionsRoutes_0_677495202222103();
+
+// ../node_modules/wrangler/templates/middleware/common.ts
+init_functionsRoutes_0_7046503546124637();
 init_checked_fetch();
 var __facade_middleware__ = [];
 function __facade_register__(...args) {
   __facade_middleware__.push(...args.flat());
 }
 __name(__facade_register__, "__facade_register__");
-__name2(__facade_register__, "__facade_register__");
 function __facade_invokeChain__(request, env, ctx, dispatch, middlewareChain) {
   const [head, ...tail] = middlewareChain;
   const middlewareCtx = {
@@ -2318,7 +2222,6 @@ function __facade_invokeChain__(request, env, ctx, dispatch, middlewareChain) {
   return head(request, env, ctx, middlewareCtx);
 }
 __name(__facade_invokeChain__, "__facade_invokeChain__");
-__name2(__facade_invokeChain__, "__facade_invokeChain__");
 function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
   return __facade_invokeChain__(request, env, ctx, dispatch, [
     ...__facade_middleware__,
@@ -2326,18 +2229,16 @@ function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
   ]);
 }
 __name(__facade_invoke__, "__facade_invoke__");
-__name2(__facade_invoke__, "__facade_invoke__");
+
+// ../.wrangler/tmp/bundle-4BsSZr/middleware-loader.entry.ts
 var __Facade_ScheduledController__ = class ___Facade_ScheduledController__ {
-  static {
-    __name(this, "___Facade_ScheduledController__");
-  }
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;
     this.cron = cron;
     this.#noRetry = noRetry;
   }
   static {
-    __name2(this, "__Facade_ScheduledController__");
+    __name(this, "__Facade_ScheduledController__");
   }
   #noRetry;
   noRetry() {
@@ -2354,7 +2255,7 @@ function wrapExportedHandler(worker) {
   for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__) {
     __facade_register__(middleware);
   }
-  const fetchDispatcher = /* @__PURE__ */ __name2(function(request, env, ctx) {
+  const fetchDispatcher = /* @__PURE__ */ __name(function(request, env, ctx) {
     if (worker.fetch === void 0) {
       throw new Error("Handler does not export a fetch() function.");
     }
@@ -2363,7 +2264,7 @@ function wrapExportedHandler(worker) {
   return {
     ...worker,
     fetch(request, env, ctx) {
-      const dispatcher = /* @__PURE__ */ __name2(function(type, init) {
+      const dispatcher = /* @__PURE__ */ __name(function(type, init) {
         if (type === "scheduled" && worker.scheduled !== void 0) {
           const controller = new __Facade_ScheduledController__(
             Date.now(),
@@ -2379,7 +2280,6 @@ function wrapExportedHandler(worker) {
   };
 }
 __name(wrapExportedHandler, "wrapExportedHandler");
-__name2(wrapExportedHandler, "wrapExportedHandler");
 function wrapWorkerEntrypoint(klass) {
   if (__INTERNAL_WRANGLER_MIDDLEWARE__ === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__.length === 0) {
     return klass;
@@ -2388,7 +2288,7 @@ function wrapWorkerEntrypoint(klass) {
     __facade_register__(middleware);
   }
   return class extends klass {
-    #fetchDispatcher = /* @__PURE__ */ __name2((request, env, ctx) => {
+    #fetchDispatcher = /* @__PURE__ */ __name((request, env, ctx) => {
       this.env = env;
       this.ctx = ctx;
       if (super.fetch === void 0) {
@@ -2396,7 +2296,7 @@ function wrapWorkerEntrypoint(klass) {
       }
       return super.fetch(request);
     }, "#fetchDispatcher");
-    #dispatcher = /* @__PURE__ */ __name2((type, init) => {
+    #dispatcher = /* @__PURE__ */ __name((type, init) => {
       if (type === "scheduled" && super.scheduled !== void 0) {
         const controller = new __Facade_ScheduledController__(
           Date.now(),
@@ -2419,7 +2319,6 @@ function wrapWorkerEntrypoint(klass) {
   };
 }
 __name(wrapWorkerEntrypoint, "wrapWorkerEntrypoint");
-__name2(wrapWorkerEntrypoint, "wrapWorkerEntrypoint");
 var WRAPPED_ENTRY;
 if (typeof middleware_insertion_facade_default === "object") {
   WRAPPED_ENTRY = wrapExportedHandler(middleware_insertion_facade_default);
@@ -2427,178 +2326,8 @@ if (typeof middleware_insertion_facade_default === "object") {
   WRAPPED_ENTRY = wrapWorkerEntrypoint(middleware_insertion_facade_default);
 }
 var middleware_loader_entry_default = WRAPPED_ENTRY;
-
-// node_modules/wrangler/templates/middleware/middleware-ensure-req-body-drained.ts
-var drainBody2 = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
-  try {
-    return await middlewareCtx.next(request, env);
-  } finally {
-    try {
-      if (request.body !== null && !request.bodyUsed) {
-        const reader = request.body.getReader();
-        while (!(await reader.read()).done) {
-        }
-      }
-    } catch (e) {
-      console.error("Failed to drain the unused request body.", e);
-    }
-  }
-}, "drainBody");
-var middleware_ensure_req_body_drained_default2 = drainBody2;
-
-// node_modules/wrangler/templates/middleware/middleware-miniflare3-json-error.ts
-function reduceError2(e) {
-  return {
-    name: e?.name,
-    message: e?.message ?? String(e),
-    stack: e?.stack,
-    cause: e?.cause === void 0 ? void 0 : reduceError2(e.cause)
-  };
-}
-__name(reduceError2, "reduceError");
-var jsonError2 = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
-  try {
-    return await middlewareCtx.next(request, env);
-  } catch (e) {
-    const error = reduceError2(e);
-    return Response.json(error, {
-      status: 500,
-      headers: { "MF-Experimental-Error-Stack": "true" }
-    });
-  }
-}, "jsonError");
-var middleware_miniflare3_json_error_default2 = jsonError2;
-
-// .wrangler/tmp/bundle-SOKjpu/middleware-insertion-facade.js
-var __INTERNAL_WRANGLER_MIDDLEWARE__2 = [
-  middleware_ensure_req_body_drained_default2,
-  middleware_miniflare3_json_error_default2
-];
-var middleware_insertion_facade_default2 = middleware_loader_entry_default;
-
-// node_modules/wrangler/templates/middleware/common.ts
-var __facade_middleware__2 = [];
-function __facade_register__2(...args) {
-  __facade_middleware__2.push(...args.flat());
-}
-__name(__facade_register__2, "__facade_register__");
-function __facade_invokeChain__2(request, env, ctx, dispatch, middlewareChain) {
-  const [head, ...tail] = middlewareChain;
-  const middlewareCtx = {
-    dispatch,
-    next(newRequest, newEnv) {
-      return __facade_invokeChain__2(newRequest, newEnv, ctx, dispatch, tail);
-    }
-  };
-  return head(request, env, ctx, middlewareCtx);
-}
-__name(__facade_invokeChain__2, "__facade_invokeChain__");
-function __facade_invoke__2(request, env, ctx, dispatch, finalMiddleware) {
-  return __facade_invokeChain__2(request, env, ctx, dispatch, [
-    ...__facade_middleware__2,
-    finalMiddleware
-  ]);
-}
-__name(__facade_invoke__2, "__facade_invoke__");
-
-// .wrangler/tmp/bundle-SOKjpu/middleware-loader.entry.ts
-var __Facade_ScheduledController__2 = class ___Facade_ScheduledController__2 {
-  constructor(scheduledTime, cron, noRetry) {
-    this.scheduledTime = scheduledTime;
-    this.cron = cron;
-    this.#noRetry = noRetry;
-  }
-  static {
-    __name(this, "__Facade_ScheduledController__");
-  }
-  #noRetry;
-  noRetry() {
-    if (!(this instanceof ___Facade_ScheduledController__2)) {
-      throw new TypeError("Illegal invocation");
-    }
-    this.#noRetry();
-  }
-};
-function wrapExportedHandler2(worker) {
-  if (__INTERNAL_WRANGLER_MIDDLEWARE__2 === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__2.length === 0) {
-    return worker;
-  }
-  for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__2) {
-    __facade_register__2(middleware);
-  }
-  const fetchDispatcher = /* @__PURE__ */ __name(function(request, env, ctx) {
-    if (worker.fetch === void 0) {
-      throw new Error("Handler does not export a fetch() function.");
-    }
-    return worker.fetch(request, env, ctx);
-  }, "fetchDispatcher");
-  return {
-    ...worker,
-    fetch(request, env, ctx) {
-      const dispatcher = /* @__PURE__ */ __name(function(type, init) {
-        if (type === "scheduled" && worker.scheduled !== void 0) {
-          const controller = new __Facade_ScheduledController__2(
-            Date.now(),
-            init.cron ?? "",
-            () => {
-            }
-          );
-          return worker.scheduled(controller, env, ctx);
-        }
-      }, "dispatcher");
-      return __facade_invoke__2(request, env, ctx, dispatcher, fetchDispatcher);
-    }
-  };
-}
-__name(wrapExportedHandler2, "wrapExportedHandler");
-function wrapWorkerEntrypoint2(klass) {
-  if (__INTERNAL_WRANGLER_MIDDLEWARE__2 === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__2.length === 0) {
-    return klass;
-  }
-  for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__2) {
-    __facade_register__2(middleware);
-  }
-  return class extends klass {
-    #fetchDispatcher = /* @__PURE__ */ __name((request, env, ctx) => {
-      this.env = env;
-      this.ctx = ctx;
-      if (super.fetch === void 0) {
-        throw new Error("Entrypoint class does not define a fetch() function.");
-      }
-      return super.fetch(request);
-    }, "#fetchDispatcher");
-    #dispatcher = /* @__PURE__ */ __name((type, init) => {
-      if (type === "scheduled" && super.scheduled !== void 0) {
-        const controller = new __Facade_ScheduledController__2(
-          Date.now(),
-          init.cron ?? "",
-          () => {
-          }
-        );
-        return super.scheduled(controller);
-      }
-    }, "#dispatcher");
-    fetch(request) {
-      return __facade_invoke__2(
-        request,
-        this.env,
-        this.ctx,
-        this.#dispatcher,
-        this.#fetchDispatcher
-      );
-    }
-  };
-}
-__name(wrapWorkerEntrypoint2, "wrapWorkerEntrypoint");
-var WRAPPED_ENTRY2;
-if (typeof middleware_insertion_facade_default2 === "object") {
-  WRAPPED_ENTRY2 = wrapExportedHandler2(middleware_insertion_facade_default2);
-} else if (typeof middleware_insertion_facade_default2 === "function") {
-  WRAPPED_ENTRY2 = wrapWorkerEntrypoint2(middleware_insertion_facade_default2);
-}
-var middleware_loader_entry_default2 = WRAPPED_ENTRY2;
 export {
-  __INTERNAL_WRANGLER_MIDDLEWARE__2 as __INTERNAL_WRANGLER_MIDDLEWARE__,
-  middleware_loader_entry_default2 as default
+  __INTERNAL_WRANGLER_MIDDLEWARE__,
+  middleware_loader_entry_default as default
 };
-//# sourceMappingURL=functionsWorker-0.19667948849676842.js.map
+//# sourceMappingURL=functionsWorker-0.8005138304708841.mjs.map

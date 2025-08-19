@@ -65,6 +65,7 @@ interface UrlData {
 
 interface Domain {
   domain: string;
+  displayName?: string;
   avg_uptime_percentage: number;
   urls: UrlData[];
   uptimeList?: UptimeList;
@@ -296,26 +297,7 @@ function AffiliateNetworkUptimeContent() {
     return Object.values(uptimeList)[0];
   };
 
-  const getCombinedUptimeData = (uptimeListArray: UptimeList[]) => {
-    const combinedData = new Map<string, number>();
-    
-    // For each date, find the minimum uptime across all types (worst case scenario)
-    uptimeListArray.forEach(uptimeList => {
-      Object.entries(uptimeList).forEach(([day, uptime]) => {
-        if (uptime !== null) {
-          const currentMin = combinedData.get(day);
-          if (currentMin === undefined || uptime < currentMin) {
-            combinedData.set(day, uptime);
-          }
-        }
-      });
-    });
-    
-    // Convert to array and sort by date
-    return Array.from(combinedData, ([date, uptime]) => ({ date, uptime }))
-      .sort((a, b) => a.date.localeCompare(b.date))
-      .slice(-60); // Take last 60 days
-  };
+
 
   const capitalizeNetworkName = (networkName: string): string => {
     // Simple dynamic capitalization that works for any network name
@@ -418,13 +400,12 @@ function AffiliateNetworkUptimeContent() {
                         </CardHeader>
                         <CardContent>
                           <div className="text-2xl font-bold mb-4 text-left">
-                            {capitalizeNetworkName(domain.domain)}
+                            {domain.displayName || capitalizeNetworkName(domain.domain)}
                           </div>
                           <div className="mb-4">
-                            <h3 className="text-lg text-left font-semibold">{t('tools.affiliateNetworkUptime.status.combinedUptime')}</h3>
                             {domain.hasStatusPage && domain.urls.some(url => url.heartbeats) ? (
                               <div className="mb-2">
-                                <h4 className="text-sm font-medium text-gray-600 mb-2">{t('tools.affiliateNetworkUptime.status.realTimeHeartbeats')}</h4>
+                                <h4 className="text-sm font-medium text-gray-600 mb-2 text-left">{t('tools.affiliateNetworkUptime.status.realTimeHeartbeats')}</h4>
                                 {(() => { 
                                   const totalHeartbeats = domain.urls.reduce((sum, url) => sum + (url.heartbeats?.length || 0), 0);
                                   console.log(`Main view heartbeats for ${domain.domain}:`, totalHeartbeats);
@@ -444,7 +425,7 @@ function AffiliateNetworkUptimeContent() {
                                 {urlData.hasStatusPage && urlData.heartbeats ? (
                                   <>
                                     <div className="mb-2">
-                                      <h4 className="text-sm font-medium text-gray-600">{t('tools.affiliateNetworkUptime.status.realTimeHeartbeats')}</h4>
+                                      <h4 className="text-sm font-medium text-gray-600 text-left">{t('tools.affiliateNetworkUptime.status.realTimeHeartbeats')}</h4>
                                       {(() => { console.log(`Rendering heartbeats for ${domain.domain} ${urlData.type}:`, urlData.heartbeats?.length); return null; })()}
                                       <HeartbeatBar heartbeats={urlData.heartbeats} />
                                     </div>
@@ -481,13 +462,12 @@ function AffiliateNetworkUptimeContent() {
                         </CardHeader>
                         <CardContent>
                           <div className="text-2xl font-bold mb-4 text-left">
-                            {capitalizeNetworkName(domain.domain)}
+                            {domain.displayName || capitalizeNetworkName(domain.domain)}
                           </div>
                           <div className="mb-4">
-                            <h3 className="text-lg text-left font-semibold">{t('tools.affiliateNetworkUptime.status.combinedUptime')}</h3>
                             {domain.hasStatusPage && domain.urls.some(url => url.heartbeats) ? (
                               <div className="mb-2">
-                                <h4 className="text-sm font-medium text-gray-600 mb-2">{t('tools.affiliateNetworkUptime.status.realTimeHeartbeats')}</h4>
+                                <h4 className="text-sm font-medium text-gray-600 mb-2 text-left">{t('tools.affiliateNetworkUptime.status.realTimeHeartbeats')}</h4>
                                 {(() => { 
                                   const totalHeartbeats = domain.urls.reduce((sum, url) => sum + (url.heartbeats?.length || 0), 0);
                                   console.log(`Main view heartbeats:`, totalHeartbeats);
@@ -537,34 +517,34 @@ function AffiliateNetworkUptimeContent() {
         {/* Information Section */}
         <div className="bg-white px-6 pb-32 lg:px-8" id="about">
           <div className="mx-auto max-w-3xl text-base leading-7 text-gray-700">
-            <p className="text-base font-medium leading-7 text-[#6ca979]">
+            <p className="text-base font-medium leading-7 text-black">
               {t('tools.affiliateNetworkUptime.about.title')}
             </p>
-            <h2 className="mt-4 text-xl font-bold tracking-tight text-[#6ca979] sm:text-2xl">
+            <h2 className="mt-4 text-xl font-bold tracking-tight text-black sm:text-2xl">
               {t('tools.affiliateNetworkUptime.about.whatDoesItTrack.title')}
             </h2>
             <p>
               {t('tools.affiliateNetworkUptime.about.whatDoesItTrack.description')}
             </p>
-            <h2 className="mt-4 text-xl font-bold tracking-tight text-[#6ca979] pt-5 sm:text-2xl">
+            <h2 className="mt-4 text-xl font-bold tracking-tight text-black pt-5 sm:text-2xl">
               {t('tools.affiliateNetworkUptime.about.coloredBars.title')}
             </h2>
             <p>
               {t('tools.affiliateNetworkUptime.about.coloredBars.description')}
             </p>
-            <h2 className="mt-4 text-xl font-bold tracking-tight text-[#6ca979] pt-5 sm:text-2xl">
+            <h2 className="mt-4 text-xl font-bold tracking-tight text-black pt-5 sm:text-2xl">
               {t('tools.affiliateNetworkUptime.about.fiveNines.title')}
             </h2>
             <p>
               {t('tools.affiliateNetworkUptime.about.fiveNines.description')}
             </p>
-            <h2 className="mt-4 text-xl font-bold tracking-tight text-[#6ca979] pt-5 sm:text-2xl">
+            <h2 className="mt-4 text-xl font-bold tracking-tight text-black pt-5 sm:text-2xl">
               {t('tools.affiliateNetworkUptime.about.checkFrequency.title')}
             </h2>
             <p>
               {t('tools.affiliateNetworkUptime.about.checkFrequency.description')}
             </p>
-            <h2 className="mt-4 text-xl font-bold tracking-tight text-[#6ca979] pt-5 sm:text-2xl">
+            <h2 className="mt-4 text-xl font-bold tracking-tight text-black pt-5 sm:text-2xl">
               {t('tools.affiliateNetworkUptime.about.downtimeActions.title')}
             </h2>
             <p>

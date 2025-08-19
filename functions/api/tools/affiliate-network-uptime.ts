@@ -3,27 +3,6 @@ export interface Env {
   UPTIME_KUMA_URL?: string;
 }
 
-interface UptimeKumaMonitor {
-  id: number;
-  name: string;
-  url: string;
-  type: string;
-  active: boolean;
-  uptime?: number;
-  avg_ping?: number;
-}
-
-interface UptimeKumaHeartbeat {
-  id: number;
-  monitor_id: number;
-  status: number;
-  msg: string;
-  time: string;
-  ping?: number;
-  important: boolean;
-  duration: number;
-}
-
 interface StatusPageHeartbeat {
   status: number;
   time: string;
@@ -40,11 +19,6 @@ interface StatusPageResponse {
   };
 }
 
-interface DayUptime {
-  date: string;
-  uptime: number | null;
-}
-
 interface UrlData {
   type: string;
   avg_uptime_percentage: number;
@@ -54,60 +28,25 @@ interface UrlData {
   uptimeList?: { [key: string]: number };
 }
 
-interface UptimeData {
-  type: string;
-  day_uptime: DayUptime[];
-}
-
 interface Domain {
   domain: string;
+  displayName: string;
   avg_uptime_percentage: number;
   urls: UrlData[];
-  day_uptime: UptimeData[];
+  day_uptime: { type: string; day_uptime: { date: string; uptime: number | null }[] }[];
   hasStatusPage: boolean;
   uptimeList?: { [key: string]: number };
 }
 
 export async function onRequestGet(context: { env: Env, request: Request }): Promise<Response> {
   try {
-    const { env, request } = context;
-    const url = new URL(request.url);
-    const debug = url.searchParams.get('debug') === 'true';
-    const test = url.searchParams.get('test') === 'true';
+    const { env } = context;
     
     const uptimeKumaSecret = env.UPTIME_KUMA_SECRET;
 
     if (!uptimeKumaSecret) {
       return new Response(JSON.stringify({ error: 'Uptime Kuma secret not configured' }), {
         status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-
-    if (test) {
-      // Test the status page fetching for a specific network
-      const testNetwork = 'daisycon';
-      console.log(`Testing status page for ${testNetwork}`);
-      const testData = await fetchStatusPageData(testNetwork, env.UPTIME_KUMA_URL);
-      return new Response(JSON.stringify({ 
-        message: 'Test mode enabled',
-        testNetwork,
-        statusPageData: testData,
-        heartbeatCount: testData?.heartbeatList ? Object.values(testData.heartbeatList).reduce((sum: number, arr: any) => sum + (Array.isArray(arr) ? arr.length : 0), 0) : 0
-      }), {
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-
-    if (debug) {
-      return new Response(JSON.stringify({ 
-        message: 'Debug mode enabled',
-        secret_configured: !!uptimeKumaSecret,
-        secret_length: uptimeKumaSecret.length,
-        endpoints_to_try: [
-          `${env.UPTIME_KUMA_URL || 'http://152.42.135.243:3001'}/metrics`
-        ]
-      }), {
         headers: { 'Content-Type': 'application/json' }
       });
     }
@@ -211,6 +150,19 @@ export async function onRequestOptions(): Promise<Response> {
   });
 }
 
+function formatNetworkDisplayName(networkName: string): string {
+  const nameMappings: { [key: string]: string } = {
+    'involveasia': 'Involve Asia',
+    'partnerads': 'Partner Ads',
+    'retailads': 'Retail Ads',
+    'smartresponse': 'Smart Response',
+    'takeads': 'Take Ads'
+  };
+  
+  const normalizedName = networkName.toLowerCase().replace(/[^a-z0-9]/g, '');
+  return nameMappings[normalizedName] || networkName;
+}
+
 async function fetchStatusPageData(networkName: string, uptimeKumaUrl?: string): Promise<StatusPageResponse | null> {
   try {
     const url = `${uptimeKumaUrl || 'http://152.42.135.243:3001'}/api/status-page/heartbeat/${networkName}?limit=10080`;
@@ -282,11 +234,12 @@ async function processPrometheusMetrics(metricsText: string, uptimeKumaUrl?: str
 
   // Process monitors into domains
   for (const monitor of monitors.values()) {
-    const domain = extractDomainFromMonitor(monitor.name);
+    const domain = monitor.name.toLowerCase().replace(/[^a-z0-9]/g, '');
     
     if (!domains.has(domain)) {
       domains.set(domain, {
         domain,
+        displayName: formatNetworkDisplayName(monitor.name),
         avg_uptime_percentage: 0,
         urls: [],
         day_uptime: [],
@@ -400,71 +353,4 @@ async function processPrometheusMetrics(metricsText: string, uptimeKumaUrl?: str
   return domainsWithStatusPages;
 }
 
-function extractDomainFromMonitor(monitorName: string): string {
-  // Try to extract domain from monitor name
-  // Expected format: "NetworkName - Homepage" or "NetworkName - API" etc.
-  const parts = monitorName.split(' - ');
-  if (parts.length > 0) {
-    // Clean up the network name and make it lowercase
-    let networkName = parts[0].toLowerCase().replace(/[^a-z0-9]/g, '');
-    
-    // Handle common variations
-    if (networkName === 'daisycon') return 'daisycon';
-    if (networkName === 'awin') return 'awin';
-    if (networkName === 'cj') return 'cj';
-    if (networkName === 'rakuten') return 'rakuten';
-    if (networkName === 'impact') return 'impact';
-    if (networkName === 'skimlinks') return 'skimlinks';
-    if (networkName === 'shareasale') return 'shareasale';
-    if (networkName === 'tradedoubler') return 'tradedoubler';
-    if (networkName === 'webgains') return 'webgains';
-    if (networkName === 'yieldkit') return 'yieldkit';
-    if (networkName === 'admitad') return 'admitad';
-    if (networkName === 'adtraction') return 'adtraction';
-    if (networkName === 'affilae') return 'affilae';
-    if (networkName === 'belboon') return 'belboon';
-    if (networkName === 'brandreward') return 'brandreward';
-    if (networkName === 'chinesean') return 'chinesean';
-    if (networkName === 'circlewise') return 'circlewise';
-    if (networkName === 'commissionfactory') return 'commissionfactory';
-    if (networkName === 'cuelinks') return 'cuelinks';
-    if (networkName === 'digidip') return 'digidip';
-    if (networkName === 'effiliation') return 'effiliation';
-    if (networkName === 'flexoffers') return 'flexoffers';
-    if (networkName === 'glopss') return 'glopss';
-    if (networkName === 'indoleads') return 'indoleads';
-    if (networkName === 'involveasia') return 'involveasia';
-    if (networkName === 'kelkoo') return 'kelkoo';
-    if (networkName === 'kwanko') return 'kwanko';
-    if (networkName === 'linkbux') return 'linkbux';
-    if (networkName === 'mcanism') return 'mcanism';
-    if (networkName === 'optimise') return 'optimise';
-    if (networkName === 'partnerads') return 'partner-ads';
-    if (networkName === 'partnerboost') return 'partnerboost';
-    if (networkName === 'partnerize') return 'partnerize';
-    if (networkName === 'retailads') return 'retailads';
-    if (networkName === 'salestring') return 'salestring';
-    if (networkName === 'smartresponse') return 'smartresponse';
-    if (networkName === 'sourceknowledge') return 'sourceknowledge';
-    if (networkName === 'takeads') return 'takeads';
-    if (networkName === 'timeone') return 'timeone';
-    if (networkName === 'tradetracker') return 'tradetracker';
-    if (networkName === 'yadore') return 'yadore';
-    if (networkName === 'accesstrade') return 'accesstrade';
-    if (networkName === 'addrevenue') return 'addrevenue';
-    if (networkName === 'adrecord') return 'adrecord';
-    if (networkName === 'adservice') return 'adservice';
-    
-    return networkName;
-  }
-  return monitorName.toLowerCase().replace(/[^a-z0-9]/g, '');
-}
 
-function extractTypeFromMonitor(monitorName: string): string {
-  // Extract type from monitor name
-  const parts = monitorName.split(' - ');
-  if (parts.length > 1) {
-    return parts[1];
-  }
-  return 'Homepage';
-}
