@@ -350,6 +350,13 @@ async function processPrometheusMetrics(metricsText: string, uptimeKumaUrl?: str
     }
   });
 
+  // Sort domains by name (displayName) by default
+  domainsWithStatusPages.sort((a, b) => {
+    const nameA = (a.displayName || a.domain).toLowerCase();
+    const nameB = (b.displayName || b.domain).toLowerCase();
+    return nameA.localeCompare(nameB);
+  });
+
   return domainsWithStatusPages;
 }
 

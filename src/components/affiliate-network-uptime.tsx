@@ -109,8 +109,6 @@ const UptimeBar = ({ uptimeList }: { uptimeList?: UptimeList }) => {
 };
 
 const HeartbeatBar = ({ heartbeats }: { heartbeats: StatusPageHeartbeat[] }) => {
-  console.log('HeartbeatBar received heartbeats:', heartbeats?.length, heartbeats);
-  
   const renderHeartbeatBar = (heartbeat: StatusPageHeartbeat, index: number) => (
     <HoverCard key={index}>
       <HoverCardTrigger>
@@ -136,8 +134,6 @@ const HeartbeatBar = ({ heartbeats }: { heartbeats: StatusPageHeartbeat[] }) => 
     .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())
     .slice(0, 2016);
 
-  console.log('Recent heartbeats to render:', recentHeartbeats.length);
-
   return (
     <div className="flex">
       {recentHeartbeats.map((heartbeat, index) => renderHeartbeatBar(heartbeat, index))}
@@ -161,7 +157,7 @@ const SkeletonCard = () => (
 );
 
 function AffiliateNetworkUptimeContent() {
-  const { t, currentLocale } = useLocaleTranslations();
+  const { t } = useLocaleTranslations();
   const [domains, setDomains] = useState<Domain[]>([]);
   const [expandedDomain, setExpandedDomain] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -194,22 +190,15 @@ function AffiliateNetworkUptimeContent() {
         if (!data || data.length === 0) {
           console.warn('No data returned from API');
         }
-        console.log('API response data:', data);
-        console.log('First domain data:', data[0]);
-        console.log('First domain uptimeList:', data[0]?.uptimeList);
-        console.log('First domain URLs:', data[0]?.urls);
         
-        if (data[0]?.urls) {
-          data[0].urls.forEach((url: UrlData, index: number) => {
-            console.log(`URL ${index} full data:`, url);
-            console.log(`URL ${index} uptimeList:`, url.uptimeList);
-            console.log(`URL ${index} avg_uptime_percentage:`, url.avg_uptime_percentage);
-            if (url.heartbeats) {
-              console.log(`URL ${index} heartbeats:`, url.heartbeats.length, url.heartbeats.slice(0, 3));
-            }
-          });
-        }
-        setDomains(data);
+        // Sort the data by name initially (backend should already do this, but ensure it's sorted)
+        const sortedData = [...data].sort((a, b) => {
+          const nameA = (a.displayName || a.domain).toLowerCase();
+          const nameB = (b.displayName || b.domain).toLowerCase();
+          return nameA.localeCompare(nameB);
+        });
+        
+        setDomains(sortedData);
       } catch (err: unknown) {
         console.error('Error in fetchDomainData:', err);
         setError(err instanceof Error ? err.message : 'An error occurred');
@@ -225,57 +214,57 @@ function AffiliateNetworkUptimeContent() {
     setExpandedDomain(expandedDomain === domainName ? null : domainName);
   };
 
-  const sortDomains = useCallback((option: string) => {
-    if (domains.length === 0) return; // Don't sort empty array
-    
-    const sortedDomains = [...domains];
-    switch (option) {
-      case 'uptime':
-        sortedDomains.sort((a, b) => b.avg_uptime_percentage - a.avg_uptime_percentage);
-        break;
-      case 'down':
-        sortedDomains.sort((a, b) => (a.avg_uptime_percentage < 100 ? -1 : 1) - (b.avg_uptime_percentage < 100 ? -1 : 1));
-        break;
-      case 'highest-downtime':
-        sortedDomains.sort((a, b) => (100 - a.avg_uptime_percentage) - (100 - b.avg_uptime_percentage));
-        break;
-      default:
-        // Keep original order
-        return;
+  const getActualUptimeValue = (domain: Domain): number => {
+    // Use uptimeList if available (more accurate), otherwise use avg_uptime_percentage
+    if (domain.uptimeList && Object.keys(domain.uptimeList).length > 0) {
+      return Object.values(domain.uptimeList)[0] * 100; // Convert to percentage
     }
-    setDomains(sortedDomains);
-  }, [domains]);
+    return domain.avg_uptime_percentage;
+  };
+
+  const sortDomains = useCallback((option: string) => {
+    setDomains(prevDomains => {
+      if (prevDomains.length === 0) return prevDomains;
+      
+      const sortedDomains = [...prevDomains];
+      switch (option) {
+        case 'uptime':
+          sortedDomains.sort((a, b) => getActualUptimeValue(b) - getActualUptimeValue(a));
+          break;
+        case 'highest-downtime':
+          sortedDomains.sort((a, b) => {
+            const uptimeA = getActualUptimeValue(a);
+            const uptimeB = getActualUptimeValue(b);
+            // Sort by lowest uptime first (highest downtime)
+            return uptimeA - uptimeB;
+          });
+          break;
+        default:
+          // Default: sort by name (displayName or domain)
+          sortedDomains.sort((a, b) => {
+            const nameA = (a.displayName || a.domain).toLowerCase();
+            const nameB = (b.displayName || b.domain).toLowerCase();
+            return nameA.localeCompare(nameB);
+          });
+          break;
+      }
+      
+      return sortedDomains;
+    });
+  }, []);
 
   useEffect(() => {
     sortDomains(sortOption);
   }, [sortOption, sortDomains]);
 
   const filteredDomains = domains.filter(domain =>
-    domain.domain.toLowerCase().includes(searchTerm.toLowerCase())
+    domain.domain.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (domain.displayName && domain.displayName.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const calculateAverageResponseTime = (urls: UrlData[]) => {
     const totalResponseTime = urls.reduce((sum, url) => sum + url.avg_response_time, 0);
     return urls.length > 0 ? totalResponseTime / urls.length : 0;
-  };
-
-  const calculateUptimeFromList = (uptimeList?: UptimeList, fallbackPercentage?: number): number => {
-    console.log('calculateUptimeFromList called with:', uptimeList, 'fallback:', fallbackPercentage);
-    
-    if (!uptimeList || Object.keys(uptimeList).length === 0) {
-      console.log('No uptimeList data, using fallback:', fallbackPercentage);
-      // If no uptimeList, use fallback percentage (convert from percentage to decimal)
-      return fallbackPercentage ? fallbackPercentage / 100 : 0;
-    }
-    
-    const uptimeValues = Object.values(uptimeList);
-    console.log('Uptime values:', uptimeValues);
-    
-    const totalUptime = uptimeValues.reduce((sum, uptime) => sum + uptime, 0);
-    const averageUptime = totalUptime / uptimeValues.length;
-    
-    console.log('Total uptime:', totalUptime, 'Average uptime:', averageUptime);
-    return averageUptime;
   };
 
   const getUptimeDisplay = (uptimeList?: UptimeList): string => {
@@ -362,7 +351,6 @@ function AffiliateNetworkUptimeContent() {
               >
                 <option value="default">{t('tools.affiliateNetworkUptime.sortOptions.default')}</option>
                 <option value="uptime">{t('tools.affiliateNetworkUptime.sortOptions.uptime')}</option>
-                <option value="down">{t('tools.affiliateNetworkUptime.sortOptions.down')}</option>
                 <option value="highest-downtime">{t('tools.affiliateNetworkUptime.sortOptions.highestDowntime')}</option>
               </select>
             </div>
@@ -406,11 +394,7 @@ function AffiliateNetworkUptimeContent() {
                             {domain.hasStatusPage && domain.urls.some(url => url.heartbeats) ? (
                               <div className="mb-2">
                                 <h4 className="text-sm font-medium text-gray-600 mb-2 text-left">{t('tools.affiliateNetworkUptime.status.realTimeHeartbeats')}</h4>
-                                {(() => { 
-                                  const totalHeartbeats = domain.urls.reduce((sum, url) => sum + (url.heartbeats?.length || 0), 0);
-                                  console.log(`Main view heartbeats for ${domain.domain}:`, totalHeartbeats);
-                                  return null; 
-                                })()}
+
                                 <HeartbeatBar heartbeats={domain.urls.find(url => url.heartbeats)?.heartbeats || []} />
                               </div>
                             ) : (
@@ -426,7 +410,7 @@ function AffiliateNetworkUptimeContent() {
                                   <>
                                     <div className="mb-2">
                                       <h4 className="text-sm font-medium text-gray-600 text-left">{t('tools.affiliateNetworkUptime.status.realTimeHeartbeats')}</h4>
-                                      {(() => { console.log(`Rendering heartbeats for ${domain.domain} ${urlData.type}:`, urlData.heartbeats?.length); return null; })()}
+
                                       <HeartbeatBar heartbeats={urlData.heartbeats} />
                                     </div>
                                     <p className="text-sm text-gray-600">{t('tools.affiliateNetworkUptime.status.uptimeLabel')}: {getUptimeDisplay(urlData.uptimeList)}</p>
@@ -468,11 +452,7 @@ function AffiliateNetworkUptimeContent() {
                             {domain.hasStatusPage && domain.urls.some(url => url.heartbeats) ? (
                               <div className="mb-2">
                                 <h4 className="text-sm font-medium text-gray-600 mb-2 text-left">{t('tools.affiliateNetworkUptime.status.realTimeHeartbeats')}</h4>
-                                {(() => { 
-                                  const totalHeartbeats = domain.urls.reduce((sum, url) => sum + (url.heartbeats?.length || 0), 0);
-                                  console.log(`Main view heartbeats:`, totalHeartbeats);
-                                  return null; 
-                                })()}
+
                                 <HeartbeatBar heartbeats={domain.urls.find(url => url.heartbeats)?.heartbeats || []} />
                               </div>
                             ) : (
@@ -488,7 +468,7 @@ function AffiliateNetworkUptimeContent() {
                                   <>
                                     <div className="mb-2">
                                       <h4 className="text-sm font-medium text-gray-600">{t('tools.affiliateNetworkUptime.status.realTimeHeartbeats')}</h4>
-                                      {(() => { console.log(`Rendering heartbeats for ${domain.domain} ${urlData.type}:`, urlData.heartbeats?.length); return null; })()}
+
                                       <HeartbeatBar heartbeats={urlData.heartbeats} />
                                     </div>
                                     <p className="text-sm text-gray-600">{t('tools.affiliateNetworkUptime.status.uptimeLabel')}: {getUptimeDisplay(urlData.uptimeList)}</p>
