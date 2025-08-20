@@ -10,6 +10,9 @@ import Header from '@/components/header';
 import Footer from '@/components/footer';
 import { useLocaleTranslations } from '@/hooks/use-locale-translations';
 import Head from 'next/head';
+import { Bell, Clock, Zap, CheckCircle } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import Link from 'next/link';
 
 // HoverCard components for uptime details
 const HoverCard = ({ children }: { children: React.ReactNode }) => {
@@ -366,8 +369,44 @@ function AffiliateNetworkUptimeContent() {
             <p className="max-w-5xl mx-auto text-sm opacity-90 leading-relaxed mb-6 text-black">
               {t('tools.affiliateNetworkUptime.description')}
               <br />
-              Get notified of any outages via email. <a href="#about" className="text-black underline">{t('tools.affiliateNetworkUptime.learnMore')}</a>
+              {t('tools.affiliateNetworkUptime.emailNotifications')} <a href="#about" className="text-black underline">{t('tools.affiliateNetworkUptime.learnMore')}</a>
             </p>
+
+            {/* Benefits Grid */}
+            <div className="grid md:grid-cols-3 gap-6 my-12">
+              <div className="flex flex-col items-center text-center space-y-3">
+                <div className="p-3 rounded-full bg-green-600">
+                  <Bell className="h-6 w-6 text-white" />
+                </div>
+                <h3 className="font-heading font-semibold text-foreground">Real-time Alerts</h3>
+                <p className="text-sm text-muted-foreground">Instant notifications the moment a link goes down</p>
+              </div>
+              <div className="flex flex-col items-center text-center space-y-3">
+                <div className="p-3 rounded-full bg-green-600">
+                  <Clock className="h-6 w-6 text-white" />
+                </div>
+                <h3 className="font-heading font-semibold text-foreground">24/7 Monitoring</h3>
+                <p className="text-sm text-muted-foreground">Continuous uptime monitoring around the clock</p>
+              </div>
+              <div className="flex flex-col items-center text-center space-y-3">
+                <div className="p-3 rounded-full bg-green-600">
+                  <Zap className="h-6 w-6 text-white" />
+                </div>
+                <h3 className="font-heading font-semibold text-foreground">Lightning Fast</h3>
+                <p className="text-sm text-muted-foreground">Get notified within seconds of any outage</p>
+              </div>
+            </div>
+
+            {/* Login/Register Button */}
+            <div className="mb-8">
+              <Link href="/auth">
+                <Button className="bg-green-600 hover:bg-green-700 text-white px-8 py-3">
+                  Login or Register for Alerts
+                </Button>
+              </Link>
+            </div>
+
+            
             
             <div className="mb-6 flex justify-between items-center">
               <Input
@@ -554,6 +593,12 @@ function AffiliateNetworkUptimeContent() {
             </h2>
             <p>
               {t('tools.affiliateNetworkUptime.about.downtimeActions.description')}
+            </p>
+            <h2 className="mt-4 text-xl font-bold tracking-tight text-black pt-5 sm:text-2xl">
+              {t('tools.affiliateNetworkUptime.about.customNetworks.title')}
+            </h2>
+            <p>
+              {t('tools.affiliateNetworkUptime.about.customNetworks.description')}
             </p>
           </div>
         </div>

@@ -674,6 +674,7 @@
     "affiliateNetworkUptime": {
       "title": "Netwerk Uptime Rapportage",
       "description": "We monitoren affiliate netwerken elke 1 minuut om ervoor te zorgen dat de belangrijke tracking links operationeel zijn.",
+      "emailNotifications": "Ontvang meldingen van uitval via e-mail.",
       "learnMore": "Lees meer over deze tool",
       "searchPlaceholder": "Zoek Netwerken...",
       "sortOptions": {
@@ -693,7 +694,7 @@
         "avgResponseTime": "Gem. Reactietijd"
       },
       "messages": {
-        "noDataAvailable": "Geen uptime gegevens beschikbaar op dit moment.",
+        "noDataAvailable": "Kun je je netwerk niet vinden? Laat ons weten welk netwerk je wilt toevoegen door een e-mail te sturen naar info@affensus.com",
         "configuring": "Uptime monitoring wordt geconfigureerd en zal binnenkort beschikbaar zijn.",
         "error": "Er is een fout opgetreden bij het verwerken van je verzoek."
       },
@@ -718,6 +719,10 @@
         "downtimeActions": {
           "title": "Welke acties moet ik ondernemen als downtime wordt gedetecteerd?",
           "description": "Wanneer significante downtime wordt gedetecteerd, raden we aan: 1) Het probleem aan jouw kant te verifiëren, 2) Contact op te nemen met het ondersteuningsteam van het affiliate netwerk, 3) Eventuele actieve campagnes tijdelijk te pauzeren, en 4) Je affiliates op de hoogte te houden van de situatie. Ons systeem biedt geautomatiseerde waarschuwingen om je te helpen snel te reageren op eventuele verstoringen."
+        },
+        "customNetworks": {
+          "title": "Kan ik een aangepast netwerk toevoegen als ik mijn netwerk niet kan vinden?",
+          "description": "Ja, we kunnen aangepaste netwerken voor je toevoegen. Stuur ons gewoon een e-mail naar info@affensus.com en we zullen elk netwerk toevoegen dat je wilt."
         }
       }
     }

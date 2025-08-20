@@ -37,13 +37,15 @@
           "1 Project",
           "1 Seat",
           "$30 Additional project",
-          "Fully Encrypt"
+          "Fully Encrypt",
+          "Network Uptime Alerts"
         ],
         "nl-nl": [
           "1 Project",
           "1 Gebruiker",
           "$30 Extra project",
-          "Volledig versleuteld"
+          "Volledig versleuteld",
+          "Network Uptime Alerts"
         ]
       },
       "stripePriceId": "price_starter",
@@ -89,7 +91,8 @@
           "Fully Encrypt",
           "Coupon plugin",
           "Project export",
-          "Customer support"
+          "Customer support",
+          "Network Uptime Alerts"
         ],
         "nl-nl": [
           "1 Project",
@@ -98,7 +101,8 @@
           "Volledig versleuteld",
           "Coupon plugin",
           "Project export",
-          "Klantondersteuning"
+          "Klantondersteuning",
+          "Network Uptime Alerts"
         ]
       },
       "stripePriceId": "price_professional",
@@ -145,7 +149,7 @@
           "Coupon plugin",
           "Project export",
           "Customer support",
-          "Monitoring Alerts"
+          "Network Uptime Alerts"
         ],
         "nl-nl": [
           "1 Project",
@@ -155,7 +159,7 @@
           "Coupon plugin",
           "Project export",
           "Klantondersteuning",
-          "Monitoring waarschuwingen"
+          "Network Uptime Alerts"
         ]
       },
       "stripePriceId": "price_enterprise",
