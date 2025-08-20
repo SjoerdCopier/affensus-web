@@ -19,13 +19,19 @@ function parseCookies(cookieHeader: string | null): Record<string, string> {
   return cookies
 }
 
-async function signJwt(payload: any, secret: string, expiresIn: number): Promise<string> {
-  const header = { alg: 'HS256', typ: 'JWT' }
+// JWT function using standard base64 encoding (not URL-safe)
+async function signJwt(payload: any, secret: string, expiresIn: number = 7 * 24 * 60 * 60): Promise<string> {
   const now = Math.floor(Date.now() / 1000)
-  const exp = now + expiresIn
-  
-  const jwtPayload = { ...payload, iat: now, exp }
-  
+  const jwtPayload = {
+    ...payload,
+    iat: now,
+    exp: now + expiresIn
+  }
+
+  const headerB64 = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
+  const payloadB64 = btoa(JSON.stringify(jwtPayload))
+  const data = `${headerB64}.${payloadB64}`
+
   const encoder = new TextEncoder()
   const key = await crypto.subtle.importKey(
     'raw',
@@ -34,20 +40,11 @@ async function signJwt(payload: any, secret: string, expiresIn: number): Promise
     false,
     ['sign']
   )
-  
-  const headerB64 = btoa(JSON.stringify(header)).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_')
-  const payloadB64 = btoa(JSON.stringify(jwtPayload)).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_')
-  
-  const signatureArrayBuffer = await crypto.subtle.sign(
-    'HMAC',
-    key,
-    encoder.encode(`${headerB64}.${payloadB64}`)
-  )
-  
-  const signatureB64 = btoa(String.fromCharCode(...new Uint8Array(signatureArrayBuffer)))
-    .replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_')
-  
-  return `${headerB64}.${payloadB64}.${signatureB64}`
+
+  const signature = await crypto.subtle.sign('HMAC', key, encoder.encode(data))
+  const signatureB64 = btoa(String.fromCharCode(...new Uint8Array(signature)))
+
+  return `${data}.${signatureB64}`
 }
 
 async function processPendingPayments(db: any, email: string, userId: number, stripeSecretKey?: string) {
@@ -346,9 +343,9 @@ export async function onRequestGet(context: any) {
     )
 
     // Determine redirect URL based on whether this is a paid user
-    let redirectUrl = `${env.SITE_URL || 'http://localhost:3000'}/auth`
+    let redirectUrl = `${env.SITE_URL || 'http://localhost:3000'}/`
     if (paidParam === 'true') {
-      redirectUrl = `${env.SITE_URL || 'http://localhost:3000'}/auth?paid=true&session_id=${sessionId}`
+      redirectUrl = `${env.SITE_URL || 'http://localhost:3000'}/?paid=true&session_id=${sessionId}`
     }
 
     // Create HTML response with localStorage and redirect
@@ -380,8 +377,12 @@ export async function onRequestGet(context: any) {
       'Content-Type': 'text/html'
     })
     
+    // URL encode the JWT token to prevent issues with = signs in cookies
+    const encodedToken = encodeURIComponent(jwtToken)
+    const cookieValue = `auth-token=${encodedToken}; HttpOnly; ${secureFlag}SameSite=Lax; Max-Age=${7 * 24 * 60 * 60}; Path=/`
+    
     // Set auth token cookie
-    headers.append('Set-Cookie', `auth-token=${jwtToken}; HttpOnly; ${secureFlag}SameSite=Lax; Max-Age=${7 * 24 * 60 * 60}; Path=/`)
+    headers.append('Set-Cookie', cookieValue)
     
     // Clear oauth_state cookie
     headers.append('Set-Cookie', `oauth_state=; HttpOnly; ${secureFlag}SameSite=Lax; Max-Age=0; Path=/`)

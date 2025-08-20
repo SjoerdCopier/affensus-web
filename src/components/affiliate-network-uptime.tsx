@@ -10,7 +10,7 @@ import Header from '@/components/header';
 import Footer from '@/components/footer';
 import { useLocaleTranslations } from '@/hooks/use-locale-translations';
 import Head from 'next/head';
-import { Bell, Clock, Zap, CheckCircle } from 'lucide-react';
+import { Bell, Clock, Zap } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 

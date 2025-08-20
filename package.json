@@ -11,11 +11,18 @@
     "pages:deploy": "wrangler pages deploy out"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.872.0",
+    "@aws-sdk/s3-request-presigner": "^3.872.0",
+    "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-popover": "^1.1.15",
     "@radix-ui/react-separator": "^1.1.7",
     "@radix-ui/react-slot": "^1.2.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
+    "countries-list": "^3.1.1",
+    "jspdf": "^3.0.1",
     "lucide-react": "^0.539.0",
     "next": "15.4.6",
     "next-intl": "^4.3.4",

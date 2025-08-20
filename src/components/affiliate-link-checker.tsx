@@ -1,8 +1,10 @@
 "use client"; // This marks the file as a client component
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Breadcrumbs from "@/components/breadcrumbs";
 import { useLocaleTranslations } from "@/hooks/use-locale-translations";
+import { Shield, Search, Clock } from 'lucide-react';
 
 interface Redirect {
     url: string;
@@ -14,6 +16,7 @@ interface Redirect {
 
 function AffiliateLinkCheckerContent() {
     const { t } = useLocaleTranslations();
+    const router = useRouter();
     const [affiliateUrl, setAffiliateUrl] = useState("");
     const [loading, setLoading] = useState(false);
     const [redirects, setRedirects] = useState<Redirect[]>([]);
@@ -21,6 +24,90 @@ function AffiliateLinkCheckerContent() {
     const [has404, setHas404] = useState(false);
     const [multipleNetworks, setMultipleNetworks] = useState(false);
     const [hasRedirectError, setHasRedirectError] = useState(false);
+    const [showAdvanced, setShowAdvanced] = useState(false);
+    const [bulkUrls, setBulkUrls] = useState("");
+    const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+
+    const extractUrlsFromText = (text: string): string[] => {
+        // Extract URLs from plain text
+        const urlRegex = /https?:\/\/[^\s\n\r,]+/g;
+        return text.match(urlRegex) || [];
+    };
+
+    const extractUrlsFromJson = (jsonContent: string): string[] => {
+        try {
+            const data = JSON.parse(jsonContent);
+            const urls: string[] = [];
+            
+            const extractFromObject = (obj: unknown) => {
+                if (typeof obj === 'string' && obj.match(/^https?:\/\//)) {
+                    urls.push(obj);
+                } else if (Array.isArray(obj)) {
+                    obj.forEach(extractFromObject);
+                } else if (typeof obj === 'object' && obj !== null) {
+                    Object.values(obj).forEach(extractFromObject);
+                }
+            };
+            
+            extractFromObject(data);
+            return urls;
+        } catch {
+            // If JSON parsing fails, fall back to text extraction
+            return extractUrlsFromText(jsonContent);
+        }
+    };
+
+    const extractUrlsFromXml = (xmlContent: string): string[] => {
+        const urlRegex = /https?:\/\/[^<>\s]+/g;
+        const matches = xmlContent.match(urlRegex);
+        return matches || [];
+    };
+
+    const handleFileUpload = async (file: File): Promise<string[]> => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const content = e.target?.result as string;
+                let urls: string[] = [];
+                
+                if (file.type === 'application/json' || file.name.endsWith('.json')) {
+                    urls = extractUrlsFromJson(content);
+                } else if (file.type === 'application/xml' || file.type === 'text/xml' || file.name.endsWith('.xml')) {
+                    urls = extractUrlsFromXml(content);
+                } else {
+                    urls = extractUrlsFromText(content);
+                }
+                
+                resolve(urls);
+            };
+            reader.onerror = () => reject(new Error('Failed to read file'));
+            reader.readAsText(file);
+        });
+    };
+
+    const handleAdvancedSubmit = async () => {
+        let urlsToProcess: string[] = [];
+        
+        if (uploadedFile) {
+            try {
+                urlsToProcess = await handleFileUpload(uploadedFile);
+            } catch (error) {
+                console.error('Error processing file:', error);
+                return;
+            }
+        } else if (bulkUrls.trim()) {
+            urlsToProcess = extractUrlsFromText(bulkUrls);
+        }
+        
+        if (urlsToProcess.length === 0) {
+            return;
+        }
+        
+        // For bulk processing, redirect to auth page
+        // Store the URLs in sessionStorage for after auth
+        sessionStorage.setItem('bulkUrls', JSON.stringify(urlsToProcess));
+        router.push('/auth');
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -186,13 +273,38 @@ function AffiliateLinkCheckerContent() {
                 </div>
                 
                 <div className="max-w-4xl mx-auto">
-                    <div className="mb-8">
+                    <div className="mb-8 text-center">
                 <h1 className="text-3xl font-bold text-gray-900 mb-4">
                     {t('tools.affiliateLinkChecker.title')}
                 </h1>
-                <p className="text-lg text-gray-700 leading-relaxed">
+                <p className="text-lg text-gray-700 leading-relaxed mb-8">
                     {t('tools.affiliateLinkChecker.description')}
                 </p>
+
+                {/* Benefits Grid */}
+                <div className="grid md:grid-cols-3 gap-6 my-12">
+                    <div className="flex flex-col items-center text-center space-y-3">
+                        <div className="p-3 rounded-full bg-[#6ca979]">
+                            <Shield className="h-6 w-6 text-white" />
+                        </div>
+                        <h3 className="font-semibold text-gray-900">Link Validation</h3>
+                        <p className="text-sm text-gray-600">Verify your affiliate links are working correctly</p>
+                    </div>
+                    <div className="flex flex-col items-center text-center space-y-3">
+                        <div className="p-3 rounded-full bg-[#6ca979]">
+                            <Search className="h-6 w-6 text-white" />
+                        </div>
+                        <h3 className="font-semibold text-gray-900">Network Detection</h3>
+                        <p className="text-sm text-gray-600">Identify which affiliate network your links belong to</p>
+                    </div>
+                    <div className="flex flex-col items-center text-center space-y-3">
+                        <div className="p-3 rounded-full bg-[#6ca979]">
+                            <Clock className="h-6 w-6 text-white" />
+                        </div>
+                        <h3 className="font-semibold text-gray-900">Instant Analysis</h3>
+                        <p className="text-sm text-gray-600">Get immediate feedback on link status and redirects</p>
+                    </div>
+                </div>
             </div>
 
             <div className="bg-white border border-gray-200 rounded-lg p-6 mb-8">
@@ -211,13 +323,75 @@ function AffiliateLinkCheckerContent() {
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
                     </div>
-                    <button 
-                        type="submit"
-                        className="bg-[#6ca979] text-white px-6 py-2 rounded-md hover:bg-[#5a8a66] transition-colors"
-                    >
-                        {t('tools.affiliateLinkChecker.form.button')}
-                    </button>
+                    <div className="flex gap-4">
+                        <button 
+                            type="submit"
+                            className="bg-[#6ca979] text-white px-6 py-2 rounded-md hover:bg-[#5a8a66] transition-colors cursor-pointer"
+                        >
+                            {t('tools.affiliateLinkChecker.form.button')}
+                        </button>
+                        <button 
+                            type="button"
+                            onClick={() => setShowAdvanced(!showAdvanced)}
+                            className="bg-gray-600 text-white px-6 py-2 rounded-md hover:bg-gray-700 transition-colors cursor-pointer"
+                        >
+                            Advanced
+                        </button>
+                    </div>
                 </form>
+
+                {showAdvanced && (
+                    <div className="mt-6 p-6 bg-gray-50 border border-gray-200 rounded-lg">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Advanced Settings</h3>
+                        
+                        <div className="space-y-4">
+                            <div>
+                                <label htmlFor="file-upload" className="block text-sm font-medium text-gray-700 mb-2">
+                                    Upload File (JSON, XML, or TXT)
+                                </label>
+                                <input
+                                    type="file"
+                                    id="file-upload"
+                                    accept=".json,.xml,.txt"
+                                    onChange={(e) => setUploadedFile(e.target.files?.[0] || null)}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                />
+                                {uploadedFile && (
+                                    <p className="mt-1 text-sm text-gray-600">
+                                        Selected: {uploadedFile.name}
+                                    </p>
+                                )}
+                            </div>
+
+                            <div className="text-center text-gray-500 text-sm">
+                                OR
+                            </div>
+
+                            <div>
+                                <label htmlFor="bulk-urls" className="block text-sm font-medium text-gray-700 mb-2">
+                                    Paste URLs (one per line)
+                                </label>
+                                <textarea
+                                    id="bulk-urls"
+                                    value={bulkUrls}
+                                    onChange={(e) => setBulkUrls(e.target.value)}
+                                    placeholder="https://example.com/affiliate-link-1&#10;https://example.com/affiliate-link-2&#10;https://example.com/affiliate-link-3"
+                                    rows={6}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                />
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={handleAdvancedSubmit}
+                                disabled={!uploadedFile && !bulkUrls.trim()}
+                                className="w-full bg-[#6ca979] text-white px-6 py-2 rounded-md hover:bg-[#5a8a66] transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed cursor-pointer"
+                            >
+                                Process Multiple URLs
+                            </button>
+                        </div>
+                    </div>
+                )}
                 
                 {loading && (
                     <div className="mt-6 text-center">
@@ -259,10 +433,9 @@ function AffiliateLinkCheckerContent() {
 
             <div className="space-y-8">
                 <section>
-                    <h2 className="text-xl font-semibold text-gray-900 mb-4">{t('tools.affiliateLinkChecker.sections.about.title')}</h2>
-                    <div className="space-y-4">
+                   <div className="space-y-4">
                         <div>
-                            <h3 className="text-lg font-medium text-gray-800 mb-2">{t('tools.affiliateLinkChecker.sections.about.multipleUrls.question')}</h3>
+                            <h2 className="text-xl font-semibold text-gray-900 mb-4">{t('tools.affiliateLinkChecker.sections.about.multipleUrls.question')}</h2>
                             <p className="text-gray-700">
                                 {t('tools.affiliateLinkChecker.sections.about.multipleUrls.answer')}
                             </p>
