@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback, Suspense } from 'react';
 import Breadcrumbs from "@/components/breadcrumbs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChevronDown, ChevronUp } from 'lucide-react';
+// import { ChevronDown, ChevronUp } from 'lucide-react'; // Commented out - used for expand/collapse functionality
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import Header from '@/components/header';
@@ -122,7 +122,6 @@ const HeartbeatBar = ({ heartbeats }: { heartbeats: StatusPageHeartbeat[] }) => 
         <div className="space-y-2">
           <h4 className="text-sm font-semibold">{heartbeat.time}</h4>
           <p>Status: {heartbeat.status === 1 ? 'UP' : 'DOWN'}</p>
-          <p>Ping: {heartbeat.ping}ms</p>
           {heartbeat.msg && <p>Message: {heartbeat.msg}</p>}
         </div>
       </HoverCardContent>
@@ -159,7 +158,7 @@ const SkeletonCard = () => (
 function AffiliateNetworkUptimeContent() {
   const { t } = useLocaleTranslations();
   const [domains, setDomains] = useState<Domain[]>([]);
-  const [expandedDomain, setExpandedDomain] = useState<string | null>(null);
+  // const [expandedDomain, setExpandedDomain] = useState<string | null>(null); // Commented out - used for expand/collapse functionality
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sortOption, setSortOption] = useState('default');
@@ -210,9 +209,9 @@ function AffiliateNetworkUptimeContent() {
     fetchDomainData();
   }, []);
 
-  const toggleDomain = (domainName: string) => {
-    setExpandedDomain(expandedDomain === domainName ? null : domainName);
-  };
+  // const toggleDomain = (domainName: string) => {
+  //   setExpandedDomain(expandedDomain === domainName ? null : domainName);
+  // }; // Commented out - used for expand/collapse functionality
 
   const getActualUptimeValue = (domain: Domain): number => {
     // Use uptimeList if available (more accurate), otherwise use avg_uptime_percentage
@@ -382,9 +381,9 @@ function AffiliateNetworkUptimeContent() {
                           <div className="text-sm text-muted-foreground">
                             {getUptimeDisplay(domain.uptimeList)} {t('tools.affiliateNetworkUptime.status.uptime')}
                           </div>
-                          <button onClick={() => toggleDomain(domain.domain)}>
+                          {/* <button onClick={() => toggleDomain(domain.domain)}>
                             {expandedDomain === domain.domain ? <ChevronUp /> : <ChevronDown />}
-                          </button>
+                          </button> */}
                         </CardHeader>
                         <CardContent>
                           <div className="text-2xl font-bold mb-4 text-left">
@@ -402,7 +401,7 @@ function AffiliateNetworkUptimeContent() {
                             )}
                             <p className="text-left pt-3">{t('tools.affiliateNetworkUptime.status.averageResponseTime')}: {calculateAverageResponseTime(domain.urls).toFixed(2)} ms</p>
                           </div>
-                          {expandedDomain === domain.domain && (
+                          {/* {expandedDomain === domain.domain && (
                             domain.urls.map((urlData) => (
                               <div key={urlData.type} className="mb-4 text-left">
                                 <h3 className="text-lg font-semibold">{urlData.type}</h3>
@@ -425,7 +424,7 @@ function AffiliateNetworkUptimeContent() {
                                 )}
                               </div>
                             ))
-                          )}
+                          )} */}
                         </CardContent>
                       </Card>
                     ))}
@@ -440,9 +439,9 @@ function AffiliateNetworkUptimeContent() {
                           <div className="text-sm text-muted-foreground">
                             {getUptimeDisplay(domain.uptimeList)} {t('tools.affiliateNetworkUptime.status.uptime')}
                           </div>
-                          <button onClick={() => toggleDomain(domain.domain)}>
+                          {/* <button onClick={() => toggleDomain(domain.domain)}>
                             {expandedDomain === domain.domain ? <ChevronUp /> : <ChevronDown />}
-                          </button>
+                          </button> */}
                         </CardHeader>
                         <CardContent>
                           <div className="text-2xl font-bold mb-4 text-left">
@@ -460,7 +459,7 @@ function AffiliateNetworkUptimeContent() {
                             )}
                             <p className="text-left pt-3">{t('tools.affiliateNetworkUptime.status.averageResponseTime')}: {calculateAverageResponseTime(domain.urls).toFixed(2)} ms</p>
                           </div>
-                          {expandedDomain === domain.domain && (
+                          {/* {expandedDomain === domain.domain && (
                             domain.urls.map((urlData) => (
                               <div key={urlData.type} className="mb-4 text-left">
                                 <h3 className="text-lg font-semibold">{urlData.type}</h3>
@@ -483,7 +482,7 @@ function AffiliateNetworkUptimeContent() {
                                 )}
                               </div>
                             ))
-                          )}
+                          )} */}
                         </CardContent>
                       </Card>
                     ))}
