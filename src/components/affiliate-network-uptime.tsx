@@ -108,7 +108,7 @@ const UptimeBar = ({ uptimeList }: { uptimeList?: UptimeList }) => {
   );
 };
 
-const HeartbeatBar = ({ heartbeats }: { heartbeats: StatusPageHeartbeat[] }) => {
+const HeartbeatBar = ({ heartbeats, showTimeRange = false }: { heartbeats: StatusPageHeartbeat[], showTimeRange?: boolean }) => {
   const renderHeartbeatBar = (heartbeat: StatusPageHeartbeat, index: number) => (
     <HoverCard key={index}>
       <HoverCardTrigger>
@@ -128,14 +128,48 @@ const HeartbeatBar = ({ heartbeats }: { heartbeats: StatusPageHeartbeat[] }) => 
     </HoverCard>
   );
 
-  // Show last 7 days of heartbeats (approximately 2016 heartbeats at 5-minute intervals)
+  // Show recent heartbeats (limit to prevent performance issues)
   const recentHeartbeats = heartbeats
     .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())
     .slice(0, 2016);
 
+  // Calculate the actual time range for these specific heartbeats
+  const getTimeRange = (): string => {
+    if (!recentHeartbeats || recentHeartbeats.length === 0) {
+      return "No data";
+    }
+    
+    if (recentHeartbeats.length === 1) {
+      return "Single check";
+    }
+    
+    const newest = new Date(recentHeartbeats[0].time);
+    const oldest = new Date(recentHeartbeats[recentHeartbeats.length - 1].time);
+    
+    const diffInMs = newest.getTime() - oldest.getTime();
+    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+    const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+    
+    if (diffInDays >= 1) {
+      return `Last ${diffInDays} day${diffInDays > 1 ? 's' : ''}`;
+    } else if (diffInHours >= 1) {
+      return `Last ${diffInHours} hour${diffInHours > 1 ? 's' : ''}`;
+    } else {
+      const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+      return `Last ${Math.max(1, diffInMinutes)} minute${diffInMinutes > 1 ? 's' : ''}`;
+    }
+  };
+
   return (
-    <div className="flex">
-      {recentHeartbeats.map((heartbeat, index) => renderHeartbeatBar(heartbeat, index))}
+    <div>
+      {showTimeRange && (
+        <h4 className="text-sm font-medium text-gray-600 mb-2 text-left">
+          Real-time Heartbeats ({getTimeRange()})
+        </h4>
+      )}
+      <div className="flex">
+        {recentHeartbeats.map((heartbeat, index) => renderHeartbeatBar(heartbeat, index))}
+      </div>
     </div>
   );
 };
@@ -391,11 +425,7 @@ function AffiliateNetworkUptimeContent() {
                           </div>
                           <div className="mb-4">
                             {domain.hasStatusPage && domain.urls.some(url => url.heartbeats) ? (
-                              <div className="mb-2">
-                                <h4 className="text-sm font-medium text-gray-600 mb-2 text-left">{t('tools.affiliateNetworkUptime.status.realTimeHeartbeats')}</h4>
-
-                                <HeartbeatBar heartbeats={domain.urls.find(url => url.heartbeats)?.heartbeats || []} />
-                              </div>
+                              <HeartbeatBar heartbeats={domain.urls.find(url => url.heartbeats)?.heartbeats || []} showTimeRange={true} />
                             ) : (
                               <UptimeBar uptimeList={domain.uptimeList} />
                             )}
@@ -449,11 +479,7 @@ function AffiliateNetworkUptimeContent() {
                           </div>
                           <div className="mb-4">
                             {domain.hasStatusPage && domain.urls.some(url => url.heartbeats) ? (
-                              <div className="mb-2">
-                                <h4 className="text-sm font-medium text-gray-600 mb-2 text-left">{t('tools.affiliateNetworkUptime.status.realTimeHeartbeats')}</h4>
-
-                                <HeartbeatBar heartbeats={domain.urls.find(url => url.heartbeats)?.heartbeats || []} />
-                              </div>
+                              <HeartbeatBar heartbeats={domain.urls.find(url => url.heartbeats)?.heartbeats || []} showTimeRange={true} />
                             ) : (
                               <UptimeBar uptimeList={domain.uptimeList} />
                             )}
