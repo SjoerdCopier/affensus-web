@@ -385,6 +385,122 @@
         }
       }
     },
+    "legal": {
+      "dataDeletion": {
+        "title": "Verzoek tot Gegevensverwijdering",
+        "subtitle": "Hoe je een verzoek tot verwijdering van je persoonlijke gegevens van Affensus kunt indienen",
+        "breadcrumb": "Gegevensverwijdering",
+        "lastUpdated": "Laatst bijgewerkt",
+        "sections": {
+          "introduction": {
+            "title": "Inleiding",
+            "paragraph1": "Bij Affensus respecteren we je recht om je persoonlijke gegevens te beheren. Deze pagina legt uit hoe je een verzoek kunt indienen tot verwijdering van je persoonlijke informatie van ons platform.",
+            "paragraph2": "We zijn toegewijd aan het snel verwerken van verzoeken tot gegevensverwijdering in overeenstemming met toepasselijke wetten op gegevensbescherming, inclusief GDPR en CCPA.",
+            "compliance": "We voldoen aan regelgeving op het gebied van gegevensbescherming en zullen je verzoek tot verwijdering binnen 30 dagen verwerken."
+          },
+          "yourRights": {
+            "title": "Je Recht op Gegevensverwijdering",
+            "paragraph1": "Je hebt het recht om op elk moment verwijdering van je persoonlijke gegevens aan te vragen. Dit omvat:",
+            "paragraph2": "We zullen je verzoek binnen 30 dagen verwerken en de verwijdering schriftelijk bevestigen.",
+            "items": [
+              "Accountinformatie en profielgegevens",
+              "Leervoortgang en voorkeuren",
+              "Gebruiksstatistieken en analytische gegevens",
+              "Communicatiegeschiedenis en ondersteuningstickets",
+              "Apparaat- en browserinformatie",
+              "Betalings- en factureringsinformatie (indien van toepassing)"
+            ]
+          },
+          "whatWeDelete": {
+            "title": "Wat We Verwijderen",
+            "paragraph1": "Wanneer je een verzoek tot gegevensverwijdering indient, zullen we de volgende informatie verwijderen:",
+            "items": [
+              "Persoonlijke identificatie-informatie",
+              "Accountgegevens en authenticatiegegevens",
+              "Leervoortgang en cursusgeschiedenis",
+              "Gebruikersvoorkeuren en instellingen",
+              "Communicatierecords en ondersteuningstickets",
+              "Analytische en gebruiksgegevens",
+              "Apparaat- en browserinformatie",
+              "Betalings- en factureringsrecords (indien van toepassing)"
+            ]
+          },
+          "howToRequest": {
+            "title": "Hoe Je een Verzoek tot Gegevensverwijdering Kunt Indienen",
+            "paragraph1": "Je kunt een verzoek tot gegevensverwijdering indienen via de volgende methoden:",
+            "items": [
+              "E-mail ons op privacy@affensus.com met onderwerp \"Verzoek tot Gegevensverwijdering\"",
+              "Vermeld je e-mailadres en eventuele accountidentificatoren",
+              "Specificeer welke gegevens je wilt laten verwijderen (alle gegevens of specifieke categorieën)",
+              "Geef eventuele aanvullende context die ons kan helpen je gegevens te lokaliseren"
+            ]
+          },
+          "processingTime": {
+            "title": "Verwerkingstijd",
+            "paragraph1": "We streven ernaar om alle verzoeken tot gegevensverwijdering binnen 30 dagen na ontvangst te verwerken.",
+            "paragraph2": "Voor urgente verzoeken of als je zorgen hebt over onze reactietijd, neem dan rechtstreeks contact met ons op."
+          },
+          "confirmation": {
+            "title": "Bevestiging van Verwijdering",
+            "paragraph1": "Zodra je gegevens zijn verwijderd, sturen we je een bevestigingse-mail.",
+            "paragraph2": "Houd er rekening mee dat sommige informatie kan worden bewaard voor juridische of regelgevende doeleinden zoals vereist door wetgeving."
+          },
+          "contactInfo": {
+            "title": "Contactinformatie",
+            "paragraph1": "Voor verzoeken tot gegevensverwijdering of vragen over je privacyrechten, neem dan contact met ons op:"
+          },
+          "legalBasis": {
+            "title": "Juridische Grondslag voor Gegevensverwijdering",
+            "paragraph1": "Je recht op gegevensverwijdering wordt beschermd onder verschillende wetten op gegevensbescherming:",
+            "paragraph2": "We verwerken verzoeken tot verwijdering in overeenstemming met deze juridische kaders en ons privacybeleid.",
+            "items": [
+              "GDPR Artikel 17 (Recht op Verwijdering)",
+              "CCPA Sectie 1798.105 (Recht op Verwijdering)",
+              "Andere toepasselijke wetten op gegevensbescherming",
+              "Onze toewijding aan gebruikersprivacy en gegevensbescherming"
+            ]
+          }
+        }
+      },
+      "refundPolicy": {
+        "title": "Terugstortingsbeleid",
+        "subtitle": "Onze toewijding aan je tevredenheid met Affensus diensten",
+        "breadcrumb": "Terugstortingsbeleid",
+        "lastUpdated": "Laatst bijgewerkt",
+        "sections": {
+          "introduction": {
+            "title": "Affensus Terugstortingsbeleid",
+            "paragraph1": "Je hebt recht op een terugbetaling binnen 7 dagen na het aanmelden bij Affensus. Geen vragen gesteld!"
+          },
+          "howToRequest": {
+            "title": "Hoe Je een Terugbetaling Kunt Aanvragen",
+            "paragraph1": "Volg deze eenvoudige stappen om je terugbetaling aan te vragen:",
+            "steps": [
+              "Log in op je Affensus dashboard",
+              "Klik op je profiel in de rechterbovenhoek",
+              "Selecteer \"Abonnementen\" uit het dropdown menu",
+              "Zoek de \"Terugbetaling Aanvragen\" knop en klik erop",
+              "Je terugbetaling wordt automatisch goedgekeurd"
+            ]
+          },
+          "processingTime": {
+            "title": "Terugbetaling Verwerkingstijd",
+            "paragraph1": "Het terugbetalingsproces is snel en eenvoudig. Je kunt verwachten dat de terugbetaling binnen 5-10 werkdagen in je account wordt weergegeven, afhankelijk van je betaalmethode."
+          },
+          "feedback": {
+            "title": "We Waarderen Je Feedback",
+            "paragraph1": "Bij Affensus zijn we toegewijd aan het bieden van de best mogelijke ervaring voor onze gebruikers. Als je overweegt om een terugbetaling aan te vragen, horen we graag van je over hoe we onze dienst kunnen verbeteren.",
+            "paragraph2": "Neem even de tijd om je gedachten met ons te delen:",
+            "paragraph3": "Je feedback is onbetaalbaar en helpt ons om continu te verbeteren. Je kunt je gedachten delen door ons te e-mailen op feedback@affensus.com of via het feedbackformulier in je dashboard.",
+            "questions": [
+              "Welke aspecten van onze dienst kwamen niet aan je verwachtingen tegemoet?",
+              "Zijn er functies die je mist?",
+              "Hoe kunnen we je ervaring met Affensus verbeteren?"
+            ]
+          }
+        }
+      }
+    },
   "faq": {
     "title": "Veelgestelde vragen",
     "subtitle": "Verken veelgestelde vragen voor duidelijke en nuttige inzichten over onze diensten.",
