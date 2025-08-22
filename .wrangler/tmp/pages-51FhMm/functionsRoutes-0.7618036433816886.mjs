@@ -31,7 +31,6 @@ import { onRequestPut as __api_profile_index_ts_onRequestPut } from "/Users/sjoe
 import { onRequestOptions as __api_refund_request_index_ts_onRequestOptions } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/refund-request/index.ts"
 import { onRequestPost as __api_refund_request_index_ts_onRequestPost } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/refund-request/index.ts"
 import { onRequestPost as __api_request_magic_link_index_ts_onRequestPost } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/request-magic-link/index.ts"
-import { onRequestGet as __api_test_uptime_ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/test-uptime.ts"
 import { onRequestGet as __api_user_index_ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/user/index.ts"
 import { onRequestOptions as __api_user_index_ts_onRequestOptions } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/user/index.ts"
 import { onRequestGet as __api_user_preferences_ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/user-preferences.ts"
@@ -268,13 +267,6 @@ export const routes = [
       method: "POST",
       middlewares: [],
       modules: [__api_request_magic_link_index_ts_onRequestPost],
-    },
-  {
-      routePath: "/api/test-uptime",
-      mountPath: "/api",
-      method: "GET",
-      middlewares: [],
-      modules: [__api_test_uptime_ts_onRequestGet],
     },
   {
       routePath: "/api/user",

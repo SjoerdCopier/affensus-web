@@ -9,7 +9,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// ../.wrangler/tmp/bundle-1l1ukb/checked-fetch.js
+// ../.wrangler/tmp/bundle-NfM2oK/checked-fetch.js
 function checkURL(request, init) {
   const url = request instanceof URL ? request : new URL(
     (typeof request === "string" ? new Request(request, init) : request).url
@@ -27,7 +27,7 @@ function checkURL(request, init) {
 }
 var urls;
 var init_checked_fetch = __esm({
-  "../.wrangler/tmp/bundle-1l1ukb/checked-fetch.js"() {
+  "../.wrangler/tmp/bundle-NfM2oK/checked-fetch.js"() {
     "use strict";
     urls = /* @__PURE__ */ new Set();
     __name(checkURL, "checkURL");
@@ -5330,52 +5330,6 @@ var init_request_magic_link = __esm({
   }
 });
 
-// api/test-uptime.ts
-async function onRequestGet16(context) {
-  const { env } = context;
-  const uptimeKumaUrl = env.UPTIME_KUMA_URL;
-  const uptimeKumaSecret = env.UPTIME_KUMA_SECRET;
-  if (!uptimeKumaSecret) {
-    return new Response(JSON.stringify({ error: "No secret" }), {
-      headers: { "Content-Type": "application/json" }
-    });
-  }
-  try {
-    const response = await fetch(`${uptimeKumaUrl}/metrics`, {
-      headers: {
-        "Authorization": `Basic ${btoa(":" + uptimeKumaSecret)}`,
-        "Accept": "text/plain"
-      }
-    });
-    return new Response(JSON.stringify({
-      status: response.status,
-      statusText: response.statusText,
-      hasSecret: !!uptimeKumaSecret,
-      hasUrl: !!uptimeKumaUrl,
-      secretPrefix: uptimeKumaSecret ? uptimeKumaSecret.substring(0, 10) + "..." : "none",
-      url: uptimeKumaUrl
-    }), {
-      headers: { "Content-Type": "application/json" }
-    });
-  } catch (error) {
-    return new Response(JSON.stringify({
-      error: error instanceof Error ? error.message : "Unknown error",
-      hasSecret: !!uptimeKumaSecret,
-      hasUrl: !!uptimeKumaUrl
-    }), {
-      headers: { "Content-Type": "application/json" }
-    });
-  }
-}
-var init_test_uptime = __esm({
-  "api/test-uptime.ts"() {
-    "use strict";
-    init_functionsRoutes_0_7618036433816886();
-    init_checked_fetch();
-    __name(onRequestGet16, "onRequestGet");
-  }
-});
-
 // api/user/index.ts
 async function onRequestOptions5() {
   return new Response(null, {
@@ -5387,7 +5341,7 @@ async function onRequestOptions5() {
     }
   });
 }
-async function onRequestGet17(context) {
+async function onRequestGet16(context) {
   try {
     const { request, env } = context;
     const cookieHeader = request.headers.get("Cookie");
@@ -5467,7 +5421,7 @@ var init_user = __esm({
     init_checked_fetch();
     init_jwt();
     __name(onRequestOptions5, "onRequestOptions");
-    __name(onRequestGet17, "onRequestGet");
+    __name(onRequestGet16, "onRequestGet");
   }
 });
 
@@ -5512,7 +5466,7 @@ function parseCookies9(cookieHeader) {
 async function getUserByEmail3(db, email) {
   return await db.prepare("SELECT * FROM users WHERE email = ?").bind(email).first();
 }
-async function onRequestGet18(context) {
+async function onRequestGet17(context) {
   try {
     const { request, env } = context;
     const cookies = parseCookies9(request.headers.get("Cookie"));
@@ -5582,7 +5536,7 @@ var init_user_preferences = __esm({
     __name(verifyJwt3, "verifyJwt");
     __name(parseCookies9, "parseCookies");
     __name(getUserByEmail3, "getUserByEmail");
-    __name(onRequestGet18, "onRequestGet");
+    __name(onRequestGet17, "onRequestGet");
   }
 });
 
@@ -5705,7 +5659,6 @@ var init_functionsRoutes_0_7618036433816886 = __esm({
     init_refund_request();
     init_refund_request();
     init_request_magic_link();
-    init_test_uptime();
     init_user();
     init_user();
     init_user_preferences();
@@ -5943,18 +5896,11 @@ var init_functionsRoutes_0_7618036433816886 = __esm({
         modules: [onRequestPost8]
       },
       {
-        routePath: "/api/test-uptime",
-        mountPath: "/api",
-        method: "GET",
-        middlewares: [],
-        modules: [onRequestGet16]
-      },
-      {
         routePath: "/api/user",
         mountPath: "/api/user",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet17]
+        modules: [onRequestGet16]
       },
       {
         routePath: "/api/user",
@@ -5968,7 +5914,7 @@ var init_functionsRoutes_0_7618036433816886 = __esm({
         mountPath: "/api",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet18]
+        modules: [onRequestGet17]
       },
       {
         routePath: "/api/currency-rates",
@@ -5981,11 +5927,11 @@ var init_functionsRoutes_0_7618036433816886 = __esm({
   }
 });
 
-// ../.wrangler/tmp/bundle-1l1ukb/middleware-loader.entry.ts
+// ../.wrangler/tmp/bundle-NfM2oK/middleware-loader.entry.ts
 init_functionsRoutes_0_7618036433816886();
 init_checked_fetch();
 
-// ../.wrangler/tmp/bundle-1l1ukb/middleware-insertion-facade.js
+// ../.wrangler/tmp/bundle-NfM2oK/middleware-insertion-facade.js
 init_functionsRoutes_0_7618036433816886();
 init_checked_fetch();
 
@@ -6486,7 +6432,7 @@ var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx)
 }, "jsonError");
 var middleware_miniflare3_json_error_default = jsonError;
 
-// ../.wrangler/tmp/bundle-1l1ukb/middleware-insertion-facade.js
+// ../.wrangler/tmp/bundle-NfM2oK/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_ensure_req_body_drained_default,
   middleware_miniflare3_json_error_default
@@ -6520,7 +6466,7 @@ function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
 }
 __name(__facade_invoke__, "__facade_invoke__");
 
-// ../.wrangler/tmp/bundle-1l1ukb/middleware-loader.entry.ts
+// ../.wrangler/tmp/bundle-NfM2oK/middleware-loader.entry.ts
 var __Facade_ScheduledController__ = class ___Facade_ScheduledController__ {
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;
