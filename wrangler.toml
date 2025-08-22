@@ -13,24 +13,16 @@ database_id = "19caf1fa-62ec-47ae-9429-9f3ff31a3b00"
 # Environment variables
 [vars]
 SITE_URL = "http://localhost:3000"
-JWT_SECRET = "your-super-secret-jwt-key-change-this-in-production"
-# Add your Google OAuth credentials here:
-# GOOGLE_CLIENT_ID = "your-google-client-id"
-# GOOGLE_CLIENT_SECRET = "your-google-client-secret"
-# RESEND_API_KEY = "your-resend-api-key"
-# STRIPE_SECRET_KEY = "your-stripe-secret-key"
+JWT_SECRET = "e59a235f86b581ecfe123ea0654dc7e9f3053a101e085c2ab75c092cb0a87db6"
+
 
 [env.production]
 name = "affensus-web"
 
 [env.production.vars]
 # Add your production environment variables here
-# UPTIME_KUMA_URL = "https://your-uptime-kuma-domain.com"
+UPTIME_KUMA_URL = "http://uptime.affensus.com:3001"
 
 [env.preview]
 name = "affensus-web-preview"
-
-[env.preview.vars]
-# Add your preview environment variables here  
-# UPTIME_KUMA_URL = "https://your-preview-uptime-kuma-domain.com"
 
