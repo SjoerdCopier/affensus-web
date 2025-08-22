@@ -19,9 +19,16 @@ JWT_SECRET = "e59a235f86b581ecfe123ea0654dc7e9f3053a101e085c2ab75c092cb0a87db6"
 [env.production]
 name = "affensus-web"
 
+# D1 Database for production
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "affensus-auth"
+database_id = "19caf1fa-62ec-47ae-9429-9f3ff31a3b00"
+
 [env.production.vars]
-# Add your production environment variables here
-UPTIME_KUMA_URL = "http://uptime.affensus.com:3001"
+# Production uses encrypted secrets from Cloudflare Pages dashboard
+# Non-sensitive production overrides can go here
+SITE_URL = "https://affensus.com"
 
 [env.preview]
 name = "affensus-web-preview"
