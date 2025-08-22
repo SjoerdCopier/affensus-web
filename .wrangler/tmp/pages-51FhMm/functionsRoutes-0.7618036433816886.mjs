@@ -23,6 +23,7 @@ import { onRequest as __api_stripe_webhook_ts_onRequest } from "/Users/sjoerdcop
 import { onRequestGet as __api_invoice__invoiceNumber__ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/invoice/[invoiceNumber].ts"
 import { onRequestOptions as __api_invoice__invoiceNumber__ts_onRequestOptions } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/invoice/[invoiceNumber].ts"
 import { onRequestPost as __api_contact_index_ts_onRequestPost } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/contact/index.ts"
+import { onRequestGet as __api_debug_uptime_connection_ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/debug-uptime-connection.ts"
 import { onRequestPost as __api_logout_index_ts_onRequestPost } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/logout/index.ts"
 import { onRequestGet as __api_magic_login_index_ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/magic-login/index.ts"
 import { onRequestPost as __api_mistake_report_index_ts_onRequestPost } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/mistake-report/index.ts"
@@ -211,6 +212,13 @@ export const routes = [
       method: "POST",
       middlewares: [],
       modules: [__api_contact_index_ts_onRequestPost],
+    },
+  {
+      routePath: "/api/debug-uptime-connection",
+      mountPath: "/api",
+      method: "GET",
+      middlewares: [],
+      modules: [__api_debug_uptime_connection_ts_onRequestGet],
     },
   {
       routePath: "/api/logout",

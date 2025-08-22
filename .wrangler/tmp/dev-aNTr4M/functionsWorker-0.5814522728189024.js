@@ -56,7 +56,7 @@ function checkURL2(request, init) {
 __name(checkURL2, "checkURL");
 var urls2;
 var init_checked_fetch = __esm({
-  "../.wrangler/tmp/bundle-NfM2oK/checked-fetch.js"() {
+  "../.wrangler/tmp/bundle-Z404Wm/checked-fetch.js"() {
     "use strict";
     urls2 = /* @__PURE__ */ new Set();
     __name2(checkURL2, "checkURL");
@@ -4358,6 +4358,103 @@ var init_contact = __esm({
     __name2(onRequestPost4, "onRequestPost");
   }
 });
+async function onRequestGet14(context) {
+  const { env } = context;
+  const uptimeKumaUrl = env.UPTIME_KUMA_URL;
+  const uptimeKumaSecret = env.UPTIME_KUMA_SECRET;
+  if (!uptimeKumaSecret || !uptimeKumaUrl) {
+    return new Response(JSON.stringify({
+      error: "Missing credentials",
+      hasSecret: !!uptimeKumaSecret,
+      hasUrl: !!uptimeKumaUrl
+    }), {
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+  const debugInfo = {
+    url: uptimeKumaUrl,
+    timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+    cloudflareHeaders: {},
+    testResults: []
+  };
+  const cfHeaders = ["cf-ray", "cf-ipcountry", "cf-connecting-ip"];
+  cfHeaders.forEach((header) => {
+    const value = context.request.headers.get(header);
+    if (value) debugInfo.cloudflareHeaders[header] = value;
+  });
+  try {
+    const testUrl = `${uptimeKumaUrl}/metrics`;
+    const response = await fetch(testUrl, {
+      method: "HEAD",
+      headers: {
+        "User-Agent": "Cloudflare-Pages-Debug/1.0"
+      }
+    });
+    debugInfo.testResults.push({
+      test: "HEAD request",
+      status: response.status,
+      statusText: response.statusText,
+      headers: Object.fromEntries(response.headers.entries())
+    });
+  } catch (error) {
+    debugInfo.testResults.push({
+      test: "HEAD request",
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
+  try {
+    const testUrl = `${uptimeKumaUrl}/metrics`;
+    const response = await fetch(testUrl, {
+      headers: {
+        "Authorization": `Basic ${btoa(":" + uptimeKumaSecret)}`,
+        "Accept": "text/plain",
+        "User-Agent": "Cloudflare-Pages-Debug/1.0"
+      }
+    });
+    debugInfo.testResults.push({
+      test: "GET with auth",
+      status: response.status,
+      statusText: response.statusText,
+      responsePreview: response.ok ? (await response.text()).substring(0, 200) : "Not OK"
+    });
+  } catch (error) {
+    debugInfo.testResults.push({
+      test: "GET with auth",
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
+  try {
+    const testUrl = uptimeKumaUrl;
+    const response = await fetch(testUrl, {
+      method: "HEAD",
+      headers: {
+        "User-Agent": "Cloudflare-Pages-Debug/1.0"
+      }
+    });
+    debugInfo.testResults.push({
+      test: "Base URL HEAD",
+      status: response.status,
+      statusText: response.statusText
+    });
+  } catch (error) {
+    debugInfo.testResults.push({
+      test: "Base URL HEAD",
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
+  return new Response(JSON.stringify(debugInfo, null, 2), {
+    headers: { "Content-Type": "application/json" }
+  });
+}
+__name(onRequestGet14, "onRequestGet14");
+var init_debug_uptime_connection = __esm({
+  "api/debug-uptime-connection.ts"() {
+    "use strict";
+    init_functionsRoutes_0_7618036433816886();
+    init_checked_fetch();
+    __name2(onRequestGet14, "onRequestGet");
+  }
+});
 async function onRequestPost5(context) {
   const { env } = context;
   const isProduction = env.SITE_URL?.startsWith("https://") || false;
@@ -4500,7 +4597,7 @@ async function processPendingPayments3(db, email, userId, stripeSecretKey) {
   }
 }
 __name(processPendingPayments3, "processPendingPayments3");
-async function onRequestGet14(context) {
+async function onRequestGet15(context) {
   try {
     const { request, env } = context;
     const url = new URL(request.url);
@@ -4597,7 +4694,7 @@ async function onRequestGet14(context) {
     });
   }
 }
-__name(onRequestGet14, "onRequestGet14");
+__name(onRequestGet15, "onRequestGet15");
 var init_magic_login = __esm({
   "api/magic-login/index.ts"() {
     "use strict";
@@ -4609,7 +4706,7 @@ var init_magic_login = __esm({
     __name2(getUserByEmail2, "getUserByEmail");
     __name2(updatePreferredLoginMethod, "updatePreferredLoginMethod");
     __name2(processPendingPayments3, "processPendingPayments");
-    __name2(onRequestGet14, "onRequestGet");
+    __name2(onRequestGet15, "onRequestGet");
   }
 });
 async function onRequestPost6(context) {
@@ -4739,7 +4836,7 @@ async function updateUser(db, userId, data) {
   return await getUserById2(db, userId);
 }
 __name(updateUser, "updateUser");
-async function onRequestGet15(context) {
+async function onRequestGet16(context) {
   try {
     const { request, env } = context;
     const cookies = parseCookies8(request.headers.get("Cookie"));
@@ -4812,7 +4909,7 @@ async function onRequestGet15(context) {
     });
   }
 }
-__name(onRequestGet15, "onRequestGet15");
+__name(onRequestGet16, "onRequestGet16");
 async function onRequestPut2(context) {
   try {
     const { request, env } = context;
@@ -4897,7 +4994,7 @@ var init_profile = __esm({
     __name2(parseCookies8, "parseCookies");
     __name2(getUserById2, "getUserById");
     __name2(updateUser, "updateUser");
-    __name2(onRequestGet15, "onRequestGet");
+    __name2(onRequestGet16, "onRequestGet");
     __name2(onRequestPut2, "onRequestPut");
   }
 });
@@ -5390,7 +5487,7 @@ async function onRequestOptions5() {
   });
 }
 __name(onRequestOptions5, "onRequestOptions5");
-async function onRequestGet16(context) {
+async function onRequestGet17(context) {
   try {
     const { request, env } = context;
     const cookieHeader = request.headers.get("Cookie");
@@ -5463,7 +5560,7 @@ async function onRequestGet16(context) {
     });
   }
 }
-__name(onRequestGet16, "onRequestGet16");
+__name(onRequestGet17, "onRequestGet17");
 var init_user = __esm({
   "api/user/index.ts"() {
     "use strict";
@@ -5471,7 +5568,7 @@ var init_user = __esm({
     init_checked_fetch();
     init_jwt();
     __name2(onRequestOptions5, "onRequestOptions");
-    __name2(onRequestGet16, "onRequestGet");
+    __name2(onRequestGet17, "onRequestGet");
   }
 });
 async function verifyJwt3(token, secret) {
@@ -5517,7 +5614,7 @@ async function getUserByEmail3(db, email) {
   return await db.prepare("SELECT * FROM users WHERE email = ?").bind(email).first();
 }
 __name(getUserByEmail3, "getUserByEmail3");
-async function onRequestGet17(context) {
+async function onRequestGet18(context) {
   try {
     const { request, env } = context;
     const cookies = parseCookies9(request.headers.get("Cookie"));
@@ -5579,7 +5676,7 @@ async function onRequestGet17(context) {
     });
   }
 }
-__name(onRequestGet17, "onRequestGet17");
+__name(onRequestGet18, "onRequestGet18");
 var init_user_preferences = __esm({
   "api/user-preferences.ts"() {
     "use strict";
@@ -5588,7 +5685,7 @@ var init_user_preferences = __esm({
     __name2(verifyJwt3, "verifyJwt");
     __name2(parseCookies9, "parseCookies");
     __name2(getUserByEmail3, "getUserByEmail");
-    __name2(onRequestGet17, "onRequestGet");
+    __name2(onRequestGet18, "onRequestGet");
   }
 });
 var onRequest5;
@@ -5699,6 +5796,7 @@ var init_functionsRoutes_0_7618036433816886 = __esm({
     init_invoiceNumber();
     init_invoiceNumber();
     init_contact();
+    init_debug_uptime_connection();
     init_logout();
     init_magic_login();
     init_mistake_report();
@@ -5888,6 +5986,13 @@ var init_functionsRoutes_0_7618036433816886 = __esm({
         modules: [onRequestPost4]
       },
       {
+        routePath: "/api/debug-uptime-connection",
+        mountPath: "/api",
+        method: "GET",
+        middlewares: [],
+        modules: [onRequestGet14]
+      },
+      {
         routePath: "/api/logout",
         mountPath: "/api/logout",
         method: "POST",
@@ -5899,7 +6004,7 @@ var init_functionsRoutes_0_7618036433816886 = __esm({
         mountPath: "/api/magic-login",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet14]
+        modules: [onRequestGet15]
       },
       {
         routePath: "/api/mistake-report",
@@ -5913,7 +6018,7 @@ var init_functionsRoutes_0_7618036433816886 = __esm({
         mountPath: "/api/profile",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet15]
+        modules: [onRequestGet16]
       },
       {
         routePath: "/api/profile",
@@ -5948,7 +6053,7 @@ var init_functionsRoutes_0_7618036433816886 = __esm({
         mountPath: "/api/user",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet16]
+        modules: [onRequestGet17]
       },
       {
         routePath: "/api/user",
@@ -5962,7 +6067,7 @@ var init_functionsRoutes_0_7618036433816886 = __esm({
         mountPath: "/api",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet17]
+        modules: [onRequestGet18]
       },
       {
         routePath: "/api/currency-rates",
