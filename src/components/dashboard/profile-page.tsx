@@ -5,9 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { User } from 'lucide-react'
 
-import SiteHeader from "@/components/header"
-import SiteFooter from "@/components/footer"
+
 import PreferencesTab from "@/components/dashboard/preferences-tab"
 import BillingTab from "@/components/dashboard/billing-tab"
 import PlansTab from "@/components/dashboard/plans-tab"
@@ -257,173 +257,189 @@ export default function ProfilePageComponent() {
 
   if (isLoading) {
     return (
-      <>
-        <SiteHeader />
-        <div className="min-h-screen bg-gray-50 py-8">
-          <div className="container mx-auto px-4 max-w-4xl">
-            <div className="flex items-center justify-center py-12">
+      <div className="pt-4 pl-4 pr-4 pb-6">
+        <div className="space-y-3">
+          <div className="bg-white rounded-lg p-3 border border-gray-200">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="p-1 bg-blue-100 rounded">
+                <User className="w-3 h-3 text-blue-600" />
+              </div>
+              <div>
+                <h1 className="text-xs font-bold text-gray-900">Profile Management</h1>
+                <p className="text-xs text-gray-600">Manage your account settings and subscription</p>
+              </div>
+            </div>
+            <div className="flex items-center justify-center py-8">
               <div className="text-center">
-                <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                <p className="text-gray-600">Loading your profile...</p>
+                <div className="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                <p className="text-xs text-gray-600">Loading your profile...</p>
               </div>
             </div>
           </div>
         </div>
-        <SiteFooter />
-      </>
+      </div>
     )
   }
 
   if (!userProfile) {
     return (
-      <>
-        <SiteHeader />
-        <div className="min-h-screen bg-gray-50 py-8">
-          <div className="container mx-auto px-4 max-w-4xl">
-            <Card className="text-center py-12">
-              <CardContent>
-                <h2 className="text-xl font-semibold mb-2">Unable to load profile</h2>
-                <p className="text-gray-600 mb-4">Please try refreshing the page or contact support if the problem persists.</p>
-                <Button onClick={() => window.location.reload()}>
-                  Refresh Page
-                </Button>
-              </CardContent>
-            </Card>
+      <div className="pt-4 pl-4 pr-4 pb-6">
+        <div className="space-y-3">
+          <div className="bg-white rounded-lg p-3 border border-gray-200">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="p-1 bg-blue-100 rounded">
+                <User className="w-3 h-3 text-blue-600" />
+              </div>
+              <div>
+                <h1 className="text-xs font-bold text-gray-900">Profile Management</h1>
+                <p className="text-xs text-gray-600">Manage your account settings and subscription</p>
+              </div>
+            </div>
+            <div className="text-center py-8">
+              <h2 className="text-sm font-semibold mb-2">Unable to load profile</h2>
+              <p className="text-xs text-gray-600 mb-4">Please try refreshing the page or contact support if the problem persists.</p>
+              <Button onClick={() => window.location.reload()} size="sm" className="text-xs">
+                Refresh Page
+              </Button>
+            </div>
           </div>
         </div>
-        <SiteFooter />
-      </>
+      </div>
     )
   }
 
   return (
-    <>
-      <SiteHeader />
-      <div className="min-h-screen bg-gray-50 py-8">
-        <div className="container mx-auto px-4 max-w-4xl">
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Profile</h1>
-            <p className="text-gray-600 mt-2">Manage your account settings and subscription</p>
+    <div className="pt-4 pl-4 pr-4 pb-6">
+      <div className="space-y-3">
+        {/* Header */}
+        <div className="bg-white rounded-lg p-3 border border-gray-200">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="p-1 bg-blue-100 rounded">
+              <User className="w-3 h-3 text-blue-600" />
+            </div>
+            <div>
+              <h1 className="text-xs font-bold text-gray-900">Profile Management</h1>
+              <p className="text-xs text-gray-600">Manage your account settings and subscription</p>
+            </div>
           </div>
+        </div>
 
-          {error && (
-            <Card className="mb-6 border-red-200 bg-red-50">
-              <CardContent className="pt-6">
-                <p className="text-red-800">{error}</p>
-              </CardContent>
-            </Card>
-          )}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+            <p className="text-xs text-red-800">{error}</p>
+          </div>
+        )}
 
-          {/* Tab Navigation */}
-          <div className="mb-6">
-            <div className="border-b border-gray-200">
-              <div className="overflow-x-auto overflow-y-hidden">
-                <nav className="-mb-px flex space-x-8 min-w-max">
+        {/* Tab Navigation */}
+        <div className="bg-white rounded-lg border border-gray-200">
+          <div className="border-b border-gray-200 p-3">
+            <div className="overflow-x-auto overflow-y-hidden">
+              <nav className="-mb-px flex space-x-8 min-w-max">
+                <button
+                  onClick={() => setActiveTab('profile')}
+                  className={`py-2 px-1 border-b-2 font-medium text-xs whitespace-nowrap ${
+                    activeTab === 'profile'
+                      ? 'border-blue-600 text-blue-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  Profile Information
+                </button>
+                <button
+                  onClick={() => setActiveTab('billing')}
+                  className={`py-2 px-1 border-b-2 font-medium text-xs whitespace-nowrap ${
+                    activeTab === 'billing'
+                      ? 'border-blue-600 text-blue-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  Subscription & Billing
+                </button>
+                <button
+                  onClick={() => setActiveTab('preferences')}
+                  className={`py-2 px-1 border-b-2 font-medium text-xs whitespace-nowrap ${
+                    activeTab === 'preferences'
+                      ? 'border-blue-600 text-blue-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  Preferences
+                </button>
+                <button
+                  onClick={() => setActiveTab('plans')}
+                  className={`py-2 px-1 border-b-2 font-medium text-xs whitespace-nowrap ${
+                    activeTab === 'plans'
+                      ? 'border-blue-600 text-blue-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  Plans
+                </button>
+                {!isLoading && userProfile && (
                   <button
-                    onClick={() => setActiveTab('profile')}
-                    className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                      activeTab === 'profile'
-                        ? 'border-blue-600 text-blue-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    onClick={() => setActiveTab('refund')}
+                    className={`py-2 px-1 border-b-2 font-medium text-xs whitespace-nowrap ${
+                      activeTab === 'refund'
+                        ? 'border-red-600 text-red-600'
+                        : 'border-transparent text-red-500 hover:text-red-700 hover:border-red-300'
                     }`}
                   >
-                    Profile Information
+                    Refund
                   </button>
-                  <button
-                    onClick={() => setActiveTab('billing')}
-                    className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                      activeTab === 'billing'
-                        ? 'border-blue-600 text-blue-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    }`}
-                  >
-                    Subscription & Billing
-                  </button>
-                  <button
-                    onClick={() => setActiveTab('preferences')}
-                    className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                      activeTab === 'preferences'
-                        ? 'border-blue-600 text-blue-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    }`}
-                  >
-                    Preferences
-                  </button>
-                  <button
-                    onClick={() => setActiveTab('plans')}
-                    className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                      activeTab === 'plans'
-                        ? 'border-blue-600 text-blue-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    }`}
-                  >
-                    Plans
-                  </button>
-                  {!isLoading && userProfile && (
-                    <button
-                      onClick={() => setActiveTab('refund')}
-                      className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                        activeTab === 'refund'
-                          ? 'border-red-600 text-red-600'
-                          : 'border-transparent text-red-500 hover:text-red-700 hover:border-red-300'
-                      }`}
-                    >
-                      Refund
-                    </button>
-                  )}
-                </nav>
-              </div>
+                )}
+              </nav>
             </div>
           </div>
 
-          {/* Profile Tab */}
-          {activeTab === 'profile' && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Profile Information</CardTitle>
-                <CardDescription>
-                  Update your personal information and account details
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
+          {/* Tab Content */}
+          <div className="p-3">
+            {/* Profile Tab */}
+            {activeTab === 'profile' && (
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-xs font-bold text-gray-900 mb-2">Profile Information</h3>
+                  <p className="text-xs text-gray-600 mb-4">Update your personal information and account details</p>
+                </div>
+                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="firstName">First Name</Label>
+                    <Label htmlFor="firstName" className="text-xs">First Name</Label>
                     <Input
                       id="firstName"
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
                       placeholder="Enter your first name"
+                      className="text-xs"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="lastName">Last Name</Label>
+                    <Label htmlFor="lastName" className="text-xs">Last Name</Label>
                     <Input
                       id="lastName"
                       value={lastName}
                       onChange={(e) => setLastName(e.target.value)}
                       placeholder="Enter your last name"
+                      className="text-xs"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <Label htmlFor="email">Email Address</Label>
+                  <Label htmlFor="email" className="text-xs">Email Address</Label>
                   <Input
                     id="email"
                     value={userProfile.email}
                     disabled
-                    className="bg-gray-50"
+                    className="bg-gray-50 text-xs"
                   />
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="text-xs text-gray-500 mt-1">
                     Email address cannot be changed. Contact support if needed.
                   </p>
                 </div>
 
                 <div>
-                  <Label>Account Created</Label>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <Label className="text-xs">Account Created</Label>
+                  <p className="text-xs text-gray-600 mt-1">
                     {formatDate(userProfile.createdAt)}
                   </p>
                 </div>
@@ -432,85 +448,81 @@ export default function ProfilePageComponent() {
                   <Button 
                     onClick={handleSaveProfile}
                     disabled={isSaving}
+                    size="sm"
+                    className="text-xs"
                   >
                     {isSaving ? 'Saving...' : 'Save Changes'}
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
-          )}
+              </div>
+            )}
 
-          {/* Billing Tab */}
-          {activeTab === 'billing' && <BillingTab />}
+            {/* Billing Tab */}
+            {activeTab === 'billing' && <BillingTab />}
 
-          {/* Preferences Tab */}
-          {activeTab === 'preferences' && <PreferencesTab />}
+            {/* Preferences Tab */}
+            {activeTab === 'preferences' && <PreferencesTab />}
 
-          {/* Plans Tab */}
-          {activeTab === 'plans' && (
-            <PlansTab 
-              currentLocale="en"
-              userSubscriptionStatus={userProfile.subscriptionStatus}
-            />
-          )}
+            {/* Plans Tab */}
+            {activeTab === 'plans' && (
+              <PlansTab 
+                currentLocale="en"
+                userSubscriptionStatus={userProfile.subscriptionStatus}
+              />
+            )}
 
-          {/* Refund Tab */}
-          {activeTab === 'refund' && (() => {
-            const eligibility = checkRefundEligibility()
-            
-            if (refundSubmitted) {
-              return (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-red-600">Request Refund</CardTitle>
-                    <CardDescription>
-                      Submit a refund request for your subscription
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="p-6 bg-green-50 border border-green-200 rounded-lg text-center">
+            {/* Refund Tab */}
+            {activeTab === 'refund' && (() => {
+              const eligibility = checkRefundEligibility()
+              
+              if (refundSubmitted) {
+                return (
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="text-xs font-bold text-red-600 mb-2">Request Refund</h3>
+                      <p className="text-xs text-gray-600 mb-4">Submit a refund request for your subscription</p>
+                    </div>
+                    
+                    <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-center">
                       <div className="mb-4">
-                        <svg className="w-12 h-12 text-green-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-8 h-8 text-green-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
                       </div>
-                      <h3 className="text-lg font-semibold text-green-800 mb-2">
+                      <h3 className="text-sm font-semibold text-green-800 mb-2">
                         Refund Processed Successfully
                       </h3>
-                      <p className="text-green-700 mb-4">
+                      <p className="text-xs text-green-700 mb-4">
                         We&apos;re sad to see you go, but we understand that sometimes things don&apos;t work out as expected. 
                         Whatever your reason was, we appreciate you giving MorseXpress a try.
                       </p>
-                      <p className="text-green-700">
+                      <p className="text-xs text-green-700">
                         Your refund has been processed and will be credited back to your original payment method within 3-5 business days. 
                         Your subscription has been cancelled and you now have access to our free tier.
                       </p>
                     </div>
-                  </CardContent>
-                </Card>
-              )
-            }
-            
-            return (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-red-600">Request Refund</CardTitle>
-                  <CardDescription>
-                    Submit a refund request for your subscription
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
+                  </div>
+                )
+              }
+              
+              return (
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-xs font-bold text-red-600 mb-2">Request Refund</h3>
+                    <p className="text-xs text-gray-600 mb-4">Submit a refund request for your subscription</p>
+                  </div>
+                  
                   <div className={`p-4 border rounded-lg ${
                     eligibility.eligible 
                       ? 'bg-red-50 border-red-200' 
                       : 'bg-gray-50 border-gray-200'
                   }`}>
-                    <h3 className={`font-semibold mb-2 ${
+                    <h3 className={`text-xs font-semibold mb-2 ${
                       eligibility.eligible ? 'text-red-800' : 'text-gray-800'
                     }`}>
                       Refund Policy
                     </h3>
-                    <p className={`text-sm ${
+                    <p className={`text-xs ${
                       eligibility.eligible ? 'text-red-700' : 'text-gray-700'
                     }`}>
                       {eligibility.reason === 'free_user' 
@@ -529,13 +541,13 @@ export default function ProfilePageComponent() {
                   {eligibility.eligible && (
                     <>
                       <div>
-                        <Label htmlFor="refundFeedback">Feedback (Optional)</Label>
+                        <Label htmlFor="refundFeedback" className="text-xs">Feedback (Optional)</Label>
                         <textarea
                           id="refundFeedback"
                           value={refundFeedback}
                           onChange={(e) => setRefundFeedback(e.target.value)}
                           placeholder="Please let us know why you're requesting a refund. Your feedback helps us improve our service."
-                          className="w-full p-3 border border-gray-300 rounded-lg resize-none"
+                          className="w-full p-3 border border-gray-300 rounded-lg resize-none text-xs"
                           rows={4}
                         />
                       </div>
@@ -544,7 +556,8 @@ export default function ProfilePageComponent() {
                         <Button 
                           onClick={handleRefundRequest}
                           disabled={isSubmittingRefund}
-                          className="bg-red-600 hover:bg-red-700 text-white"
+                          size="sm"
+                          className="bg-red-600 hover:bg-red-700 text-white text-xs"
                         >
                           {isSubmittingRefund ? 'Submitting...' : 'Request Refund'}
                         </Button>
@@ -554,7 +567,7 @@ export default function ProfilePageComponent() {
 
                   {eligibility.reason === 'free_user' && (
                     <div className="text-center py-4">
-                      <p className="text-gray-600">
+                      <p className="text-xs text-gray-600">
                         Upgrade to a paid plan to be eligible for refunds.
                       </p>
                     </div>
@@ -562,18 +575,17 @@ export default function ProfilePageComponent() {
 
                   {!eligibility.eligible && eligibility.reason !== 'free_user' && (
                     <div className="text-center py-4">
-                      <p className="text-gray-600">
+                      <p className="text-xs text-gray-600">
                         You are not currently eligible for a refund.
                       </p>
                     </div>
                   )}
-                </CardContent>
-              </Card>
-            )
-          })()}
+                </div>
+              )
+            })()}
+          </div>
         </div>
       </div>
-      <SiteFooter />
-    </>
+    </div>
   )
 } 

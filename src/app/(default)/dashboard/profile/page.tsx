@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { getMessages } from 'next-intl/server';
 import { NextIntlClientProvider } from 'next-intl';
 
+import DashboardWrapper from "@/components/dashboard/dashboard-wrapper"
 import ProfilePageComponent from "@/components/dashboard/profile-page"
 
 export const metadata: Metadata = {
@@ -24,7 +25,9 @@ export default async function ProfilePage() {
 
   return (
     <NextIntlClientProvider messages={messages} locale="en">
-      <ProfilePageComponent />
+      <DashboardWrapper locale="en">
+        <ProfilePageComponent />
+      </DashboardWrapper>
     </NextIntlClientProvider>
   )
 }
