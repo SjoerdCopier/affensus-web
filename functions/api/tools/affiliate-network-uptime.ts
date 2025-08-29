@@ -31,6 +31,8 @@ interface UrlData {
 interface Domain {
   domain: string;
   displayName: string;
+  dashboardId?: string; // The monitor ID from Uptime Kuma
+  originalName?: string; // Original monitor name for status page lookup
   avg_uptime_percentage: number;
   urls: UrlData[];
   day_uptime: { type: string; day_uptime: { date: string; uptime: number | null }[] }[];
@@ -119,7 +121,8 @@ export async function onRequestGet(context: { env: Env, request: Request }): Pro
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type'
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Cache-Control': 'public, max-age=300, s-maxage=600' // 5 min client, 10 min CDN
       }
     });
 
@@ -213,6 +216,11 @@ async function processPrometheusMetrics(metricsText: string, uptimeKumaUrl?: str
     for (const labelMatch of labelMatches) {
       labels[labelMatch[1]] = labelMatch[2];
     }
+    
+    // Log available labels to see if monitor_id is present
+    if (metricName === 'monitor_status' && Object.keys(labels).length > 0) {
+      console.log('Available labels for monitor:', labels);
+    }
 
     const monitorName = labels.monitor_name || labels.job || 'unknown';
     
@@ -224,6 +232,7 @@ async function processPrometheusMetrics(metricsText: string, uptimeKumaUrl?: str
         name: monitorName,
         type: labels.monitor_type || 'http',
         url: labels.monitor_url || '',
+        monitorId: labels.monitor_id || labels.monitor || '', // Extract monitor ID from labels
         metrics: {}
       });
     }
@@ -240,6 +249,8 @@ async function processPrometheusMetrics(metricsText: string, uptimeKumaUrl?: str
       domains.set(domain, {
         domain,
         displayName: formatNetworkDisplayName(monitor.name),
+        dashboardId: monitor.monitorId, // Include the monitor ID
+        originalName: monitor.name, // Preserve original name for status page
         avg_uptime_percentage: 0,
         urls: [],
         day_uptime: [],
@@ -279,13 +290,28 @@ async function processPrometheusMetrics(metricsText: string, uptimeKumaUrl?: str
   const domainsWithStatusPages: Domain[] = [];
   
   for (const domain of domains.values()) {
-    const networkName = domain.domain;
-    console.log(`Checking status page for network: ${networkName}`);
+    // Try multiple variations of the network name for status page
+    const namesToTry = [
+      domain.domain, // normalized name (e.g., "involveasia")
+      domain.originalName, // original name from monitor (e.g., "InvolveAsia")
+      domain.displayName?.replace(/\s+/g, '').toLowerCase(), // display name without spaces
+      domain.displayName?.replace(/\s+/g, '-').toLowerCase(), // display name with hyphens
+    ].filter(name => name); // Remove undefined values
     
-    const statusPageData = await fetchStatusPageData(networkName, uptimeKumaUrl);
+    console.log(`Checking status page for network: ${domain.displayName}, trying names:`, namesToTry);
+    
+    let statusPageData = null;
+    for (const networkName of namesToTry) {
+      if (!networkName) continue; // Skip undefined names
+      statusPageData = await fetchStatusPageData(networkName, uptimeKumaUrl);
+      if (statusPageData && statusPageData.heartbeatList && Object.keys(statusPageData.heartbeatList).length > 0) {
+        console.log(`Status page found using name: ${networkName}`);
+        break;
+      }
+    }
     
     if (statusPageData && statusPageData.heartbeatList && Object.keys(statusPageData.heartbeatList).length > 0) {
-      console.log(`Status page found for ${networkName}, heartbeats:`, Object.keys(statusPageData.heartbeatList).length);
+      console.log(`Status page found for ${domain.displayName}, heartbeats:`, Object.keys(statusPageData.heartbeatList).length);
       
       domain.hasStatusPage = true;
       
@@ -337,7 +363,7 @@ async function processPrometheusMetrics(metricsText: string, uptimeKumaUrl?: str
       
       domainsWithStatusPages.push(domain);
     } else {
-      console.log(`No status page found for ${networkName}`);
+      console.log(`No status page found for ${domain.displayName}`);
     }
   }
 

@@ -1,0 +1,27 @@
+import type { Metadata } from "next";
+import { DashboardNetworkUptime } from "@/components/dashboard";
+import { getTranslations } from "next-intl/server";
+import { locales } from "@/locales/settings";
+
+type Props = {
+  params: Promise<{ locale: string }>;
+};
+
+export async function generateStaticParams() {
+  return Object.keys(locales).map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  await params; // Consume params to satisfy Next.js
+  const t = await getTranslations("metadata.dashboard.networkUptime");
+  
+  return {
+    title: t("title"),
+    description: t("description"),
+  };
+}
+
+export default async function DashboardNetworkUptimePage({ params }: Props) {
+  const { locale } = await params;
+  return <DashboardNetworkUptime locale={locale} />;
+}

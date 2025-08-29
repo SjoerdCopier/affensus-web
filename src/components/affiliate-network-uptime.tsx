@@ -41,7 +41,7 @@ const HoverCard = ({ children }: { children: React.ReactNode }) => {
 const HoverCardTrigger = ({ children }: { children: React.ReactNode }) => <>{children}</>;
 
 const HoverCardContent = ({ children }: { children: React.ReactNode }) => (
-  <div className="bg-black text-white px-2 py-1 rounded text-xs whitespace-nowrap">
+  <div className="bg-black text-white px-3 py-2 rounded text-xs whitespace-nowrap">
     {children}
   </div>
 );
@@ -87,9 +87,9 @@ const UptimeBar = ({ uptimeList }: { uptimeList?: UptimeList }) => {
         ></div>
       </HoverCardTrigger>
       <HoverCardContent>
-        <div className="space-y-2">
-          <h4 className="text-sm font-semibold">Day {day}</h4>
-          <p>Uptime: {(uptime * 100).toFixed(3)}%</p>
+        <div className="space-y-1">
+          <h4 className="text-xs font-semibold text-white">Day {day}</h4>
+          <p className="text-xs text-gray-200">Uptime: {(uptime * 100).toFixed(3)}%</p>
         </div>
       </HoverCardContent>
     </HoverCard>
@@ -122,10 +122,10 @@ const HeartbeatBar = ({ heartbeats, showTimeRange = false }: { heartbeats: Statu
         ></div>
       </HoverCardTrigger>
       <HoverCardContent>
-        <div className="space-y-2">
-          <h4 className="text-sm font-semibold">{heartbeat.time}</h4>
-          <p>Status: {heartbeat.status === 1 ? 'UP' : 'DOWN'}</p>
-          {heartbeat.msg && <p>Message: {heartbeat.msg}</p>}
+        <div className="space-y-1">
+          <h4 className="text-xs font-semibold text-white">{heartbeat.time}</h4>
+          <p className="text-xs text-gray-200">Status: {heartbeat.status === 1 ? 'UP' : 'DOWN'}</p>
+          {heartbeat.msg && <p className="text-xs text-gray-300">Message: {heartbeat.msg}</p>}
         </div>
       </HoverCardContent>
     </HoverCard>

@@ -9,7 +9,7 @@ interface D1PreparedStatement {
   bind(...values: unknown[]): D1PreparedStatement
   first(): Promise<unknown>
   all(): Promise<{ results: unknown[] }>
-  run(): Promise<unknown>
+  run(): Promise<{ meta: { changes: number } }>
 }
 
 export interface User {
@@ -27,6 +27,41 @@ export interface MagicLink {
   expires_at: string
   used_at: string | null
   created_at: string
+}
+
+// Network Monitor interfaces
+export interface NetworkMonitor {
+  id: number
+  user_id: string
+  domain: string
+  display_name?: string
+  enabled: boolean
+  created_at: string
+  updated_at: string
+  last_check_at?: string
+  last_status?: boolean
+  last_response_time?: number
+  notification_enabled: boolean
+  check_interval_minutes: number
+}
+
+export interface CreateNetworkMonitor {
+  user_id: string
+  domain: string
+  display_name?: string
+  enabled?: boolean
+  notification_enabled?: boolean
+  check_interval_minutes?: number
+}
+
+export interface UpdateNetworkMonitor {
+  enabled?: boolean
+  display_name?: string
+  notification_enabled?: boolean
+  check_interval_minutes?: number
+  last_check_at?: string
+  last_status?: boolean
+  last_response_time?: number
 }
 
 export async function createUser(db: D1Database, email: string, loginMethod: string = 'email'): Promise<User> {
@@ -98,6 +133,125 @@ export async function cleanupExpiredMagicLinks(db: D1Database): Promise<void> {
     DELETE FROM magic_links 
     WHERE expires_at < datetime('now')
   `).run()
+}
+
+// Network Monitor functions
+export async function createNetworkMonitor(db: D1Database, data: CreateNetworkMonitor): Promise<NetworkMonitor> {
+  const result = await db.prepare(`
+    INSERT INTO network_monitors (user_id, domain, display_name, enabled, notification_enabled, check_interval_minutes)
+    VALUES (?, ?, ?, ?, ?, ?)
+    RETURNING *
+  `).bind(
+    data.user_id,
+    data.domain,
+    data.display_name || null,
+    data.enabled ?? 1,
+    data.notification_enabled ?? 1,
+    data.check_interval_minutes ?? 5
+  ).first() as NetworkMonitor
+  
+  if (!result) {
+    throw new Error('Failed to create network monitor')
+  }
+  
+  return result
+}
+
+export async function getUserMonitors(db: D1Database, userId: string): Promise<NetworkMonitor[]> {
+  const result = await db.prepare(`
+    SELECT * FROM network_monitors 
+    WHERE user_id = ? 
+    ORDER BY created_at DESC
+  `).bind(userId).all() as { results: NetworkMonitor[] }
+  
+  return result.results
+}
+
+export async function getMonitorById(db: D1Database, id: number, userId: string): Promise<NetworkMonitor | null> {
+  const result = await db.prepare(`
+    SELECT * FROM network_monitors 
+    WHERE id = ? AND user_id = ?
+  `).bind(id, userId).first() as NetworkMonitor | null
+  
+  return result
+}
+
+export async function updateMonitor(db: D1Database, id: number, userId: string, data: UpdateNetworkMonitor): Promise<NetworkMonitor | null> {
+  const setClauses: string[] = [];
+  const values: unknown[] = [];
+
+  // Build dynamic SET clause
+  if (data.enabled !== undefined) {
+    setClauses.push(`enabled = ?`);
+    values.push(data.enabled ? 1 : 0);
+  }
+  if (data.display_name !== undefined) {
+    setClauses.push(`display_name = ?`);
+    values.push(data.display_name);
+  }
+  if (data.notification_enabled !== undefined) {
+    setClauses.push(`notification_enabled = ?`);
+    values.push(data.notification_enabled ? 1 : 0);
+  }
+  if (data.check_interval_minutes !== undefined) {
+    setClauses.push(`check_interval_minutes = ?`);
+    values.push(data.check_interval_minutes);
+  }
+  if (data.last_check_at !== undefined) {
+    setClauses.push(`last_check_at = ?`);
+    values.push(data.last_check_at);
+  }
+  if (data.last_status !== undefined) {
+    setClauses.push(`last_status = ?`);
+    values.push(data.last_status ? 1 : 0);
+  }
+  if (data.last_response_time !== undefined) {
+    setClauses.push(`last_response_time = ?`);
+    values.push(data.last_response_time);
+  }
+
+  if (setClauses.length === 0) {
+    return null; // No updates to make
+  }
+
+  const query = `
+    UPDATE network_monitors 
+    SET ${setClauses.join(', ')}, updated_at = CURRENT_TIMESTAMP
+    WHERE id = ? AND user_id = ?
+    RETURNING *
+  `;
+  
+  values.push(id, userId);
+  const result = await db.prepare(query).bind(...values).first() as NetworkMonitor | null;
+  return result
+}
+
+export async function deleteMonitor(db: D1Database, id: number, userId: string): Promise<boolean> {
+  const result = await db.prepare(`
+    DELETE FROM network_monitors 
+    WHERE id = ? AND user_id = ?
+  `).bind(id, userId).run();
+  
+  return result.meta.changes > 0;
+}
+
+export async function monitorExists(db: D1Database, userId: string, domain: string): Promise<boolean> {
+  const result = await db.prepare(`
+    SELECT COUNT(*) as count FROM network_monitors 
+    WHERE user_id = ? AND domain = ?
+  `).bind(userId, domain).first() as { count: number } | null;
+  
+  return (result?.count ?? 0) > 0;
+}
+
+export async function getEnabledMonitors(db: D1Database): Promise<NetworkMonitor[]> {
+  const result = await db.prepare(`
+    SELECT * FROM network_monitors 
+    WHERE enabled = 1 
+    ORDER BY last_check_at ASC NULLS FIRST
+  `).all() as { results: NetworkMonitor[] }
+  
+  return result.results;
 }
 
 export function generateToken(): string {

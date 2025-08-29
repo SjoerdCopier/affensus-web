@@ -1,0 +1,68 @@
+/* Dashboard Search Input Styles */
+.dashboard-input-search {
+  display: flex;
+  height: 1.75rem;
+  border-radius: 0.375rem;
+  background-color: transparent;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  transition: all 150ms ease;
+  width: 100%;
+  padding-left: 1.75rem;
+  padding-right: 3.5rem;
+  border: 1px solid #e5e7eb !important;
+  outline: none;
+}
+
+.dashboard-input-search:focus {
+  outline: none;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.dashboard-input-search::placeholder {
+  color: #6b7280;
+}
+
+/* Dashboard Select Dropdown Styles */
+.dashboard-select-small {
+  height: 1.75rem;
+  border-radius: 0.375rem;
+  background-color: white;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  border: 1px solid #d1d5db;
+  outline: none;
+  transition: all 150ms ease;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1rem;
+  padding-right: 2rem;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.dashboard-select-small:hover {
+  border-color: #9ca3af;
+}
+
+.dashboard-select-small:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.dashboard-select-small option {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  background-color: white;
+  color: #374151;
+}
+
+.dashboard-select-small option:hover {
+  background-color: #f3f4f6;
+}

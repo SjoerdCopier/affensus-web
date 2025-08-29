@@ -41,6 +41,12 @@
     "auth": {
       "title": "Sign In or Sign Up | Affensus - AI-Powered Affiliate Marketing Solutions",
       "description": "Create your Affensus account or sign in to access AI-powered affiliate marketing tools, analytics, and earnings calculators."
+    },
+    "dashboard": {
+      "networkUptime": {
+        "title": "Network Uptime Dashboard | Monitor Affiliate Networks | Affensus",
+        "description": "Monitor affiliate network uptime from your dashboard. Select networks for notifications and track real-time status of affiliate platforms."
+      }
     }
   },
   "common": {

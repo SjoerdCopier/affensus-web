@@ -41,6 +41,12 @@
       "auth": {
         "title": "Aanmelden of Account Aanmaken | Affensus - AI-Aangedreven Affiliate Marketing Oplossingen",
         "description": "Maak je Affensus account aan of meld je aan om toegang te krijgen tot AI-aangedreven affiliate marketing tools, analytics en inkomstenberekeningen."
+      },
+      "dashboard": {
+        "networkUptime": {
+          "title": "Netwerk Uptime Dashboard | Monitor Affiliate Netwerken | Affensus",
+          "description": "Monitor affiliate netwerk uptime vanuit je dashboard. Selecteer netwerken voor notificaties en volg real-time status van affiliate platforms."
+        }
       }
     },
     "common": {
