@@ -13,7 +13,7 @@ database_id = "19caf1fa-62ec-47ae-9429-9f3ff31a3b00"
 # Environment variables
 [vars]
 SITE_URL = "http://localhost:3000"
-
+JWT_SECRET = "e59a235f86b581ecfe123ea0654dc7e9f3053a101e085c2ab75c092cb0a87db6"
 AFFENSUS_CREDENTIALS_PASSWORD = "1igh04dKnYi1NKP"
 
 
@@ -30,7 +30,7 @@ database_id = "19caf1fa-62ec-47ae-9429-9f3ff31a3b00"
 # Production uses encrypted secrets from Cloudflare Pages dashboard
 # Non-sensitive production overrides can go here
 SITE_URL = "https://affensus.com"
-
+JWT_SECRET = "e59a235f86b581ecfe123ea0654dc7e9f3053a101e085c2ab75c092cb0a87db6"
 AFFENSUS_CREDENTIALS_PASSWORD = "1igh04dKnYi1NKP"
 
 [env.preview]
