@@ -1,3 +1,4 @@
+
 # Cache static assets for 1 year
 /images/*
   Cache-Control: public, max-age=31536000, immutable

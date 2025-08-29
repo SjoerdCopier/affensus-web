@@ -241,25 +241,48 @@ export default function DashboardNetworkUptime({ }: DashboardNetworkUptimeProps)
         let savedMonitors: SelectedNetwork[] = [];
         if (monitorsResponse.ok) {
           const monitorsData = await monitorsResponse.json();
+          console.log('Raw monitors data from API:', monitorsData);
+          
           if (monitorsData.success) {
-            savedMonitors = monitorsData.data.map((monitor: Record<string, unknown>) => ({
-              id: monitor.id as number,
-              domain: monitor.domain as string,
-              displayName: monitor.display_name as string,
-              enabled: Boolean(monitor.enabled),
-              notification_enabled: Boolean(monitor.notification_enabled),
-              check_interval_minutes: monitor.check_interval_minutes as number
-            }));
+            savedMonitors = monitorsData.data.map((monitor: Record<string, unknown>) => {
+              console.log('Processing monitor:', monitor);
+              return {
+                id: monitor.id as number,
+                domain: monitor.domain as string || '', // Handle missing domain
+                displayName: monitor.display_name as string || '',
+                dashboardId: String(monitor.dashboard_id), // Add dashboard_id if it exists
+                enabled: Boolean(monitor.enabled),
+                notification_enabled: Boolean(monitor.notification_enabled),
+                check_interval_minutes: monitor.check_interval_minutes as number
+              };
+            });
           }
         }
         
+        console.log('Saved monitors:', savedMonitors);
+        console.log('Available domains:', sortedData.map(d => ({ 
+          domain: d.domain, 
+          dashboardId: d.dashboardId,
+          displayName: d.displayName 
+        })));
+        
         // Merge domain data with saved monitors
+        // Match by dashboard_id instead of domain
         const initialSelection = sortedData.map(domain => {
-          const savedMonitor = savedMonitors.find(m => m.domain === domain.domain);
+          const savedMonitor = savedMonitors.find(m => {
+            // Match by dashboard_id
+            return String(m.dashboardId) === String(domain.dashboardId);
+          });
+          
+          console.log(`Matching ${domain.displayName} (dashboardId: ${domain.dashboardId}):`, {
+            found: !!savedMonitor,
+            monitorId: savedMonitor?.id
+          });
+          
           return {
-            domain: domain.domain,
+            domain: domain.domain, // Keep for now but we'll phase this out
             displayName: domain.displayName,
-            dashboardId: domain.dashboardId, // Store the dashboard ID from metrics
+            dashboardId: domain.dashboardId,
             enabled: savedMonitor?.enabled || false,
             id: savedMonitor?.id,
             notification_enabled: savedMonitor?.notification_enabled || true,
@@ -286,10 +309,10 @@ export default function DashboardNetworkUptime({ }: DashboardNetworkUptimeProps)
       .join(' ');
   };
 
-  const handleNetworkToggle = async (domain: string, enabled: boolean) => {
+  const handleNetworkToggle = async (dashboardId: string, enabled: boolean) => {
     if (!user?.id) return; // Don't proceed if user is not authenticated
     
-    const network = selectedNetworks.find(n => n.domain === domain);
+    const network = selectedNetworks.find(n => n.dashboardId === dashboardId);
     if (!network) return;
 
     // Store original state for potential rollback
@@ -300,7 +323,7 @@ export default function DashboardNetworkUptime({ }: DashboardNetworkUptimeProps)
         // Optimistic update: immediately show the network as enabled
         setSelectedNetworks(prev => 
           prev.map(n => 
-            n.domain === domain 
+            n.dashboardId === dashboardId 
               ? { ...n, enabled: true }
               : n
           )
@@ -314,9 +337,7 @@ export default function DashboardNetworkUptime({ }: DashboardNetworkUptimeProps)
           },
           body: JSON.stringify({
             user_id: user.id,
-            domain: domain,
             dashboard_id: network.dashboardId, // Send the dashboard ID from Uptime Kuma
-            display_name: network.displayName,
             enabled: true,
             notification_enabled: true,
             check_interval_minutes: 5
@@ -329,7 +350,7 @@ export default function DashboardNetworkUptime({ }: DashboardNetworkUptimeProps)
             // Update local state with the new ID from server
             setSelectedNetworks(prev => 
               prev.map(n => 
-                n.domain === domain 
+                n.dashboardId === dashboardId 
                   ? { ...n, enabled: true, id: result.data.id }
                   : n
               )
@@ -338,7 +359,7 @@ export default function DashboardNetworkUptime({ }: DashboardNetworkUptimeProps)
             // Rollback optimistic update on failure
             setSelectedNetworks(prev => 
               prev.map(n => 
-                n.domain === domain 
+                n.dashboardId === dashboardId 
                   ? originalState
                   : n
               )
@@ -349,7 +370,7 @@ export default function DashboardNetworkUptime({ }: DashboardNetworkUptimeProps)
           // Rollback optimistic update on HTTP error
           setSelectedNetworks(prev => 
             prev.map(n => 
-              n.domain === domain 
+              n.dashboardId === dashboardId 
                 ? originalState
                 : n
             )
@@ -360,7 +381,7 @@ export default function DashboardNetworkUptime({ }: DashboardNetworkUptimeProps)
         // Optimistic update for existing monitors
         setSelectedNetworks(prev => 
           prev.map(n => 
-            n.domain === domain 
+            n.dashboardId === dashboardId 
               ? { ...n, enabled }
               : n
           )
@@ -383,7 +404,7 @@ export default function DashboardNetworkUptime({ }: DashboardNetworkUptimeProps)
           // Rollback optimistic update on failure
           setSelectedNetworks(prev => 
             prev.map(n => 
-              n.domain === domain 
+              n.dashboardId === dashboardId 
                 ? originalState
                 : n
             )
@@ -395,7 +416,7 @@ export default function DashboardNetworkUptime({ }: DashboardNetworkUptimeProps)
       // Rollback optimistic update on network/parsing errors
       setSelectedNetworks(prev => 
         prev.map(n => 
-          n.domain === domain 
+          n.dashboardId === dashboardId 
             ? originalState
             : n
         )
@@ -405,10 +426,10 @@ export default function DashboardNetworkUptime({ }: DashboardNetworkUptimeProps)
     }
   };
 
-  const handleDeleteMonitor = async (domain: string) => {
+  const handleDeleteMonitor = async (dashboardId: string) => {
     if (!user?.id) return; // Don't proceed if user is not authenticated
     
-    const network = selectedNetworks.find(n => n.domain === domain);
+    const network = selectedNetworks.find(n => n.dashboardId === dashboardId);
     if (!network?.id) return; // Can't delete if no ID (not saved yet)
 
     try {
@@ -427,7 +448,7 @@ export default function DashboardNetworkUptime({ }: DashboardNetworkUptimeProps)
         // Remove from local state
         setSelectedNetworks(prev => 
           prev.map(n => 
-            n.domain === domain 
+            n.dashboardId === dashboardId 
               ? { ...n, enabled: false, id: undefined }
               : n
           )
@@ -546,9 +567,9 @@ export default function DashboardNetworkUptime({ }: DashboardNetworkUptimeProps)
                 >
                   <option value="">Choose a network...</option>
                   {domains
-                    .filter(domain => !selectedNetworks.find(n => n.domain === domain.domain && n.enabled))
+                    .filter(domain => !selectedNetworks.find(n => n.dashboardId === domain.dashboardId && n.enabled))
                     .map((domain) => (
-                      <option key={domain.domain} value={domain.domain}>
+                      <option key={domain.dashboardId} value={domain.dashboardId}>
                         {domain.displayName || capitalizeNetworkName(domain.domain)}
                       </option>
                     ))}
@@ -658,12 +679,12 @@ export default function DashboardNetworkUptime({ }: DashboardNetworkUptimeProps)
                           onClick={() => {
                             // Immediately remove the card from UI - no delay
                             setSelectedNetworks(prev => 
-                              prev.filter(n => n.domain !== domain.domain)
+                              prev.filter(n => n.dashboardId !== domain.dashboardId)
                             );
                             
                             // Fire and forget API call in background (no await, no delay)
                             if (user?.id) {
-                              const network = selectedNetworks.find(n => n.domain === domain.domain);
+                              const network = selectedNetworks.find(n => n.dashboardId === domain.dashboardId);
                               if (network?.id) {
                                 // Use setTimeout to ensure UI update happens first
                                 setTimeout(() => {
