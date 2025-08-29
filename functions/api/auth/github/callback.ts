@@ -20,7 +20,8 @@ function parseCookies(cookieHeader: string | null): Record<string, string> {
   cookieHeader.split(';').forEach(cookie => {
     const parts = cookie.trim().split('=')
     if (parts.length === 2) {
-      cookies[parts[0]] = parts[1]
+      // Handle URL encoding like in /api/user
+      cookies[parts[0]] = decodeURIComponent(parts[1])
     }
   })
   return cookies
@@ -280,20 +281,53 @@ export async function onRequestGet(context: any) {
 
     // Create or update user with GitHub login method  
     const createUser = async (db: any, email: string, loginMethod: string = 'github') => {
-      const stmt = db.prepare(`
-        INSERT OR IGNORE INTO users (email, preferred_login_method, created_at, updated_at)
-        VALUES (?, ?, datetime('now'), datetime('now'))
-      `)
-      const result = await stmt.bind(email, loginMethod).run()
+      // Use external API instead of D1
+      const bearerToken = env.AFFENSUS_CREDENTIALS_PASSWORD;
+      if (!bearerToken) {
+        throw new Error('AFFENSUS_CREDENTIALS_PASSWORD not configured');
+      }
+
+      // Get user name from GitHub user info
+      const name = userInfo.name || userInfo.login || null;
+
+      console.log('Registering user via external API:', { email, name, loginMethod });
+
+      const response = await fetch('https://apiv2.affensus.com/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${bearerToken}`,
+        },
+        body: JSON.stringify({
+          email: email.toLowerCase(),
+          name: name,
+          login_method: loginMethod,
+          subscription_status: 'free'
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('API registration failed:', response.status, errorText);
+        throw new Error(`Registration failed: ${response.status} ${errorText}`);
+      }
+
+      const userData = await response.json();
       
-      // Get the user (either just created or existing)
-      const user = await db.prepare('SELECT * FROM users WHERE email = ?').bind(email).first()
+      // For backward compatibility, return a user object that matches the expected structure
+      const user = {
+        id: userData.id || userData.user_id || Date.now(), // Fallback ID if API doesn't return one
+        email: email.toLowerCase(),
+        preferred_login_method: loginMethod,
+        subscription_status: 'free',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+
+      // Check if this is a new user by looking at the API response
+      const isNewUser = response.status === 201; // 201 = Created, 200 = Updated
       
-      // Check if this is a new user by checking if the insert actually happened
-      // SQLite changes will be > 0 if a row was inserted
-      const isNewUser = result.changes > 0
-      
-      return { user, isNewUser }
+      return { user, isNewUser };
     }
 
     const updatePreferredLoginMethod = async (db: any, email: string, method: string) => {

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations } from 'next-intl/server';
-import { DashboardNetworkUptime } from "@/components/dashboard";
+import { DashboardNetworkUptime, DashboardWrapper } from "@/components/dashboard";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("metadata.dashboard.networkUptime");
@@ -15,5 +15,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function DashboardNetworkUptimePage() {
-  return <DashboardNetworkUptime />;
+  return (
+    <DashboardWrapper>
+      <DashboardNetworkUptime />
+    </DashboardWrapper>
+  );
 }

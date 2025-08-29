@@ -68,11 +68,9 @@ export async function onRequestGet(context: { env: Env, request: Request }): Pro
 
       if (monitorsResponse.ok) {
         metricsText = await monitorsResponse.text();
-        console.log('Metrics response preview:', metricsText.substring(0, 200));
         
         // Check if we got HTML instead of metrics
         if (metricsText.startsWith('<!DOCTYPE') || metricsText.includes('<html')) {
-          console.log('Received HTML instead of metrics, trying alternative approach');
         } else {
           success = true;
         }
@@ -84,7 +82,6 @@ export async function onRequestGet(context: { env: Env, request: Request }): Pro
     }
 
     if (!success) {
-      console.log('All API attempts failed - providing fallback response');
       
       // Check if we're in Cloudflare environment and the issue is network access
       const isCloudflareEnv = typeof caches !== 'undefined';
@@ -169,23 +166,14 @@ function formatNetworkDisplayName(networkName: string): string {
 async function fetchStatusPageData(networkName: string, uptimeKumaUrl?: string): Promise<StatusPageResponse | null> {
   try {
     const url = `${uptimeKumaUrl || 'http://152.42.135.243:3001'}/api/status-page/heartbeat/${networkName}?limit=10080`;
-    console.log(`Fetching status page from: ${url}`);
     
     const response = await fetch(url);
     
-    console.log(`Status page response for ${networkName}:`, response.status, response.statusText);
-    
     if (!response.ok) {
-      console.log(`Status page not found for ${networkName}: ${response.status}`);
       return null;
     }
     
     const data = await response.json();
-    console.log(`Status page data for ${networkName}:`, {
-      hasHeartbeatList: !!data.heartbeatList,
-      heartbeatKeys: data.heartbeatList ? Object.keys(data.heartbeatList) : [],
-      totalHeartbeats: data.heartbeatList ? Object.values(data.heartbeatList).reduce((sum: number, arr: any) => sum + (Array.isArray(arr) ? arr.length : 0), 0) : 0
-    });
     
     return data;
   } catch (error) {
@@ -217,11 +205,6 @@ async function processPrometheusMetrics(metricsText: string, uptimeKumaUrl?: str
       labels[labelMatch[1]] = labelMatch[2];
     }
     
-    // Log available labels to see if monitor_id is present
-    if (metricName === 'monitor_status' && Object.keys(labels).length > 0) {
-      console.log('Available labels for monitor:', labels);
-    }
-
     const monitorName = labels.monitor_name || labels.job || 'unknown';
     
     // Skip group monitors or invalid ones
@@ -298,27 +281,22 @@ async function processPrometheusMetrics(metricsText: string, uptimeKumaUrl?: str
       domain.displayName?.replace(/\s+/g, '-').toLowerCase(), // display name with hyphens
     ].filter(name => name); // Remove undefined values
     
-    console.log(`Checking status page for network: ${domain.displayName}, trying names:`, namesToTry);
-    
     let statusPageData = null;
     for (const networkName of namesToTry) {
       if (!networkName) continue; // Skip undefined names
       statusPageData = await fetchStatusPageData(networkName, uptimeKumaUrl);
       if (statusPageData && statusPageData.heartbeatList && Object.keys(statusPageData.heartbeatList).length > 0) {
-        console.log(`Status page found using name: ${networkName}`);
         break;
       }
     }
     
     if (statusPageData && statusPageData.heartbeatList && Object.keys(statusPageData.heartbeatList).length > 0) {
-      console.log(`Status page found for ${domain.displayName}, heartbeats:`, Object.keys(statusPageData.heartbeatList).length);
       
       domain.hasStatusPage = true;
       
       // Add uptimeList to domain
       if (statusPageData.uptimeList) {
         domain.uptimeList = statusPageData.uptimeList;
-        console.log(`Added uptimeList to domain ${domain.domain}:`, statusPageData.uptimeList);
       }
       
       // Update URLs with status page data
@@ -328,16 +306,13 @@ async function processPrometheusMetrics(metricsText: string, uptimeKumaUrl?: str
         // Add uptimeList to each URL as well
         if (statusPageData.uptimeList) {
           url.uptimeList = statusPageData.uptimeList;
-          console.log(`Added uptimeList to URL ${url.type}:`, statusPageData.uptimeList);
         }
         
         // Get heartbeats from all available monitors - each heartbeat should be a separate candle
         const allHeartbeats: StatusPageHeartbeat[] = [];
-        console.log(`Processing heartbeats for ${domain.domain}, heartbeatList keys:`, Object.keys(statusPageData.heartbeatList));
         
         // Extract all individual heartbeats from all monitors
         Object.entries(statusPageData.heartbeatList).forEach(([monitorId, heartbeatArray]) => {
-          console.log(`Monitor ${monitorId} heartbeats:`, Array.isArray(heartbeatArray) ? heartbeatArray.length : 'not array');
           if (Array.isArray(heartbeatArray)) {
             // Each heartbeat in the array should be a separate candle
             heartbeatArray.forEach(heartbeat => {
@@ -348,26 +323,15 @@ async function processPrometheusMetrics(metricsText: string, uptimeKumaUrl?: str
           }
         });
         
-        console.log(`Total individual heartbeats collected for ${domain.domain}:`, allHeartbeats.length);
-        
         // Sort by time (newest first) and assign to URL
         url.heartbeats = allHeartbeats.sort((a, b) => 
           new Date(b.time).getTime() - new Date(a.time).getTime()
         );
-        
-        console.log(`Final heartbeats assigned to ${domain.domain} ${url.type}:`, url.heartbeats.length);
-        if (url.heartbeats.length > 0) {
-          console.log(`Sample heartbeats:`, url.heartbeats.slice(0, 3));
-        }
       });
       
       domainsWithStatusPages.push(domain);
-    } else {
-      console.log(`No status page found for ${domain.displayName}`);
     }
   }
-
-  console.log(`Total domains with status pages: ${domainsWithStatusPages.length}`);
 
   // Calculate overall domain uptime for domains with status pages
   domainsWithStatusPages.forEach((domain) => {

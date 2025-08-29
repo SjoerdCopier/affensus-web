@@ -5,7 +5,10 @@ function parseCookies(cookieHeader: string | null): { [key: string]: string } {
   if (!cookieHeader) return {}
   return cookieHeader.split(';').reduce((cookies, cookie) => {
     const [name, value] = cookie.trim().split('=')
-    cookies[name] = value
+    if (name && value) {
+      // Handle URL encoding like in /api/user
+      cookies[name] = decodeURIComponent(value)
+    }
     return cookies
   }, {} as { [key: string]: string })
 }

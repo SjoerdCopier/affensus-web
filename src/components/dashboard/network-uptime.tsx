@@ -241,11 +241,9 @@ export default function DashboardNetworkUptime({ }: DashboardNetworkUptimeProps)
         let savedMonitors: SelectedNetwork[] = [];
         if (monitorsResponse.ok) {
           const monitorsData = await monitorsResponse.json();
-          console.log('Raw monitors data from API:', monitorsData);
-          
+        
           if (monitorsData.success) {
             savedMonitors = monitorsData.data.map((monitor: Record<string, unknown>) => {
-              console.log('Processing monitor:', monitor);
               return {
                 id: monitor.id as number,
                 domain: monitor.domain as string || '', // Handle missing domain
@@ -259,24 +257,12 @@ export default function DashboardNetworkUptime({ }: DashboardNetworkUptimeProps)
           }
         }
         
-        console.log('Saved monitors:', savedMonitors);
-        console.log('Available domains:', sortedData.map(d => ({ 
-          domain: d.domain, 
-          dashboardId: d.dashboardId,
-          displayName: d.displayName 
-        })));
-        
         // Merge domain data with saved monitors
         // Match by dashboard_id instead of domain
         const initialSelection = sortedData.map(domain => {
           const savedMonitor = savedMonitors.find(m => {
             // Match by dashboard_id
             return String(m.dashboardId) === String(domain.dashboardId);
-          });
-          
-          console.log(`Matching ${domain.displayName} (dashboardId: ${domain.dashboardId}):`, {
-            found: !!savedMonitor,
-            monitorId: savedMonitor?.id
           });
           
           return {
@@ -736,9 +722,5 @@ export default function DashboardNetworkUptime({ }: DashboardNetworkUptimeProps)
     </div>
   );
 
-  return (
-    <DashboardLayout>
-      <NetworkUptimeContent />
-    </DashboardLayout>
-  );
+  return <NetworkUptimeContent />;
 }

@@ -23,7 +23,9 @@ export async function onRequestPost(context: any) {
       const cookies = cookieHeader.split('; ')
       const authCookie = cookies.find((c: string) => c.startsWith('auth-token='))
       if (authCookie) {
-        token = authCookie.split('=')[1]
+        // Handle URL encoding like in /api/user
+        const encodedToken = authCookie.split('=')[1]
+        token = decodeURIComponent(encodedToken)
       }
     }
 

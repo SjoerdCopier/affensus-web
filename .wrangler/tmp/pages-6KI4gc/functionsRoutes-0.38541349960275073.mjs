@@ -6,6 +6,8 @@ import { onRequestPost as __api_user_progress__courseId__index_ts_onRequestPost 
 import { onRequestGet as __api_auth_facebook_index_ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/auth/facebook/index.ts"
 import { onRequestGet as __api_auth_github_index_ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/auth/github/index.ts"
 import { onRequestGet as __api_auth_google_index_ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/auth/google/index.ts"
+import { onRequestOptions as __api_auth_register_index_ts_onRequestOptions } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/auth/register/index.ts"
+import { onRequestPost as __api_auth_register_index_ts_onRequestPost } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/auth/register/index.ts"
 import { onRequestGet as __api_profile_billing_address_ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/profile/billing-address.ts"
 import { onRequestPut as __api_profile_billing_address_ts_onRequestPut } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/profile/billing-address.ts"
 import { onRequestGet as __api_profile_completion_status_ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/profile/completion-status.ts"
@@ -22,6 +24,8 @@ import { onRequest as __api_stripe_create_user_account_ts_onRequest } from "/Use
 import { onRequest as __api_stripe_webhook_ts_onRequest } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/stripe/webhook.ts"
 import { onRequestGet as __api_invoice__invoiceNumber__ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/invoice/[invoiceNumber].ts"
 import { onRequestOptions as __api_invoice__invoiceNumber__ts_onRequestOptions } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/invoice/[invoiceNumber].ts"
+import { onRequestGet as __api_users__userId__index_ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/users/[userId]/index.ts"
+import { onRequestOptions as __api_users__userId__index_ts_onRequestOptions } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/users/[userId]/index.ts"
 import { onRequestPost as __api_contact_index_ts_onRequestPost } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/contact/index.ts"
 import { onRequestPost as __api_logout_index_ts_onRequestPost } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/logout/index.ts"
 import { onRequestGet as __api_magic_login_index_ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/magic-login/index.ts"
@@ -97,6 +101,20 @@ export const routes = [
       method: "GET",
       middlewares: [],
       modules: [__api_auth_google_index_ts_onRequestGet],
+    },
+  {
+      routePath: "/api/auth/register",
+      mountPath: "/api/auth/register",
+      method: "OPTIONS",
+      middlewares: [],
+      modules: [__api_auth_register_index_ts_onRequestOptions],
+    },
+  {
+      routePath: "/api/auth/register",
+      mountPath: "/api/auth/register",
+      method: "POST",
+      middlewares: [],
+      modules: [__api_auth_register_index_ts_onRequestPost],
     },
   {
       routePath: "/api/profile/billing-address",
@@ -209,6 +227,20 @@ export const routes = [
       method: "OPTIONS",
       middlewares: [],
       modules: [__api_invoice__invoiceNumber__ts_onRequestOptions],
+    },
+  {
+      routePath: "/api/users/:userId",
+      mountPath: "/api/users/:userId",
+      method: "GET",
+      middlewares: [],
+      modules: [__api_users__userId__index_ts_onRequestGet],
+    },
+  {
+      routePath: "/api/users/:userId",
+      mountPath: "/api/users/:userId",
+      method: "OPTIONS",
+      middlewares: [],
+      modules: [__api_users__userId__index_ts_onRequestOptions],
     },
   {
       routePath: "/api/contact",

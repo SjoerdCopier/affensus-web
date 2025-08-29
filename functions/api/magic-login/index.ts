@@ -29,117 +29,118 @@ async function signJwt(payload: any, secret: string, expiresIn: number): Promise
   return `${headerB64}.${payloadB64}.${signatureB64}`
 }
 
-async function getMagicLinkByToken(db: any, token: string) {
-  return await db.prepare(`
-    SELECT * FROM magic_links 
-    WHERE token = ? AND used_at IS NULL AND expires_at > datetime('now')
-  `).bind(token).first()
-}
-
-async function markMagicLinkAsUsed(db: any, token: string) {
-  await db.prepare(`
-    UPDATE magic_links 
-    SET used_at = datetime('now')
-    WHERE token = ?
-  `).bind(token).run()
-}
-
-async function getUserByEmail(db: any, email: string) {
-  return await db.prepare('SELECT * FROM users WHERE email = ?').bind(email).first()
-}
-
-async function updatePreferredLoginMethod(db: any, email: string, method: string) {
-  await db.prepare(`
-    UPDATE users 
-    SET preferred_login_method = ?, updated_at = datetime('now')
-    WHERE email = ?
-  `).bind(method, email).run()
-}
-
-async function processPendingPayments(db: any, email: string, userId: number, stripeSecretKey?: string) {
+async function getMagicLinkByToken(token: string, apiKey: string) {
   try {
-    // Check for pending payments for this email
-    const pendingPayments = await db.prepare(`
-      SELECT * FROM pending_payments 
-      WHERE email = ? AND processed = 0
-    `).bind(email).all()
+    const response = await fetch(`https://apiv2.affensus.com/api/auth/magic-link/${token}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+    })
 
-    if (pendingPayments.results && pendingPayments.results.length > 0) {
-      console.log(`Found ${pendingPayments.results.length} pending payment(s) for ${email}`)
-      
-      for (const payment of pendingPayments.results) {
-        try {
-          if (stripeSecretKey) {
-            // Get the session details from Stripe
-            const sessionResponse = await fetch(`https://api.stripe.com/v1/checkout/sessions/${payment.session_id}`, {
-              headers: {
-                'Authorization': `Bearer ${stripeSecretKey}`,
-              },
-            })
-
-            if (sessionResponse.ok) {
-              const session = await sessionResponse.json()
-              
-              // Create Stripe customer for this user
-              const customerResponse = await fetch('https://api.stripe.com/v1/customers', {
-                method: 'POST',
-                headers: {
-                  'Authorization': `Bearer ${stripeSecretKey}`,
-                  'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({
-                  email: email,
-                  name: payment.customer_name || 'Customer',
-                  'metadata[user_id]': userId.toString(),
-                  'metadata[session_id]': payment.session_id,
-                }),
-              })
-
-              if (customerResponse.ok) {
-                const customer = await customerResponse.json()
-                
-                // Update user with Stripe customer ID
-                await db.prepare(`
-                  UPDATE users 
-                  SET stripe_customer_id = ?, updated_at = datetime('now')
-                  WHERE id = ?
-                `).bind(customer.id, userId).run()
-                
-                // Import the functions from webhook (we'll need to refactor this)
-                // For now, let's create a simple subscription update
-                let subscriptionStatus = 'free'
-                if (payment.amount_total === 1999) subscriptionStatus = 'basic'
-                else if (payment.amount_total === 3999) subscriptionStatus = 'active'
-                else if (payment.amount_total === 7900) subscriptionStatus = 'lifetime'
-                
-                await db.prepare(`
-                  UPDATE users 
-                  SET 
-                    subscription_status = ?, 
-                    subscription_expires_at = datetime('now', '+1 year'),
-                    updated_at = datetime('now')
-                  WHERE id = ?
-                `).bind(subscriptionStatus, userId).run()
-                
-                console.log(`Processed pending payment for user ${userId}, customer ${customer.id}`)
-              }
-            }
-          }
-          
-          // Mark payment as processed
-          await db.prepare(`
-            UPDATE pending_payments 
-            SET processed = 1 
-            WHERE id = ?
-          `).bind(payment.id).run()
-          
-        } catch (error) {
-          console.error('Error processing pending payment:', error)
-        }
+    if (!response.ok) {
+      if (response.status === 404) {
+        return null // Magic link not found
       }
+      throw new Error(`API error: ${response.status}`)
     }
+
+    const data = await response.json()
+    
+    // Check if magic link is valid (not used and not expired)
+    if (data.used || new Date(data.expires_at) <= new Date()) {
+      return null
+    }
+
+    return data
   } catch (error) {
-    console.error('Error checking for pending payments:', error)
+    console.error('Error fetching magic link:', error)
+    return null
+  }
+}
+
+async function markMagicLinkAsUsed(token: string, apiKey: string) {
+  try {
+    const response = await fetch(`https://apiv2.affensus.com/api/auth/magic-link/${token}/use`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`Failed to mark magic link as used: ${response.status}`)
+    }
+
+    return true
+  } catch (error) {
+    console.error('Error marking magic link as used:', error)
+    return false
+  }
+}
+
+async function getUserByEmail(email: string, apiKey: string) {
+  try {
+    const response = await fetch(`https://apiv2.affensus.com/api/auth/user/email/${encodeURIComponent(email)}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        return null // User not found
+      }
+      throw new Error(`API error: ${response.status}`)
+    }
+
+    return await response.json()
+  } catch (error) {
+    console.error('Error fetching user by email:', error)
+    return null
+  }
+}
+
+async function updatePreferredLoginMethod(email: string, method: string, apiKey: string) {
+  try {
+    const response = await fetch(`https://apiv2.affensus.com/api/auth/user/preferred-login-method`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: email,
+        method: method
+      }),
+    })
+
+    if (!response.ok) {
+      throw new Error(`Failed to update login method: ${response.status}`)
+    }
+
+    return true
+  } catch (error) {
+    console.error('Error updating preferred login method:', error)
+    return false
+  }
+}
+
+async function processPendingPayments(email: string, userId: number, stripeSecretKey?: string) {
+  try {
+    // Note: This function still contains D1 database calls for pending payments
+    // This will need to be migrated to the API as well in a future update
+    console.log(`Processing pending payments for user ${userId} (${email})`)
+    
+    // TODO: Migrate pending payments to external API
+    // For now, we'll skip this functionality to avoid D1 dependencies
+    
+  } catch (error) {
+    console.error('Error processing pending payments:', error)
   }
 }
 
@@ -156,18 +157,18 @@ export async function onRequestGet(context: any) {
       })
     }
 
-    // Get database from environment
-    const db = env.DB
-    if (!db) {
+    // Get API key from environment
+    const apiKey = env.AFFENSUS_CREDENTIALS_PASSWORD
+    if (!apiKey) {
       return new Response(null, {
         status: 302,
-        headers: { 'Location': `${env.SITE_URL || 'http://localhost:3000'}/auth?error=database_not_available` }
+        headers: { 'Location': `${env.SITE_URL || 'http://localhost:3000'}/auth?error=api_not_configured` }
       })
     }
 
     try {
-      // Find magic link
-      const magicLink = await getMagicLinkByToken(db, token)
+      // Find magic link via API
+      const magicLink = await getMagicLinkByToken(token, apiKey)
       
       if (!magicLink) {
         return new Response(null, {
@@ -176,11 +177,15 @@ export async function onRequestGet(context: any) {
         })
       }
 
-      // Mark magic link as used
-      await markMagicLinkAsUsed(db, token)
+      // Mark magic link as used via API
+      const markedAsUsed = await markMagicLinkAsUsed(token, apiKey)
+      if (!markedAsUsed) {
+        console.error('Failed to mark magic link as used')
+        // Continue anyway to avoid blocking the user
+      }
 
-      // Get user
-      const user = await getUserByEmail(db, magicLink.email)
+      // Get user via API
+      const user = await getUserByEmail(magicLink.email, apiKey)
       if (!user) {
         return new Response(null, {
           status: 302,
@@ -188,11 +193,15 @@ export async function onRequestGet(context: any) {
         })
       }
 
-      // Update user's preferred login method
-      await updatePreferredLoginMethod(db, user.email, 'magic_link')
+      // Update user's preferred login method via API
+      const loginMethodUpdated = await updatePreferredLoginMethod(user.email, 'magic_link', apiKey)
+      if (!loginMethodUpdated) {
+        console.error('Failed to update preferred login method')
+        // Continue anyway to avoid blocking the user
+      }
 
       // Check for pending payments after user login
-      await processPendingPayments(db, user.email, user.id, env.STRIPE_SECRET_KEY)
+      await processPendingPayments(user.email, user.id, env.STRIPE_SECRET_KEY)
 
       // Generate JWT token
       const jwtSecret = env.JWT_SECRET
@@ -248,11 +257,11 @@ export async function onRequestGet(context: any) {
         },
       })
 
-    } catch (dbError) {
-      console.error('Database error:', dbError)
+    } catch (apiError) {
+      console.error('API error:', apiError)
       return new Response(null, {
         status: 302,
-        headers: { 'Location': `${env.SITE_URL || 'http://localhost:3000'}/auth?error=database_error` }
+        headers: { 'Location': `${env.SITE_URL || 'http://localhost:3000'}/auth?error=api_error` }
       })
     }
 

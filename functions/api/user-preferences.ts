@@ -41,7 +41,8 @@ function parseCookies(cookieHeader: string | null): Record<string, string> {
   cookieHeader.split(';').forEach(cookie => {
     const parts = cookie.trim().split('=')
     if (parts.length === 2) {
-      cookies[parts[0]] = parts[1]
+      // Handle URL encoding like in /api/user
+      cookies[parts[0]] = decodeURIComponent(parts[1])
     }
   })
   return cookies

@@ -1,7 +1,7 @@
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 
-// .wrangler/tmp/bundle-3IOpvl/checked-fetch.js
+// .wrangler/tmp/bundle-dSmJ1Y/checked-fetch.js
 var urls = /* @__PURE__ */ new Set();
 function checkURL(request, init) {
   const url = request instanceof URL ? request : new URL(
@@ -27,7 +27,7 @@ globalThis.fetch = new Proxy(globalThis.fetch, {
   }
 });
 
-// .wrangler/tmp/pages-2CLJzw/functionsWorker-0.4307159367548212.mjs
+// .wrangler/tmp/pages-6KI4gc/functionsWorker-0.6355327904101307.mjs
 var __defProp2 = Object.defineProperty;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __name2 = /* @__PURE__ */ __name((target, value) => __defProp2(target, "name", { value, configurable: true }), "__name");
@@ -56,7 +56,7 @@ function checkURL2(request, init) {
 __name(checkURL2, "checkURL");
 var urls2;
 var init_checked_fetch = __esm({
-  "../.wrangler/tmp/bundle-OS1apx/checked-fetch.js"() {
+  "../.wrangler/tmp/bundle-vZADlk/checked-fetch.js"() {
     "use strict";
     urls2 = /* @__PURE__ */ new Set();
     __name2(checkURL2, "checkURL");
@@ -136,7 +136,7 @@ __name(sendNewUserNotification, "sendNewUserNotification");
 var init_email_notifications = __esm({
   "api/auth/shared/email-notifications.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     __name2(sendNewUserNotification, "sendNewUserNotification");
   }
@@ -147,7 +147,7 @@ function parseCookies(cookieHeader) {
   cookieHeader.split(";").forEach((cookie) => {
     const parts = cookie.trim().split("=");
     if (parts.length === 2) {
-      cookies[parts[0]] = parts[1];
+      cookies[parts[0]] = decodeURIComponent(parts[1]);
     }
   });
   return cookies;
@@ -253,13 +253,41 @@ async function onRequestGet(context) {
       });
     }
     const createUser2 = /* @__PURE__ */ __name2(async (db2, email, loginMethod = "facebook") => {
-      const stmt = db2.prepare(`
-        INSERT OR IGNORE INTO users (email, preferred_login_method, created_at, updated_at)
-        VALUES (?, ?, datetime('now'), datetime('now'))
-      `);
-      const result = await stmt.bind(email, loginMethod).run();
-      const user2 = await db2.prepare("SELECT * FROM users WHERE email = ?").bind(email).first();
-      const isNewUser2 = result.changes > 0;
+      const bearerToken = env.AFFENSUS_CREDENTIALS_PASSWORD;
+      if (!bearerToken) {
+        throw new Error("AFFENSUS_CREDENTIALS_PASSWORD not configured");
+      }
+      const name = userInfo.name || null;
+      console.log("Registering user via external API:", { email, name, loginMethod });
+      const response = await fetch("https://apiv2.affensus.com/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${bearerToken}`
+        },
+        body: JSON.stringify({
+          email: email.toLowerCase(),
+          name,
+          login_method: loginMethod,
+          subscription_status: "free"
+        })
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("API registration failed:", response.status, errorText);
+        throw new Error(`Registration failed: ${response.status} ${errorText}`);
+      }
+      const userData = await response.json();
+      const user2 = {
+        id: userData.id || userData.user_id || Date.now(),
+        // Fallback ID if API doesn't return one
+        email: email.toLowerCase(),
+        preferred_login_method: loginMethod,
+        subscription_status: "free",
+        created_at: (/* @__PURE__ */ new Date()).toISOString(),
+        updated_at: (/* @__PURE__ */ new Date()).toISOString()
+      };
+      const isNewUser2 = response.status === 201;
       return { user: user2, isNewUser: isNewUser2 };
     }, "createUser");
     const updatePreferredLoginMethod2 = /* @__PURE__ */ __name2(async (db2, email, method) => {
@@ -340,7 +368,7 @@ __name(onRequestGet, "onRequestGet");
 var init_callback = __esm({
   "api/auth/facebook/callback.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     __name2(parseCookies, "parseCookies");
     __name2(signJwt, "signJwt");
@@ -353,7 +381,7 @@ function parseCookies2(cookieHeader) {
   cookieHeader.split(";").forEach((cookie) => {
     const parts = cookie.trim().split("=");
     if (parts.length === 2) {
-      cookies[parts[0]] = parts[1];
+      cookies[parts[0]] = decodeURIComponent(parts[1]);
     }
   });
   return cookies;
@@ -562,13 +590,41 @@ async function onRequestGet2(context) {
       });
     }
     const createUser2 = /* @__PURE__ */ __name2(async (db2, email, loginMethod = "github") => {
-      const stmt = db2.prepare(`
-        INSERT OR IGNORE INTO users (email, preferred_login_method, created_at, updated_at)
-        VALUES (?, ?, datetime('now'), datetime('now'))
-      `);
-      const result = await stmt.bind(email, loginMethod).run();
-      const user2 = await db2.prepare("SELECT * FROM users WHERE email = ?").bind(email).first();
-      const isNewUser2 = result.changes > 0;
+      const bearerToken = env.AFFENSUS_CREDENTIALS_PASSWORD;
+      if (!bearerToken) {
+        throw new Error("AFFENSUS_CREDENTIALS_PASSWORD not configured");
+      }
+      const name = userInfo.name || userInfo.login || null;
+      console.log("Registering user via external API:", { email, name, loginMethod });
+      const response = await fetch("https://apiv2.affensus.com/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${bearerToken}`
+        },
+        body: JSON.stringify({
+          email: email.toLowerCase(),
+          name,
+          login_method: loginMethod,
+          subscription_status: "free"
+        })
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("API registration failed:", response.status, errorText);
+        throw new Error(`Registration failed: ${response.status} ${errorText}`);
+      }
+      const userData = await response.json();
+      const user2 = {
+        id: userData.id || userData.user_id || Date.now(),
+        // Fallback ID if API doesn't return one
+        email: email.toLowerCase(),
+        preferred_login_method: loginMethod,
+        subscription_status: "free",
+        created_at: (/* @__PURE__ */ new Date()).toISOString(),
+        updated_at: (/* @__PURE__ */ new Date()).toISOString()
+      };
+      const isNewUser2 = response.status === 201;
       return { user: user2, isNewUser: isNewUser2 };
     }, "createUser");
     const updatePreferredLoginMethod2 = /* @__PURE__ */ __name2(async (db2, email, method) => {
@@ -650,7 +706,7 @@ __name(onRequestGet2, "onRequestGet2");
 var init_callback2 = __esm({
   "api/auth/github/callback.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     __name2(parseCookies2, "parseCookies");
     __name2(signJwt2, "signJwt");
@@ -664,7 +720,7 @@ function parseCookies3(cookieHeader) {
   cookieHeader.split(";").forEach((cookie) => {
     const parts = cookie.trim().split("=");
     if (parts.length === 2) {
-      cookies[parts[0]] = parts[1];
+      cookies[parts[0]] = decodeURIComponent(parts[1]);
     }
   });
   return cookies;
@@ -850,13 +906,41 @@ async function onRequestGet3(context) {
       });
     }
     const createUser2 = /* @__PURE__ */ __name2(async (db2, email, loginMethod = "google") => {
-      const stmt = db2.prepare(`
-        INSERT OR IGNORE INTO users (email, preferred_login_method, created_at, updated_at)
-        VALUES (?, ?, datetime('now'), datetime('now'))
-      `);
-      const result = await stmt.bind(email, loginMethod).run();
-      const user2 = await db2.prepare("SELECT * FROM users WHERE email = ?").bind(email).first();
-      const isNewUser2 = result.changes > 0;
+      const bearerToken = env.AFFENSUS_CREDENTIALS_PASSWORD;
+      if (!bearerToken) {
+        throw new Error("AFFENSUS_CREDENTIALS_PASSWORD not configured");
+      }
+      const name = userInfo.name || null;
+      console.log("Registering user via external API:", { email, name, loginMethod });
+      const response = await fetch("https://apiv2.affensus.com/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${bearerToken}`
+        },
+        body: JSON.stringify({
+          email: email.toLowerCase(),
+          name,
+          login_method: loginMethod,
+          subscription_status: "free"
+        })
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("API registration failed:", response.status, errorText);
+        throw new Error(`Registration failed: ${response.status} ${errorText}`);
+      }
+      const userData = await response.json();
+      const user2 = {
+        id: userData.id || userData.user_id || Date.now(),
+        // Fallback ID if API doesn't return one
+        email: email.toLowerCase(),
+        preferred_login_method: loginMethod,
+        subscription_status: "free",
+        created_at: (/* @__PURE__ */ new Date()).toISOString(),
+        updated_at: (/* @__PURE__ */ new Date()).toISOString()
+      };
+      const isNewUser2 = response.status === 201;
       return { user: user2, isNewUser: isNewUser2 };
     }, "createUser");
     const updatePreferredLoginMethod2 = /* @__PURE__ */ __name2(async (db2, email, method) => {
@@ -970,7 +1054,7 @@ __name(onRequestGet3, "onRequestGet3");
 var init_callback3 = __esm({
   "api/auth/google/callback.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     __name2(parseCookies3, "parseCookies");
     __name2(signJwt3, "signJwt");
@@ -1155,7 +1239,7 @@ __name(onRequestPost, "onRequestPost");
 var init_courseId = __esm({
   "api/user/progress/[courseId]/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     __name2(onRequestGet4, "onRequestGet");
     __name2(onRequestPost, "onRequestPost");
@@ -1195,7 +1279,7 @@ __name(onRequestGet5, "onRequestGet5");
 var init_facebook = __esm({
   "api/auth/facebook/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     __name2(onRequestGet5, "onRequestGet");
   }
@@ -1238,7 +1322,7 @@ __name(onRequestGet6, "onRequestGet6");
 var init_github = __esm({
   "api/auth/github/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     __name2(generateState, "generateState");
     __name2(onRequestGet6, "onRequestGet");
@@ -1278,9 +1362,106 @@ __name(onRequestGet7, "onRequestGet7");
 var init_google = __esm({
   "api/auth/google/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     __name2(onRequestGet7, "onRequestGet");
+  }
+});
+async function onRequestOptions() {
+  return new Response(null, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization"
+    }
+  });
+}
+__name(onRequestOptions, "onRequestOptions");
+async function onRequestPost2(context) {
+  try {
+    const { request, env } = context;
+    const body = await request.json();
+    if (!body.email || !body.login_method) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: "email and login_method are required"
+      }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    const bearerToken = env.AFFENSUS_CREDENTIALS_PASSWORD;
+    if (!bearerToken) {
+      throw new Error("AFFENSUS_CREDENTIALS_PASSWORD not configured");
+    }
+    console.log("Making API request to:", "https://apiv2.affensus.com/api/auth/register");
+    console.log("Request body:", {
+      email: body.email,
+      name: body.name,
+      login_method: body.login_method,
+      subscription_status: body.subscription_status || "free"
+    });
+    console.log("Headers:", {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${bearerToken.substring(0, 8)}...`
+    });
+    let response;
+    try {
+      response = await fetch("https://apiv2.affensus.com/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${bearerToken}`
+        },
+        body: JSON.stringify({
+          email: body.email,
+          name: body.name,
+          login_method: body.login_method,
+          subscription_status: body.subscription_status || "free"
+        })
+      });
+    } catch (fetchError) {
+      console.error("Fetch error:", fetchError);
+      const errorMessage = fetchError instanceof Error ? fetchError.message : "Unknown fetch error";
+      throw new Error(`Network error: ${errorMessage}`);
+    }
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("API Response Error:", {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText
+      });
+      throw new Error(`External API error: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    const data = await response.json();
+    return new Response(JSON.stringify({
+      success: true,
+      data
+    }), {
+      status: 201,
+      headers: { "Content-Type": "application/json" }
+    });
+  } catch (error) {
+    console.error("Error registering user:", error);
+    return new Response(JSON.stringify({
+      success: false,
+      error: "Failed to register user"
+    }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+}
+__name(onRequestPost2, "onRequestPost2");
+var init_register = __esm({
+  "api/auth/register/index.ts"() {
+    "use strict";
+    init_functionsRoutes_0_38541349960275073();
+    init_checked_fetch();
+    __name2(onRequestOptions, "onRequestOptions");
+    __name2(onRequestPost2, "onRequestPost");
   }
 });
 async function signJwt4(payload, secret, expiresIn = 7 * 24 * 60 * 60) {
@@ -1343,7 +1524,7 @@ var JWT_HEADER;
 var init_jwt = __esm({
   "../src/lib/jwt.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     JWT_ALGORITHM = "HS256";
     JWT_HEADER = { alg: JWT_ALGORITHM, typ: "JWT" };
@@ -1358,7 +1539,8 @@ function parseCookies4(cookieHeader) {
   for (const cookie of cookiePairs) {
     const [name, ...rest] = cookie.split("=");
     if (name && rest.length > 0) {
-      cookies[name] = rest.join("=");
+      const value = rest.join("=");
+      cookies[name] = decodeURIComponent(value);
     }
   }
   return cookies;
@@ -1507,7 +1689,7 @@ __name(onRequestPut, "onRequestPut");
 var init_billing_address = __esm({
   "api/profile/billing-address.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     init_jwt();
     __name2(parseCookies4, "parseCookies");
@@ -1617,7 +1799,7 @@ __name(onRequestGet9, "onRequestGet9");
 var init_completion_status = __esm({
   "api/profile/completion-status.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     init_jwt();
     __name2(parseCookies5, "parseCookies");
@@ -1643,7 +1825,8 @@ async function onRequestGet10(context) {
       const cookies = cookieHeader.split("; ");
       const authCookie = cookies.find((c) => c.startsWith("auth-token="));
       if (authCookie) {
-        token = authCookie.split("=")[1];
+        const encodedToken = authCookie.split("=")[1];
+        token = decodeURIComponent(encodedToken);
       }
     }
     if (!token) {
@@ -1719,7 +1902,7 @@ __name(onRequestGet10, "onRequestGet10");
 var init_invoices = __esm({
   "api/profile/invoices.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     init_jwt();
     __name2(getUserInvoices, "getUserInvoices");
@@ -1750,7 +1933,8 @@ async function onRequestGet11(context) {
       const cookies = cookieHeader.split("; ");
       const authCookie = cookies.find((c) => c.startsWith("auth-token="));
       if (authCookie) {
-        token = authCookie.split("=")[1];
+        const encodedToken = authCookie.split("=")[1];
+        token = decodeURIComponent(encodedToken);
       }
     }
     if (!token) {
@@ -1817,7 +2001,7 @@ __name(onRequestGet11, "onRequestGet11");
 var init_preferences = __esm({
   "api/profile/preferences.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     init_jwt();
     __name2(getUserPreferences, "getUserPreferences");
@@ -2021,7 +2205,7 @@ __name(processPendingInvoices, "processPendingInvoices");
 var init_invoice_generator = __esm({
   "../src/lib/invoice-generator.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     __name2(generateInvoiceNumber, "generateInvoiceNumber");
     __name2(calculateTax, "calculateTax");
@@ -2031,7 +2215,7 @@ var init_invoice_generator = __esm({
     __name2(processPendingInvoices, "processPendingInvoices");
   }
 });
-async function onRequestOptions() {
+async function onRequestOptions2() {
   return new Response(null, {
     status: 200,
     headers: {
@@ -2041,8 +2225,8 @@ async function onRequestOptions() {
     }
   });
 }
-__name(onRequestOptions, "onRequestOptions");
-async function onRequestPost2(context) {
+__name(onRequestOptions2, "onRequestOptions2");
+async function onRequestPost3(context) {
   try {
     const { request, env } = context;
     const cookieHeader = request.headers.get("Cookie");
@@ -2051,7 +2235,8 @@ async function onRequestPost2(context) {
       const cookies = cookieHeader.split("; ");
       const authCookie = cookies.find((c) => c.startsWith("auth-token="));
       if (authCookie) {
-        token = authCookie.split("=")[1];
+        const encodedToken = authCookie.split("=")[1];
+        token = decodeURIComponent(encodedToken);
       }
     }
     if (!token) {
@@ -2112,18 +2297,18 @@ async function onRequestPost2(context) {
     });
   }
 }
-__name(onRequestPost2, "onRequestPost2");
+__name(onRequestPost3, "onRequestPost3");
 var init_process_pending_invoices = __esm({
   "api/profile/process-pending-invoices.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     init_jwt();
-    __name2(onRequestOptions, "onRequestOptions");
-    __name2(onRequestPost2, "onRequestPost");
+    __name2(onRequestOptions2, "onRequestOptions");
+    __name2(onRequestPost3, "onRequestPost");
   }
 });
-async function onRequestPost3(context) {
+async function onRequestPost4(context) {
   try {
     const body = await context.request.json();
     const { url } = body;
@@ -2340,12 +2525,12 @@ async function onRequestPost3(context) {
     });
   }
 }
-__name(onRequestPost3, "onRequestPost3");
+__name(onRequestPost4, "onRequestPost4");
 var regexPatterns;
 var init_affiliate_link_checker = __esm({
   "api/tools/affiliate-link-checker.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     regexPatterns = [
       { name: "Daisycon", pattern: /c\/\?si=(\d+)|ds1\.nl\/c\/.*?si=(\d+)|lt45\.net\/c\/.*?si=(\d+)|\/csd\/\?si=(\d+)&li=(\d+)&wi=(\d+)|jf79\.net\/c\/.*?si=(\d+)/, matches: [], networkId: 1 },
@@ -2412,7 +2597,7 @@ var init_affiliate_link_checker = __esm({
       { name: "DigiDum", pattern: /digidum/, matches: [], networkId: 986 },
       { name: "AdIndex", pattern: /adindex/, matches: [], networkId: 985 }
     ];
-    __name2(onRequestPost3, "onRequestPost");
+    __name2(onRequestPost4, "onRequestPost");
   }
 });
 async function onRequestGet12(context) {
@@ -2436,9 +2621,7 @@ async function onRequestGet12(context) {
       });
       if (monitorsResponse.ok) {
         metricsText = await monitorsResponse.text();
-        console.log("Metrics response preview:", metricsText.substring(0, 200));
         if (metricsText.startsWith("<!DOCTYPE") || metricsText.includes("<html")) {
-          console.log("Received HTML instead of metrics, trying alternative approach");
         } else {
           success = true;
         }
@@ -2449,7 +2632,6 @@ async function onRequestGet12(context) {
       console.error("Error fetching metrics:", error);
     }
     if (!success) {
-      console.log("All API attempts failed - providing fallback response");
       const isCloudflareEnv = typeof caches !== "undefined";
       const usingPrivateIp = !env.UPTIME_KUMA_URL && isCloudflareEnv;
       let errorMessage = "Unable to fetch data from Uptime Kuma";
@@ -2498,7 +2680,7 @@ async function onRequestGet12(context) {
   }
 }
 __name(onRequestGet12, "onRequestGet12");
-async function onRequestOptions2() {
+async function onRequestOptions3() {
   return new Response(null, {
     status: 200,
     headers: {
@@ -2508,7 +2690,7 @@ async function onRequestOptions2() {
     }
   });
 }
-__name(onRequestOptions2, "onRequestOptions2");
+__name(onRequestOptions3, "onRequestOptions3");
 function formatNetworkDisplayName(networkName) {
   const nameMappings = {
     "involveasia": "Involve Asia",
@@ -2524,19 +2706,11 @@ __name(formatNetworkDisplayName, "formatNetworkDisplayName");
 async function fetchStatusPageData(networkName, uptimeKumaUrl) {
   try {
     const url = `${uptimeKumaUrl || "http://152.42.135.243:3001"}/api/status-page/heartbeat/${networkName}?limit=10080`;
-    console.log(`Fetching status page from: ${url}`);
     const response = await fetch(url);
-    console.log(`Status page response for ${networkName}:`, response.status, response.statusText);
     if (!response.ok) {
-      console.log(`Status page not found for ${networkName}: ${response.status}`);
       return null;
     }
     const data = await response.json();
-    console.log(`Status page data for ${networkName}:`, {
-      hasHeartbeatList: !!data.heartbeatList,
-      heartbeatKeys: data.heartbeatList ? Object.keys(data.heartbeatList) : [],
-      totalHeartbeats: data.heartbeatList ? Object.values(data.heartbeatList).reduce((sum, arr) => sum + (Array.isArray(arr) ? arr.length : 0), 0) : 0
-    });
     return data;
   } catch (error) {
     console.error(`Error fetching status page data for ${networkName}:`, error);
@@ -2557,9 +2731,6 @@ async function processPrometheusMetrics(metricsText, uptimeKumaUrl) {
     const labelMatches = labelsStr.matchAll(/([a-zA-Z_][a-zA-Z0-9_]*)="([^"]*)"/g);
     for (const labelMatch of labelMatches) {
       labels[labelMatch[1]] = labelMatch[2];
-    }
-    if (metricName === "monitor_status" && Object.keys(labels).length > 0) {
-      console.log("Available labels for monitor:", labels);
     }
     const monitorName = labels.monitor_name || labels.job || "unknown";
     if (labels.monitor_type === "group" || monitorName === "unknown") continue;
@@ -2623,33 +2794,26 @@ async function processPrometheusMetrics(metricsText, uptimeKumaUrl) {
       domain.displayName?.replace(/\s+/g, "-").toLowerCase()
       // display name with hyphens
     ].filter((name) => name);
-    console.log(`Checking status page for network: ${domain.displayName}, trying names:`, namesToTry);
     let statusPageData = null;
     for (const networkName of namesToTry) {
       if (!networkName) continue;
       statusPageData = await fetchStatusPageData(networkName, uptimeKumaUrl);
       if (statusPageData && statusPageData.heartbeatList && Object.keys(statusPageData.heartbeatList).length > 0) {
-        console.log(`Status page found using name: ${networkName}`);
         break;
       }
     }
     if (statusPageData && statusPageData.heartbeatList && Object.keys(statusPageData.heartbeatList).length > 0) {
-      console.log(`Status page found for ${domain.displayName}, heartbeats:`, Object.keys(statusPageData.heartbeatList).length);
       domain.hasStatusPage = true;
       if (statusPageData.uptimeList) {
         domain.uptimeList = statusPageData.uptimeList;
-        console.log(`Added uptimeList to domain ${domain.domain}:`, statusPageData.uptimeList);
       }
       domain.urls.forEach((url) => {
         url.hasStatusPage = true;
         if (statusPageData.uptimeList) {
           url.uptimeList = statusPageData.uptimeList;
-          console.log(`Added uptimeList to URL ${url.type}:`, statusPageData.uptimeList);
         }
         const allHeartbeats = [];
-        console.log(`Processing heartbeats for ${domain.domain}, heartbeatList keys:`, Object.keys(statusPageData.heartbeatList));
         Object.entries(statusPageData.heartbeatList).forEach(([monitorId, heartbeatArray]) => {
-          console.log(`Monitor ${monitorId} heartbeats:`, Array.isArray(heartbeatArray) ? heartbeatArray.length : "not array");
           if (Array.isArray(heartbeatArray)) {
             heartbeatArray.forEach((heartbeat) => {
               if (heartbeat && typeof heartbeat === "object" && "status" in heartbeat) {
@@ -2658,21 +2822,13 @@ async function processPrometheusMetrics(metricsText, uptimeKumaUrl) {
             });
           }
         });
-        console.log(`Total individual heartbeats collected for ${domain.domain}:`, allHeartbeats.length);
         url.heartbeats = allHeartbeats.sort(
           (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()
         );
-        console.log(`Final heartbeats assigned to ${domain.domain} ${url.type}:`, url.heartbeats.length);
-        if (url.heartbeats.length > 0) {
-          console.log(`Sample heartbeats:`, url.heartbeats.slice(0, 3));
-        }
       });
       domainsWithStatusPages.push(domain);
-    } else {
-      console.log(`No status page found for ${domain.displayName}`);
     }
   }
-  console.log(`Total domains with status pages: ${domainsWithStatusPages.length}`);
   domainsWithStatusPages.forEach((domain) => {
     if (domain.urls.length > 0) {
       domain.avg_uptime_percentage = domain.urls.reduce((sum, url) => sum + url.avg_uptime_percentage, 0) / domain.urls.length;
@@ -2689,10 +2845,10 @@ __name(processPrometheusMetrics, "processPrometheusMetrics");
 var init_affiliate_network_uptime = __esm({
   "api/tools/affiliate-network-uptime.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     __name2(onRequestGet12, "onRequestGet");
-    __name2(onRequestOptions2, "onRequestOptions");
+    __name2(onRequestOptions3, "onRequestOptions");
     __name2(formatNetworkDisplayName, "formatNetworkDisplayName");
     __name2(fetchStatusPageData, "fetchStatusPageData");
     __name2(processPrometheusMetrics, "processPrometheusMetrics");
@@ -2876,7 +3032,7 @@ var locales;
 var init_settings = __esm({
   "../src/locales/settings.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     locales = {
       "en": {
@@ -2918,7 +3074,7 @@ var onRequest;
 var init_create_checkout_session = __esm({
   "api/stripe/create-checkout-session.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     init_pricing_plans();
     init_settings();
@@ -3121,7 +3277,7 @@ var onRequest2;
 var init_create_portal_session = __esm({
   "api/stripe/create-portal-session.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     __name2(verifyJwt2, "verifyJwt");
     __name2(parseCookies7, "parseCookies");
@@ -3225,7 +3381,7 @@ var onRequest3;
 var init_create_user_account = __esm({
   "api/stripe/create-user-account.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     init_jwt();
     __name2(createUserAccount, "createUserAccount");
@@ -3538,7 +3694,7 @@ var onRequest4;
 var init_webhook = __esm({
   "api/stripe/webhook.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     __name2(handlePaymentWithoutCustomer, "handlePaymentWithoutCustomer");
     __name2(sendPaymentConfirmationEmail, "sendPaymentConfirmationEmail");
@@ -3635,7 +3791,7 @@ var init_webhook = __esm({
     }, "onRequest");
   }
 });
-async function onRequestOptions3() {
+async function onRequestOptions4() {
   return new Response(null, {
     status: 200,
     headers: {
@@ -3645,7 +3801,7 @@ async function onRequestOptions3() {
     }
   });
 }
-__name(onRequestOptions3, "onRequestOptions3");
+__name(onRequestOptions4, "onRequestOptions4");
 async function onRequestGet13(context) {
   try {
     const { request, env, params } = context;
@@ -3656,7 +3812,8 @@ async function onRequestGet13(context) {
       const cookies = cookieHeader.split("; ");
       const authCookie = cookies.find((c) => c.startsWith("auth-token="));
       if (authCookie) {
-        token = authCookie.split("=")[1];
+        const encodedToken = authCookie.split("=")[1];
+        token = decodeURIComponent(encodedToken);
       }
     }
     if (!token) {
@@ -4327,15 +4484,104 @@ __name(generateInvoiceHTML, "generateInvoiceHTML");
 var init_invoiceNumber = __esm({
   "api/invoice/[invoiceNumber].ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     init_jwt();
-    __name2(onRequestOptions3, "onRequestOptions");
+    __name2(onRequestOptions4, "onRequestOptions");
     __name2(onRequestGet13, "onRequestGet");
     __name2(generateInvoiceHTML, "generateInvoiceHTML");
   }
 });
-async function onRequestPost4(context) {
+async function onRequestOptions5() {
+  return new Response(null, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization"
+    }
+  });
+}
+__name(onRequestOptions5, "onRequestOptions5");
+async function onRequestGet14(context) {
+  try {
+    const { request, env, params } = context;
+    const userId = params.userId;
+    if (!userId) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: "User ID is required"
+      }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    const bearerToken = env.AFFENSUS_CREDENTIALS_PASSWORD;
+    if (!bearerToken) {
+      throw new Error("AFFENSUS_CREDENTIALS_PASSWORD not configured");
+    }
+    console.log("Making API request to:", `https://apiv2.affensus.com/api/users/${userId}`);
+    console.log("Headers:", {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${bearerToken.substring(0, 8)}...`
+    });
+    let response;
+    try {
+      response = await fetch(`https://apiv2.affensus.com/api/users/${userId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${bearerToken}`
+        }
+      });
+    } catch (fetchError) {
+      console.error("Fetch error:", fetchError);
+      const errorMessage = fetchError instanceof Error ? fetchError.message : "Unknown fetch error";
+      throw new Error(`Network error: ${errorMessage}`);
+    }
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("API Response Error:", {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText
+      });
+      throw new Error(`External API error: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    const data = await response.json();
+    return new Response(JSON.stringify({
+      success: true,
+      data
+    }), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "private, max-age=300, s-maxage=0"
+        // 5 minutes cache for user data
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    return new Response(JSON.stringify({
+      success: false,
+      error: "Failed to fetch user data"
+    }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+}
+__name(onRequestGet14, "onRequestGet14");
+var init_userId = __esm({
+  "api/users/[userId]/index.ts"() {
+    "use strict";
+    init_functionsRoutes_0_38541349960275073();
+    init_checked_fetch();
+    __name2(onRequestOptions5, "onRequestOptions");
+    __name2(onRequestGet14, "onRequestGet");
+  }
+});
+async function onRequestPost5(context) {
   try {
     const { request, env } = context;
     const { name, email, message } = await request.json();
@@ -4377,16 +4623,16 @@ async function onRequestPost4(context) {
     });
   }
 }
-__name(onRequestPost4, "onRequestPost4");
+__name(onRequestPost5, "onRequestPost5");
 var init_contact = __esm({
   "api/contact/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
-    __name2(onRequestPost4, "onRequestPost");
+    __name2(onRequestPost5, "onRequestPost");
   }
 });
-async function onRequestPost5(context) {
+async function onRequestPost6(context) {
   const { env } = context;
   const isProduction = env.SITE_URL?.startsWith("https://") || false;
   const secureFlag = isProduction ? "Secure; " : "";
@@ -4399,13 +4645,13 @@ async function onRequestPost5(context) {
   response.headers.set("Set-Cookie", clearCookieHeader);
   return response;
 }
-__name(onRequestPost5, "onRequestPost5");
+__name(onRequestPost6, "onRequestPost6");
 var init_logout = __esm({
   "api/logout/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
-    __name2(onRequestPost5, "onRequestPost");
+    __name2(onRequestPost6, "onRequestPost");
   }
 });
 async function signJwt5(payload, secret, expiresIn) {
@@ -4432,103 +4678,105 @@ async function signJwt5(payload, secret, expiresIn) {
   return `${headerB64}.${payloadB64}.${signatureB64}`;
 }
 __name(signJwt5, "signJwt5");
-async function getMagicLinkByToken(db, token) {
-  return await db.prepare(`
-    SELECT * FROM magic_links 
-    WHERE token = ? AND used_at IS NULL AND expires_at > datetime('now')
-  `).bind(token).first();
+async function getMagicLinkByToken(token, apiKey) {
+  try {
+    const response = await fetch(`https://apiv2.affensus.com/api/auth/magic-link/${token}`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json"
+      }
+    });
+    if (!response.ok) {
+      if (response.status === 404) {
+        return null;
+      }
+      throw new Error(`API error: ${response.status}`);
+    }
+    const data = await response.json();
+    if (data.used || new Date(data.expires_at) <= /* @__PURE__ */ new Date()) {
+      return null;
+    }
+    return data;
+  } catch (error) {
+    console.error("Error fetching magic link:", error);
+    return null;
+  }
 }
 __name(getMagicLinkByToken, "getMagicLinkByToken");
-async function markMagicLinkAsUsed(db, token) {
-  await db.prepare(`
-    UPDATE magic_links 
-    SET used_at = datetime('now')
-    WHERE token = ?
-  `).bind(token).run();
+async function markMagicLinkAsUsed(token, apiKey) {
+  try {
+    const response = await fetch(`https://apiv2.affensus.com/api/auth/magic-link/${token}/use`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json"
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to mark magic link as used: ${response.status}`);
+    }
+    return true;
+  } catch (error) {
+    console.error("Error marking magic link as used:", error);
+    return false;
+  }
 }
 __name(markMagicLinkAsUsed, "markMagicLinkAsUsed");
-async function getUserByEmail2(db, email) {
-  return await db.prepare("SELECT * FROM users WHERE email = ?").bind(email).first();
+async function getUserByEmail2(email, apiKey) {
+  try {
+    const response = await fetch(`https://apiv2.affensus.com/api/auth/user/email/${encodeURIComponent(email)}`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json"
+      }
+    });
+    if (!response.ok) {
+      if (response.status === 404) {
+        return null;
+      }
+      throw new Error(`API error: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching user by email:", error);
+    return null;
+  }
 }
 __name(getUserByEmail2, "getUserByEmail2");
-async function updatePreferredLoginMethod(db, email, method) {
-  await db.prepare(`
-    UPDATE users 
-    SET preferred_login_method = ?, updated_at = datetime('now')
-    WHERE email = ?
-  `).bind(method, email).run();
+async function updatePreferredLoginMethod(email, method, apiKey) {
+  try {
+    const response = await fetch(`https://apiv2.affensus.com/api/auth/user/preferred-login-method`, {
+      method: "PUT",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email,
+        method
+      })
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to update login method: ${response.status}`);
+    }
+    return true;
+  } catch (error) {
+    console.error("Error updating preferred login method:", error);
+    return false;
+  }
 }
 __name(updatePreferredLoginMethod, "updatePreferredLoginMethod");
-async function processPendingPayments3(db, email, userId, stripeSecretKey) {
+async function processPendingPayments3(email, userId, stripeSecretKey) {
   try {
-    const pendingPayments = await db.prepare(`
-      SELECT * FROM pending_payments 
-      WHERE email = ? AND processed = 0
-    `).bind(email).all();
-    if (pendingPayments.results && pendingPayments.results.length > 0) {
-      console.log(`Found ${pendingPayments.results.length} pending payment(s) for ${email}`);
-      for (const payment of pendingPayments.results) {
-        try {
-          if (stripeSecretKey) {
-            const sessionResponse = await fetch(`https://api.stripe.com/v1/checkout/sessions/${payment.session_id}`, {
-              headers: {
-                "Authorization": `Bearer ${stripeSecretKey}`
-              }
-            });
-            if (sessionResponse.ok) {
-              const session = await sessionResponse.json();
-              const customerResponse = await fetch("https://api.stripe.com/v1/customers", {
-                method: "POST",
-                headers: {
-                  "Authorization": `Bearer ${stripeSecretKey}`,
-                  "Content-Type": "application/x-www-form-urlencoded"
-                },
-                body: new URLSearchParams({
-                  email,
-                  name: payment.customer_name || "Customer",
-                  "metadata[user_id]": userId.toString(),
-                  "metadata[session_id]": payment.session_id
-                })
-              });
-              if (customerResponse.ok) {
-                const customer = await customerResponse.json();
-                await db.prepare(`
-                  UPDATE users 
-                  SET stripe_customer_id = ?, updated_at = datetime('now')
-                  WHERE id = ?
-                `).bind(customer.id, userId).run();
-                let subscriptionStatus = "free";
-                if (payment.amount_total === 1999) subscriptionStatus = "basic";
-                else if (payment.amount_total === 3999) subscriptionStatus = "active";
-                else if (payment.amount_total === 7900) subscriptionStatus = "lifetime";
-                await db.prepare(`
-                  UPDATE users 
-                  SET 
-                    subscription_status = ?, 
-                    subscription_expires_at = datetime('now', '+1 year'),
-                    updated_at = datetime('now')
-                  WHERE id = ?
-                `).bind(subscriptionStatus, userId).run();
-                console.log(`Processed pending payment for user ${userId}, customer ${customer.id}`);
-              }
-            }
-          }
-          await db.prepare(`
-            UPDATE pending_payments 
-            SET processed = 1 
-            WHERE id = ?
-          `).bind(payment.id).run();
-        } catch (error) {
-          console.error("Error processing pending payment:", error);
-        }
-      }
-    }
+    console.log(`Processing pending payments for user ${userId} (${email})`);
   } catch (error) {
-    console.error("Error checking for pending payments:", error);
+    console.error("Error processing pending payments:", error);
   }
 }
 __name(processPendingPayments3, "processPendingPayments3");
-async function onRequestGet14(context) {
+async function onRequestGet15(context) {
   try {
     const { request, env } = context;
     const url = new URL(request.url);
@@ -4539,31 +4787,37 @@ async function onRequestGet14(context) {
         headers: { "Location": `${env.SITE_URL || "http://localhost:3000"}/auth?error=missing_token` }
       });
     }
-    const db = env.DB;
-    if (!db) {
+    const apiKey = env.AFFENSUS_CREDENTIALS_PASSWORD;
+    if (!apiKey) {
       return new Response(null, {
         status: 302,
-        headers: { "Location": `${env.SITE_URL || "http://localhost:3000"}/auth?error=database_not_available` }
+        headers: { "Location": `${env.SITE_URL || "http://localhost:3000"}/auth?error=api_not_configured` }
       });
     }
     try {
-      const magicLink = await getMagicLinkByToken(db, token);
+      const magicLink = await getMagicLinkByToken(token, apiKey);
       if (!magicLink) {
         return new Response(null, {
           status: 302,
           headers: { "Location": `${env.SITE_URL || "http://localhost:3000"}/auth?error=invalid_or_expired_token` }
         });
       }
-      await markMagicLinkAsUsed(db, token);
-      const user = await getUserByEmail2(db, magicLink.email);
+      const markedAsUsed = await markMagicLinkAsUsed(token, apiKey);
+      if (!markedAsUsed) {
+        console.error("Failed to mark magic link as used");
+      }
+      const user = await getUserByEmail2(magicLink.email, apiKey);
       if (!user) {
         return new Response(null, {
           status: 302,
           headers: { "Location": `${env.SITE_URL || "http://localhost:3000"}/auth?error=user_not_found` }
         });
       }
-      await updatePreferredLoginMethod(db, user.email, "magic_link");
-      await processPendingPayments3(db, user.email, user.id, env.STRIPE_SECRET_KEY);
+      const loginMethodUpdated = await updatePreferredLoginMethod(user.email, "magic_link", apiKey);
+      if (!loginMethodUpdated) {
+        console.error("Failed to update preferred login method");
+      }
+      await processPendingPayments3(user.email, user.id, env.STRIPE_SECRET_KEY);
       const jwtSecret = env.JWT_SECRET;
       if (!jwtSecret) {
         return new Response(null, {
@@ -4610,11 +4864,11 @@ async function onRequestGet14(context) {
           "Set-Cookie": cookieHeader
         }
       });
-    } catch (dbError) {
-      console.error("Database error:", dbError);
+    } catch (apiError) {
+      console.error("API error:", apiError);
       return new Response(null, {
         status: 302,
-        headers: { "Location": `${env.SITE_URL || "http://localhost:3000"}/auth?error=database_error` }
+        headers: { "Location": `${env.SITE_URL || "http://localhost:3000"}/auth?error=api_error` }
       });
     }
   } catch (error) {
@@ -4625,11 +4879,11 @@ async function onRequestGet14(context) {
     });
   }
 }
-__name(onRequestGet14, "onRequestGet14");
+__name(onRequestGet15, "onRequestGet15");
 var init_magic_login = __esm({
   "api/magic-login/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     __name2(signJwt5, "signJwt");
     __name2(getMagicLinkByToken, "getMagicLinkByToken");
@@ -4637,10 +4891,10 @@ var init_magic_login = __esm({
     __name2(getUserByEmail2, "getUserByEmail");
     __name2(updatePreferredLoginMethod, "updatePreferredLoginMethod");
     __name2(processPendingPayments3, "processPendingPayments");
-    __name2(onRequestGet14, "onRequestGet");
+    __name2(onRequestGet15, "onRequestGet");
   }
 });
-async function onRequestPost6(context) {
+async function onRequestPost7(context) {
   try {
     const { request, env } = context;
     const {
@@ -4731,16 +4985,16 @@ async function onRequestPost6(context) {
     });
   }
 }
-__name(onRequestPost6, "onRequestPost6");
+__name(onRequestPost7, "onRequestPost7");
 var init_mistake_report = __esm({
   "api/mistake-report/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
-    __name2(onRequestPost6, "onRequestPost");
+    __name2(onRequestPost7, "onRequestPost");
   }
 });
-async function onRequestOptions4() {
+async function onRequestOptions6() {
   return new Response(null, {
     status: 200,
     headers: {
@@ -4750,8 +5004,8 @@ async function onRequestOptions4() {
     }
   });
 }
-__name(onRequestOptions4, "onRequestOptions4");
-async function onRequestGet15(context) {
+__name(onRequestOptions6, "onRequestOptions6");
+async function onRequestGet16(context) {
   try {
     const { request, env } = context;
     const url = new URL(request.url);
@@ -4814,8 +5068,8 @@ async function onRequestGet15(context) {
     });
   }
 }
-__name(onRequestGet15, "onRequestGet15");
-async function onRequestPost7(context) {
+__name(onRequestGet16, "onRequestGet16");
+async function onRequestPost8(context) {
   try {
     const { request, env } = context;
     const body = await request.json();
@@ -4890,7 +5144,7 @@ async function onRequestPost7(context) {
     });
   }
 }
-__name(onRequestPost7, "onRequestPost7");
+__name(onRequestPost8, "onRequestPost8");
 async function onRequestPut2(context) {
   try {
     const { request, env } = context;
@@ -5010,11 +5264,11 @@ __name(onRequestDelete, "onRequestDelete");
 var init_network_monitors = __esm({
   "api/network-monitors/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
-    __name2(onRequestOptions4, "onRequestOptions");
-    __name2(onRequestGet15, "onRequestGet");
-    __name2(onRequestPost7, "onRequestPost");
+    __name2(onRequestOptions6, "onRequestOptions");
+    __name2(onRequestGet16, "onRequestGet");
+    __name2(onRequestPost8, "onRequestPost");
     __name2(onRequestPut2, "onRequestPut");
     __name2(onRequestDelete, "onRequestDelete");
   }
@@ -5026,7 +5280,8 @@ function parseCookies8(cookieHeader) {
   for (const cookie of cookiePairs) {
     const [name, ...rest] = cookie.split("=");
     if (name && rest.length > 0) {
-      cookies[name] = rest.join("=");
+      const value = rest.join("=");
+      cookies[name] = decodeURIComponent(value);
     }
   }
   return cookies;
@@ -5046,7 +5301,7 @@ async function updateUser(db, userId, data) {
   return await getUserById2(db, userId);
 }
 __name(updateUser, "updateUser");
-async function onRequestGet16(context) {
+async function onRequestGet17(context) {
   try {
     const { request, env } = context;
     const cookies = parseCookies8(request.headers.get("Cookie"));
@@ -5119,7 +5374,7 @@ async function onRequestGet16(context) {
     });
   }
 }
-__name(onRequestGet16, "onRequestGet16");
+__name(onRequestGet17, "onRequestGet17");
 async function onRequestPut3(context) {
   try {
     const { request, env } = context;
@@ -5198,17 +5453,17 @@ __name(onRequestPut3, "onRequestPut3");
 var init_profile = __esm({
   "api/profile/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     init_jwt();
     __name2(parseCookies8, "parseCookies");
     __name2(getUserById2, "getUserById");
     __name2(updateUser, "updateUser");
-    __name2(onRequestGet16, "onRequestGet");
+    __name2(onRequestGet17, "onRequestGet");
     __name2(onRequestPut3, "onRequestPut");
   }
 });
-async function onRequestOptions5() {
+async function onRequestOptions7() {
   return new Response(null, {
     status: 200,
     headers: {
@@ -5218,8 +5473,8 @@ async function onRequestOptions5() {
     }
   });
 }
-__name(onRequestOptions5, "onRequestOptions5");
-async function onRequestPost8(context) {
+__name(onRequestOptions7, "onRequestOptions7");
+async function onRequestPost9(context) {
   try {
     const { request, env } = context;
     const cookieHeader = request.headers.get("Cookie");
@@ -5228,7 +5483,8 @@ async function onRequestPost8(context) {
       const cookies = cookieHeader.split("; ");
       const authCookie = cookies.find((c) => c.startsWith("auth-token="));
       if (authCookie) {
-        token = authCookie.split("=")[1];
+        const encodedToken = authCookie.split("=")[1];
+        token = decodeURIComponent(encodedToken);
       }
     }
     if (!token) {
@@ -5477,15 +5733,15 @@ async function onRequestPost8(context) {
     });
   }
 }
-__name(onRequestPost8, "onRequestPost8");
+__name(onRequestPost9, "onRequestPost9");
 var init_refund_request = __esm({
   "api/refund-request/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     init_jwt();
-    __name2(onRequestOptions5, "onRequestOptions");
-    __name2(onRequestPost8, "onRequestPost");
+    __name2(onRequestOptions7, "onRequestOptions");
+    __name2(onRequestPost9, "onRequestPost");
   }
 });
 function generateToken() {
@@ -5495,13 +5751,41 @@ function generateToken() {
 }
 __name(generateToken, "generateToken");
 async function createUser(db, email, loginMethod = "magic_link") {
-  const stmt = db.prepare(`
-    INSERT OR IGNORE INTO users (email, preferred_login_method, created_at, updated_at)
-    VALUES (?, ?, datetime('now'), datetime('now'))
-  `);
-  const result = await stmt.bind(email, loginMethod).run();
-  const user = await db.prepare("SELECT * FROM users WHERE email = ?").bind(email).first();
-  const isNewUser = result.changes > 0;
+  const bearerToken = process.env.AFFENSUS_CREDENTIALS_PASSWORD;
+  if (!bearerToken) {
+    throw new Error("AFFENSUS_CREDENTIALS_PASSWORD not configured");
+  }
+  console.log("Registering user via external API:", { email, loginMethod });
+  const response = await fetch("https://apiv2.affensus.com/api/auth/register", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${bearerToken}`
+    },
+    body: JSON.stringify({
+      email: email.toLowerCase(),
+      name: null,
+      // Magic link users don't have names initially
+      login_method: loginMethod,
+      subscription_status: "free"
+    })
+  });
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error("API registration failed:", response.status, errorText);
+    throw new Error(`Registration failed: ${response.status} ${errorText}`);
+  }
+  const userData = await response.json();
+  const user = {
+    id: userData.id || userData.user_id || Date.now(),
+    // Fallback ID if API doesn't return one
+    email: email.toLowerCase(),
+    preferred_login_method: loginMethod,
+    subscription_status: "free",
+    created_at: (/* @__PURE__ */ new Date()).toISOString(),
+    updated_at: (/* @__PURE__ */ new Date()).toISOString()
+  };
+  const isNewUser = response.status === 201;
   return { user, isNewUser };
 }
 __name(createUser, "createUser");
@@ -5580,7 +5864,7 @@ If you didn't request this email, you can safely ignore it.
   return await response.json();
 }
 __name(sendMagicLinkEmail, "sendMagicLinkEmail");
-async function onRequestPost9(context) {
+async function onRequestPost10(context) {
   try {
     const { request, env } = context;
     const { email } = await request.json();
@@ -5672,21 +5956,21 @@ async function onRequestPost9(context) {
     });
   }
 }
-__name(onRequestPost9, "onRequestPost9");
+__name(onRequestPost10, "onRequestPost10");
 var init_request_magic_link = __esm({
   "api/request-magic-link/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     __name2(generateToken, "generateToken");
     __name2(createUser, "createUser");
     __name2(createMagicLink, "createMagicLink");
     __name2(cleanupExpiredMagicLinks, "cleanupExpiredMagicLinks");
     __name2(sendMagicLinkEmail, "sendMagicLinkEmail");
-    __name2(onRequestPost9, "onRequestPost");
+    __name2(onRequestPost10, "onRequestPost");
   }
 });
-async function onRequestOptions6() {
+async function onRequestOptions8() {
   return new Response(null, {
     status: 200,
     headers: {
@@ -5696,8 +5980,8 @@ async function onRequestOptions6() {
     }
   });
 }
-__name(onRequestOptions6, "onRequestOptions6");
-async function onRequestGet17(context) {
+__name(onRequestOptions8, "onRequestOptions8");
+async function onRequestGet18(context) {
   try {
     const { request, env } = context;
     const cookieHeader = request.headers.get("Cookie");
@@ -5770,15 +6054,15 @@ async function onRequestGet17(context) {
     });
   }
 }
-__name(onRequestGet17, "onRequestGet17");
+__name(onRequestGet18, "onRequestGet18");
 var init_user = __esm({
   "api/user/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     init_jwt();
-    __name2(onRequestOptions6, "onRequestOptions");
-    __name2(onRequestGet17, "onRequestGet");
+    __name2(onRequestOptions8, "onRequestOptions");
+    __name2(onRequestGet18, "onRequestGet");
   }
 });
 async function verifyJwt3(token, secret) {
@@ -5814,7 +6098,7 @@ function parseCookies9(cookieHeader) {
   cookieHeader.split(";").forEach((cookie) => {
     const parts = cookie.trim().split("=");
     if (parts.length === 2) {
-      cookies[parts[0]] = parts[1];
+      cookies[parts[0]] = decodeURIComponent(parts[1]);
     }
   });
   return cookies;
@@ -5824,7 +6108,7 @@ async function getUserByEmail3(db, email) {
   return await db.prepare("SELECT * FROM users WHERE email = ?").bind(email).first();
 }
 __name(getUserByEmail3, "getUserByEmail3");
-async function onRequestGet18(context) {
+async function onRequestGet19(context) {
   try {
     const { request, env } = context;
     const cookies = parseCookies9(request.headers.get("Cookie"));
@@ -5886,23 +6170,23 @@ async function onRequestGet18(context) {
     });
   }
 }
-__name(onRequestGet18, "onRequestGet18");
+__name(onRequestGet19, "onRequestGet19");
 var init_user_preferences = __esm({
   "api/user-preferences.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     __name2(verifyJwt3, "verifyJwt");
     __name2(parseCookies9, "parseCookies");
     __name2(getUserByEmail3, "getUserByEmail");
-    __name2(onRequestGet18, "onRequestGet");
+    __name2(onRequestGet19, "onRequestGet");
   }
 });
 var onRequest5;
 var init_currency_rates = __esm({
   "api/currency-rates.ts"() {
     "use strict";
-    init_functionsRoutes_0_20000261642528905();
+    init_functionsRoutes_0_38541349960275073();
     init_checked_fetch();
     init_settings();
     onRequest5 = /* @__PURE__ */ __name2(async (context) => {
@@ -5978,8 +6262,8 @@ var init_currency_rates = __esm({
   }
 });
 var routes;
-var init_functionsRoutes_0_20000261642528905 = __esm({
-  "../.wrangler/tmp/pages-2CLJzw/functionsRoutes-0.20000261642528905.mjs"() {
+var init_functionsRoutes_0_38541349960275073 = __esm({
+  "../.wrangler/tmp/pages-6KI4gc/functionsRoutes-0.38541349960275073.mjs"() {
     "use strict";
     init_callback();
     init_callback2();
@@ -5989,6 +6273,8 @@ var init_functionsRoutes_0_20000261642528905 = __esm({
     init_facebook();
     init_github();
     init_google();
+    init_register();
+    init_register();
     init_billing_address();
     init_billing_address();
     init_completion_status();
@@ -6005,6 +6291,8 @@ var init_functionsRoutes_0_20000261642528905 = __esm({
     init_webhook();
     init_invoiceNumber();
     init_invoiceNumber();
+    init_userId();
+    init_userId();
     init_contact();
     init_logout();
     init_magic_login();
@@ -6081,6 +6369,20 @@ var init_functionsRoutes_0_20000261642528905 = __esm({
         modules: [onRequestGet7]
       },
       {
+        routePath: "/api/auth/register",
+        mountPath: "/api/auth/register",
+        method: "OPTIONS",
+        middlewares: [],
+        modules: [onRequestOptions]
+      },
+      {
+        routePath: "/api/auth/register",
+        mountPath: "/api/auth/register",
+        method: "POST",
+        middlewares: [],
+        modules: [onRequestPost2]
+      },
+      {
         routePath: "/api/profile/billing-address",
         mountPath: "/api/profile",
         method: "GET",
@@ -6120,21 +6422,21 @@ var init_functionsRoutes_0_20000261642528905 = __esm({
         mountPath: "/api/profile",
         method: "OPTIONS",
         middlewares: [],
-        modules: [onRequestOptions]
+        modules: [onRequestOptions2]
       },
       {
         routePath: "/api/profile/process-pending-invoices",
         mountPath: "/api/profile",
         method: "POST",
         middlewares: [],
-        modules: [onRequestPost2]
+        modules: [onRequestPost3]
       },
       {
         routePath: "/api/tools/affiliate-link-checker",
         mountPath: "/api/tools",
         method: "POST",
         middlewares: [],
-        modules: [onRequestPost3]
+        modules: [onRequestPost4]
       },
       {
         routePath: "/api/tools/affiliate-network-uptime",
@@ -6148,7 +6450,7 @@ var init_functionsRoutes_0_20000261642528905 = __esm({
         mountPath: "/api/tools",
         method: "OPTIONS",
         middlewares: [],
-        modules: [onRequestOptions2]
+        modules: [onRequestOptions3]
       },
       {
         routePath: "/api/stripe/create-checkout-session",
@@ -6190,35 +6492,49 @@ var init_functionsRoutes_0_20000261642528905 = __esm({
         mountPath: "/api/invoice",
         method: "OPTIONS",
         middlewares: [],
-        modules: [onRequestOptions3]
+        modules: [onRequestOptions4]
+      },
+      {
+        routePath: "/api/users/:userId",
+        mountPath: "/api/users/:userId",
+        method: "GET",
+        middlewares: [],
+        modules: [onRequestGet14]
+      },
+      {
+        routePath: "/api/users/:userId",
+        mountPath: "/api/users/:userId",
+        method: "OPTIONS",
+        middlewares: [],
+        modules: [onRequestOptions5]
       },
       {
         routePath: "/api/contact",
         mountPath: "/api/contact",
         method: "POST",
         middlewares: [],
-        modules: [onRequestPost4]
+        modules: [onRequestPost5]
       },
       {
         routePath: "/api/logout",
         mountPath: "/api/logout",
         method: "POST",
         middlewares: [],
-        modules: [onRequestPost5]
+        modules: [onRequestPost6]
       },
       {
         routePath: "/api/magic-login",
         mountPath: "/api/magic-login",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet14]
+        modules: [onRequestGet15]
       },
       {
         routePath: "/api/mistake-report",
         mountPath: "/api/mistake-report",
         method: "POST",
         middlewares: [],
-        modules: [onRequestPost6]
+        modules: [onRequestPost7]
       },
       {
         routePath: "/api/network-monitors",
@@ -6232,21 +6548,21 @@ var init_functionsRoutes_0_20000261642528905 = __esm({
         mountPath: "/api/network-monitors",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet15]
+        modules: [onRequestGet16]
       },
       {
         routePath: "/api/network-monitors",
         mountPath: "/api/network-monitors",
         method: "OPTIONS",
         middlewares: [],
-        modules: [onRequestOptions4]
+        modules: [onRequestOptions6]
       },
       {
         routePath: "/api/network-monitors",
         mountPath: "/api/network-monitors",
         method: "POST",
         middlewares: [],
-        modules: [onRequestPost7]
+        modules: [onRequestPost8]
       },
       {
         routePath: "/api/network-monitors",
@@ -6260,7 +6576,7 @@ var init_functionsRoutes_0_20000261642528905 = __esm({
         mountPath: "/api/profile",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet16]
+        modules: [onRequestGet17]
       },
       {
         routePath: "/api/profile",
@@ -6274,42 +6590,42 @@ var init_functionsRoutes_0_20000261642528905 = __esm({
         mountPath: "/api/refund-request",
         method: "OPTIONS",
         middlewares: [],
-        modules: [onRequestOptions5]
+        modules: [onRequestOptions7]
       },
       {
         routePath: "/api/refund-request",
         mountPath: "/api/refund-request",
         method: "POST",
         middlewares: [],
-        modules: [onRequestPost8]
+        modules: [onRequestPost9]
       },
       {
         routePath: "/api/request-magic-link",
         mountPath: "/api/request-magic-link",
         method: "POST",
         middlewares: [],
-        modules: [onRequestPost9]
+        modules: [onRequestPost10]
       },
       {
         routePath: "/api/user",
         mountPath: "/api/user",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet17]
+        modules: [onRequestGet18]
       },
       {
         routePath: "/api/user",
         mountPath: "/api/user",
         method: "OPTIONS",
         middlewares: [],
-        modules: [onRequestOptions6]
+        modules: [onRequestOptions8]
       },
       {
         routePath: "/api/user-preferences",
         mountPath: "/api",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet18]
+        modules: [onRequestGet19]
       },
       {
         routePath: "/api/currency-rates",
@@ -6321,13 +6637,13 @@ var init_functionsRoutes_0_20000261642528905 = __esm({
     ];
   }
 });
-init_functionsRoutes_0_20000261642528905();
+init_functionsRoutes_0_38541349960275073();
 init_checked_fetch();
-init_functionsRoutes_0_20000261642528905();
+init_functionsRoutes_0_38541349960275073();
 init_checked_fetch();
-init_functionsRoutes_0_20000261642528905();
+init_functionsRoutes_0_38541349960275073();
 init_checked_fetch();
-init_functionsRoutes_0_20000261642528905();
+init_functionsRoutes_0_38541349960275073();
 init_checked_fetch();
 function lexer(str) {
   var tokens = [];
@@ -6783,7 +7099,7 @@ var cloneResponse = /* @__PURE__ */ __name2((response) => (
     response
   )
 ), "cloneResponse");
-init_functionsRoutes_0_20000261642528905();
+init_functionsRoutes_0_38541349960275073();
 init_checked_fetch();
 var drainBody = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx) => {
   try {
@@ -6801,7 +7117,7 @@ var drainBody = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx
   }
 }, "drainBody");
 var middleware_ensure_req_body_drained_default = drainBody;
-init_functionsRoutes_0_20000261642528905();
+init_functionsRoutes_0_38541349960275073();
 init_checked_fetch();
 function reduceError(e) {
   return {
@@ -6830,7 +7146,7 @@ var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_miniflare3_json_error_default
 ];
 var middleware_insertion_facade_default = pages_template_worker_default;
-init_functionsRoutes_0_20000261642528905();
+init_functionsRoutes_0_38541349960275073();
 init_checked_fetch();
 var __facade_middleware__ = [];
 function __facade_register__(...args) {
@@ -7000,7 +7316,7 @@ var jsonError2 = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx
 }, "jsonError");
 var middleware_miniflare3_json_error_default2 = jsonError2;
 
-// .wrangler/tmp/bundle-3IOpvl/middleware-insertion-facade.js
+// .wrangler/tmp/bundle-dSmJ1Y/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__2 = [
   middleware_ensure_req_body_drained_default2,
   middleware_miniflare3_json_error_default2
@@ -7032,7 +7348,7 @@ function __facade_invoke__2(request, env, ctx, dispatch, finalMiddleware) {
 }
 __name(__facade_invoke__2, "__facade_invoke__");
 
-// .wrangler/tmp/bundle-3IOpvl/middleware-loader.entry.ts
+// .wrangler/tmp/bundle-dSmJ1Y/middleware-loader.entry.ts
 var __Facade_ScheduledController__2 = class ___Facade_ScheduledController__2 {
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;
@@ -7132,4 +7448,4 @@ export {
   __INTERNAL_WRANGLER_MIDDLEWARE__2 as __INTERNAL_WRANGLER_MIDDLEWARE__,
   middleware_loader_entry_default2 as default
 };
-//# sourceMappingURL=functionsWorker-0.4307159367548212.js.map
+//# sourceMappingURL=functionsWorker-0.6355327904101307.js.map

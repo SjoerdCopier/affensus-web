@@ -9,7 +9,9 @@ function parseCookies(cookieHeader: string | null): { [key: string]: string } {
   for (const cookie of cookiePairs) {
     const [name, ...rest] = cookie.split('=')
     if (name && rest.length > 0) {
-      cookies[name] = rest.join('=') // Handle values with = signs
+      // Handle URL encoding like in /api/user
+      const value = rest.join('=') // Handle values with = signs
+      cookies[name] = decodeURIComponent(value)
     }
   }
   

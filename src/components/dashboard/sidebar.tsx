@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { 
@@ -16,8 +16,19 @@ import {
   FileText
 } from "lucide-react"
 
-export default function DashboardSidebar() {
+interface DashboardSidebarProps {
+  userData?: {profile: object, projects: {id: string, name: string, country: string}[]} | null
+  selectedProject?: {id: string, name: string, country: string} | null
+  onProjectSelect?: (project: {id: string, name: string, country: string}) => void
+}
+
+export default function DashboardSidebar({ 
+  userData, 
+  selectedProject, 
+  onProjectSelect 
+}: DashboardSidebarProps) {
   const pathname = usePathname()
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   const isActive = (href: string) => {
     if (href === '/dashboard') {
@@ -42,14 +53,45 @@ export default function DashboardSidebar() {
           <h3 className="text-xs font-bold uppercase text-gray-500 mb-2">Workplace</h3>
           <ul className="space-y-1">
             <li className="mb-2">
-              <div className="mb-2 pt-1 pb-1">
-                <button type="button" className="flex h-7 items-center justify-between whitespace-nowrap rounded-md border px-2 py-1 text-xs shadow-sm w-full bg-white border-gray-200">
+              <div className="mb-2 pt-1 pb-1 relative">
+                <button 
+                  type="button" 
+                  className="flex h-7 items-center justify-between whitespace-nowrap rounded-md border px-2 py-1 text-xs shadow-sm w-full bg-white border-gray-200 hover:bg-gray-50"
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                >
                   <div className="flex items-center">
                     <Folder className="w-3 h-3 mr-1 text-gray-400" />
-                    <span className="text-xs">Solden.be</span>
+                    <span className="text-xs">
+                      {selectedProject ? selectedProject.name : 'Select Project'}
+                    </span>
                   </div>
-                  <ChevronDown className="h-3 w-3 opacity-50" />
+                  <ChevronDown className={`h-3 w-3 opacity-50 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
+                
+                {/* Dropdown Menu */}
+                {isDropdownOpen && userData?.projects && userData.projects.length > 0 && (
+                  <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-48 overflow-y-auto">
+                    {userData.projects.map((project) => (
+                      <button
+                        key={project.id}
+                        type="button"
+                        className={`w-full px-2 py-2 text-xs text-left hover:bg-gray-50 flex items-center ${
+                          selectedProject?.id === project.id ? 'bg-blue-50 text-blue-700' : ''
+                        }`}
+                        onClick={() => {
+                          onProjectSelect?.(project)
+                          setIsDropdownOpen(false)
+                        }}
+                      >
+                        <Folder className="w-3 h-3 mr-1 text-gray-400" />
+                        <span className="truncate">{project.name}</span>
+                        <span className="ml-auto text-xs text-gray-500 uppercase">
+                          {project.country}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </li>
           </ul>
