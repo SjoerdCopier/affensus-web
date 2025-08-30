@@ -1,15 +1,8 @@
 var __defProp = Object.defineProperty;
-var __getOwnPropNames = Object.getOwnPropertyNames;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
-var __esm = (fn, res) => function __init() {
-  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
-};
-var __export = (target, all) => {
-  for (var name in all)
-    __defProp(target, name, { get: all[name], enumerable: true });
-};
 
-// ../.wrangler/tmp/bundle-vZADlk/checked-fetch.js
+// .wrangler/tmp/bundle-iFZfG5/checked-fetch.js
+var urls = /* @__PURE__ */ new Set();
 function checkURL(request, init) {
   const url = request instanceof URL ? request : new URL(
     (typeof request === "string" ? new Request(request, init) : request).url
@@ -25,26 +18,60 @@ function checkURL(request, init) {
     }
   }
 }
-var urls;
+__name(checkURL, "checkURL");
+globalThis.fetch = new Proxy(globalThis.fetch, {
+  apply(target, thisArg, argArray) {
+    const [request, init] = argArray;
+    checkURL(request, init);
+    return Reflect.apply(target, thisArg, argArray);
+  }
+});
+
+// .wrangler/tmp/pages-jrwXhw/functionsWorker-0.4843416702354857.mjs
+var __defProp2 = Object.defineProperty;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __name2 = /* @__PURE__ */ __name((target, value) => __defProp2(target, "name", { value, configurable: true }), "__name");
+var __esm = /* @__PURE__ */ __name((fn, res) => /* @__PURE__ */ __name(function __init() {
+  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+}, "__init"), "__esm");
+var __export = /* @__PURE__ */ __name((target, all) => {
+  for (var name in all)
+    __defProp2(target, name, { get: all[name], enumerable: true });
+}, "__export");
+function checkURL2(request, init) {
+  const url = request instanceof URL ? request : new URL(
+    (typeof request === "string" ? new Request(request, init) : request).url
+  );
+  if (url.port && url.port !== "443" && url.protocol === "https:") {
+    if (!urls2.has(url.toString())) {
+      urls2.add(url.toString());
+      console.warn(
+        `WARNING: known issue with \`fetch()\` requests to custom HTTPS ports in published Workers:
+ - ${url.toString()} - the custom port will be ignored when the Worker is published using the \`wrangler deploy\` command.
+`
+      );
+    }
+  }
+}
+__name(checkURL2, "checkURL");
+var urls2;
 var init_checked_fetch = __esm({
-  "../.wrangler/tmp/bundle-vZADlk/checked-fetch.js"() {
+  "../.wrangler/tmp/bundle-CtUQ8W/checked-fetch.js"() {
     "use strict";
-    urls = /* @__PURE__ */ new Set();
-    __name(checkURL, "checkURL");
+    urls2 = /* @__PURE__ */ new Set();
+    __name2(checkURL2, "checkURL");
     globalThis.fetch = new Proxy(globalThis.fetch, {
       apply(target, thisArg, argArray) {
         const [request, init] = argArray;
-        checkURL(request, init);
+        checkURL2(request, init);
         return Reflect.apply(target, thisArg, argArray);
       }
     });
   }
 });
-
-// api/auth/shared/email-notifications.ts
 var email_notifications_exports = {};
 __export(email_notifications_exports, {
-  sendNewUserNotification: () => sendNewUserNotification
+  sendNewUserNotification: /* @__PURE__ */ __name(() => sendNewUserNotification, "sendNewUserNotification")
 });
 async function sendNewUserNotification(userEmail, loginMethod, resendApiKey) {
   const response = await fetch("https://api.resend.com/emails", {
@@ -105,16 +132,15 @@ This is an automated notification from MorseXpress.
   console.log("New user notification sent successfully:", result);
   return true;
 }
+__name(sendNewUserNotification, "sendNewUserNotification");
 var init_email_notifications = __esm({
   "api/auth/shared/email-notifications.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
-    __name(sendNewUserNotification, "sendNewUserNotification");
+    __name2(sendNewUserNotification, "sendNewUserNotification");
   }
 });
-
-// api/auth/facebook/callback.ts
 function parseCookies(cookieHeader) {
   const cookies = {};
   if (!cookieHeader) return cookies;
@@ -126,6 +152,7 @@ function parseCookies(cookieHeader) {
   });
   return cookies;
 }
+__name(parseCookies, "parseCookies");
 async function signJwt(payload, secret, expiresIn) {
   const header = { alg: "HS256", typ: "JWT" };
   const now = Math.floor(Date.now() / 1e3);
@@ -149,6 +176,7 @@ async function signJwt(payload, secret, expiresIn) {
   const signatureB64 = btoa(String.fromCharCode(...new Uint8Array(signatureArrayBuffer))).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
   return `${headerB64}.${payloadB64}.${signatureB64}`;
 }
+__name(signJwt, "signJwt");
 async function onRequestGet(context) {
   try {
     const { request, env } = context;
@@ -224,7 +252,7 @@ async function onRequestGet(context) {
         headers: { "Location": `${env.SITE_URL || "http://localhost:3000"}/auth?error=database_not_available` }
       });
     }
-    const createUser2 = /* @__PURE__ */ __name(async (db2, email, loginMethod = "facebook") => {
+    const createUser2 = /* @__PURE__ */ __name2(async (db2, email, loginMethod = "facebook") => {
       const bearerToken = env.AFFENSUS_CREDENTIALS_PASSWORD;
       if (!bearerToken) {
         throw new Error("AFFENSUS_CREDENTIALS_PASSWORD not configured");
@@ -262,7 +290,7 @@ async function onRequestGet(context) {
       const isNewUser2 = response.status === 201;
       return { user: user2, isNewUser: isNewUser2 };
     }, "createUser");
-    const updatePreferredLoginMethod2 = /* @__PURE__ */ __name(async (db2, email, method) => {
+    const updatePreferredLoginMethod2 = /* @__PURE__ */ __name2(async (db2, email, method) => {
       await db2.prepare(`
         UPDATE users 
         SET preferred_login_method = ?, updated_at = datetime('now')
@@ -336,18 +364,17 @@ async function onRequestGet(context) {
     });
   }
 }
+__name(onRequestGet, "onRequestGet");
 var init_callback = __esm({
   "api/auth/facebook/callback.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
-    __name(parseCookies, "parseCookies");
-    __name(signJwt, "signJwt");
-    __name(onRequestGet, "onRequestGet");
+    __name2(parseCookies, "parseCookies");
+    __name2(signJwt, "signJwt");
+    __name2(onRequestGet, "onRequestGet");
   }
 });
-
-// api/auth/github/callback.ts
 function parseCookies2(cookieHeader) {
   const cookies = {};
   if (!cookieHeader) return cookies;
@@ -359,6 +386,7 @@ function parseCookies2(cookieHeader) {
   });
   return cookies;
 }
+__name(parseCookies2, "parseCookies2");
 async function signJwt2(payload, secret, expiresIn) {
   const header = { alg: "HS256", typ: "JWT" };
   const now = Math.floor(Date.now() / 1e3);
@@ -382,6 +410,7 @@ async function signJwt2(payload, secret, expiresIn) {
   const signatureB64 = btoa(String.fromCharCode(...new Uint8Array(signatureArrayBuffer))).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
   return `${headerB64}.${payloadB64}.${signatureB64}`;
 }
+__name(signJwt2, "signJwt2");
 async function processPendingPayments(db, email, userId, stripeSecretKey) {
   try {
     const pendingPayments = await db.prepare(`
@@ -450,6 +479,7 @@ async function processPendingPayments(db, email, userId, stripeSecretKey) {
     console.error("Error checking for pending payments:", error);
   }
 }
+__name(processPendingPayments, "processPendingPayments");
 async function onRequestGet2(context) {
   try {
     const { request, env } = context;
@@ -559,7 +589,7 @@ async function onRequestGet2(context) {
         headers: { "Location": `${env.SITE_URL || "http://localhost:3000"}/auth?error=database_not_available` }
       });
     }
-    const createUser2 = /* @__PURE__ */ __name(async (db2, email, loginMethod = "github") => {
+    const createUser2 = /* @__PURE__ */ __name2(async (db2, email, loginMethod = "github") => {
       const bearerToken = env.AFFENSUS_CREDENTIALS_PASSWORD;
       if (!bearerToken) {
         throw new Error("AFFENSUS_CREDENTIALS_PASSWORD not configured");
@@ -597,7 +627,7 @@ async function onRequestGet2(context) {
       const isNewUser2 = response.status === 201;
       return { user: user2, isNewUser: isNewUser2 };
     }, "createUser");
-    const updatePreferredLoginMethod2 = /* @__PURE__ */ __name(async (db2, email, method) => {
+    const updatePreferredLoginMethod2 = /* @__PURE__ */ __name2(async (db2, email, method) => {
       await db2.prepare(`
         UPDATE users 
         SET preferred_login_method = ?, updated_at = datetime('now')
@@ -672,19 +702,18 @@ async function onRequestGet2(context) {
     });
   }
 }
+__name(onRequestGet2, "onRequestGet2");
 var init_callback2 = __esm({
   "api/auth/github/callback.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
-    __name(parseCookies2, "parseCookies");
-    __name(signJwt2, "signJwt");
-    __name(processPendingPayments, "processPendingPayments");
-    __name(onRequestGet2, "onRequestGet");
+    __name2(parseCookies2, "parseCookies");
+    __name2(signJwt2, "signJwt");
+    __name2(processPendingPayments, "processPendingPayments");
+    __name2(onRequestGet2, "onRequestGet");
   }
 });
-
-// api/auth/google/callback.ts
 function parseCookies3(cookieHeader) {
   const cookies = {};
   if (!cookieHeader) return cookies;
@@ -696,6 +725,7 @@ function parseCookies3(cookieHeader) {
   });
   return cookies;
 }
+__name(parseCookies3, "parseCookies3");
 async function signJwt3(payload, secret, expiresIn = 7 * 24 * 60 * 60) {
   const now = Math.floor(Date.now() / 1e3);
   const jwtPayload = {
@@ -718,6 +748,7 @@ async function signJwt3(payload, secret, expiresIn = 7 * 24 * 60 * 60) {
   const signatureB64 = btoa(String.fromCharCode(...new Uint8Array(signature)));
   return `${data}.${signatureB64}`;
 }
+__name(signJwt3, "signJwt3");
 async function processPendingPayments2(db, email, userId, stripeSecretKey) {
   try {
     const pendingPayments = await db.prepare(`
@@ -786,6 +817,7 @@ async function processPendingPayments2(db, email, userId, stripeSecretKey) {
     console.error("Error checking for pending payments:", error);
   }
 }
+__name(processPendingPayments2, "processPendingPayments2");
 async function onRequestGet3(context) {
   try {
     const { request, env } = context;
@@ -873,7 +905,7 @@ async function onRequestGet3(context) {
         headers: { "Location": `${env.SITE_URL || "http://localhost:3000"}/auth?error=database_not_available` }
       });
     }
-    const createUser2 = /* @__PURE__ */ __name(async (db2, email, loginMethod = "google") => {
+    const createUser2 = /* @__PURE__ */ __name2(async (db2, email, loginMethod = "google") => {
       const bearerToken = env.AFFENSUS_CREDENTIALS_PASSWORD;
       if (!bearerToken) {
         throw new Error("AFFENSUS_CREDENTIALS_PASSWORD not configured");
@@ -911,7 +943,7 @@ async function onRequestGet3(context) {
       const isNewUser2 = response.status === 201;
       return { user: user2, isNewUser: isNewUser2 };
     }, "createUser");
-    const updatePreferredLoginMethod2 = /* @__PURE__ */ __name(async (db2, email, method) => {
+    const updatePreferredLoginMethod2 = /* @__PURE__ */ __name2(async (db2, email, method) => {
       await db2.prepare(`
         UPDATE users 
         SET preferred_login_method = ?, updated_at = datetime('now')
@@ -1018,19 +1050,18 @@ async function onRequestGet3(context) {
     });
   }
 }
+__name(onRequestGet3, "onRequestGet3");
 var init_callback3 = __esm({
   "api/auth/google/callback.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
-    __name(parseCookies3, "parseCookies");
-    __name(signJwt3, "signJwt");
-    __name(processPendingPayments2, "processPendingPayments");
-    __name(onRequestGet3, "onRequestGet");
+    __name2(parseCookies3, "parseCookies");
+    __name2(signJwt3, "signJwt");
+    __name2(processPendingPayments2, "processPendingPayments");
+    __name2(onRequestGet3, "onRequestGet");
   }
 });
-
-// api/user/progress/[courseId]/index.ts
 async function onRequestGet4(context) {
   try {
     const { request, env, params } = context;
@@ -1090,6 +1121,7 @@ async function onRequestGet4(context) {
     });
   }
 }
+__name(onRequestGet4, "onRequestGet4");
 async function onRequestPost(context) {
   try {
     const { request, env, params } = context;
@@ -1203,18 +1235,393 @@ async function onRequestPost(context) {
     });
   }
 }
+__name(onRequestPost, "onRequestPost");
 var init_courseId = __esm({
   "api/user/progress/[courseId]/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
-    __name(onRequestGet4, "onRequestGet");
-    __name(onRequestPost, "onRequestPost");
+    __name2(onRequestGet4, "onRequestGet");
+    __name2(onRequestPost, "onRequestPost");
   }
 });
-
-// api/auth/facebook/index.ts
+async function onRequestOptions() {
+  return new Response(null, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization"
+    }
+  });
+}
+__name(onRequestOptions, "onRequestOptions");
 async function onRequestGet5(context) {
+  try {
+    const { request, env, params } = context;
+    const projectId = params.project_id;
+    if (!projectId) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: "Project ID is required"
+      }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    const bearerToken = env.AFFENSUS_CREDENTIALS_PASSWORD;
+    if (!bearerToken) {
+      throw new Error("AFFENSUS_CREDENTIALS_PASSWORD not configured");
+    }
+    console.log("Making API request to:", `https://apiv2.affensus.com/api/projects/${projectId}/credentials-summary`);
+    console.log("Headers:", {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${bearerToken.substring(0, 8)}...`
+    });
+    let response;
+    try {
+      response = await fetch(`https://apiv2.affensus.com/api/projects/${projectId}/credentials-summary`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${bearerToken}`
+        }
+      });
+    } catch (fetchError) {
+      console.error("Fetch error:", fetchError);
+      const errorMessage = fetchError instanceof Error ? fetchError.message : "Unknown fetch error";
+      throw new Error(`Network error: ${errorMessage}`);
+    }
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("API Response Error:", {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText
+      });
+      throw new Error(`External API error: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    const data = await response.json();
+    return new Response(JSON.stringify({
+      success: true,
+      data
+    }), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "private, max-age=300, s-maxage=0"
+        // 5 minutes cache for project credentials data
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching project credentials summary:", error);
+    return new Response(JSON.stringify({
+      success: false,
+      error: "Failed to fetch project credentials summary"
+    }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+}
+__name(onRequestGet5, "onRequestGet5");
+var init_credentials_summary = __esm({
+  "api/projects/[project_id]/credentials-summary.ts"() {
+    "use strict";
+    init_functionsRoutes_0_29353947605061015();
+    init_checked_fetch();
+    __name2(onRequestOptions, "onRequestOptions");
+    __name2(onRequestGet5, "onRequestGet");
+  }
+});
+async function onRequestOptions2() {
+  return new Response(null, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization"
+    }
+  });
+}
+__name(onRequestOptions2, "onRequestOptions2");
+async function onRequestGet6(context) {
+  try {
+    const { request, env, params } = context;
+    const projectId = params.project_id;
+    if (!projectId) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: "Project ID is required"
+      }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    const url = new URL(request.url);
+    const networkId = url.searchParams.get("network_id");
+    const credentialId = url.searchParams.get("credential_id");
+    if (!networkId || !credentialId) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: "network_id and credential_id are required"
+      }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    const bearerToken = env.AFFENSUS_CREDENTIALS_PASSWORD;
+    if (!bearerToken) {
+      throw new Error("AFFENSUS_CREDENTIALS_PASSWORD not configured");
+    }
+    const apiUrl = `https://apiv2.affensus.com/api/projects/${projectId}/merchants?network_id=${networkId}&credential_id=${credentialId}`;
+    console.log("Making API request to:", apiUrl);
+    console.log("Headers:", {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${bearerToken.substring(0, 8)}...`
+    });
+    let response;
+    try {
+      response = await fetch(apiUrl, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${bearerToken}`
+        }
+      });
+    } catch (fetchError) {
+      console.error("Fetch error:", fetchError);
+      const errorMessage = fetchError instanceof Error ? fetchError.message : "Unknown fetch error";
+      throw new Error(`Network error: ${errorMessage}`);
+    }
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("API Response Error:", {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText
+      });
+      throw new Error(`External API error: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    const data = await response.json();
+    console.log("Merchants API Response:", JSON.stringify(data, null, 2));
+    return new Response(JSON.stringify({
+      success: true,
+      data
+    }), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "private, max-age=300, s-maxage=0"
+        // 5 minutes cache for merchants data
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching project merchants:", error);
+    return new Response(JSON.stringify({
+      success: false,
+      error: "Failed to fetch project merchants"
+    }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+}
+__name(onRequestGet6, "onRequestGet6");
+var init_merchants = __esm({
+  "api/projects/[project_id]/merchants.ts"() {
+    "use strict";
+    init_functionsRoutes_0_29353947605061015();
+    init_checked_fetch();
+    __name2(onRequestOptions2, "onRequestOptions");
+    __name2(onRequestGet6, "onRequestGet");
+  }
+});
+async function onRequestOptions3() {
+  return new Response(null, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization"
+    }
+  });
+}
+__name(onRequestOptions3, "onRequestOptions3");
+async function onRequestGet7(context) {
+  try {
+    const { request, env, params } = context;
+    const projectId = params.project_id;
+    if (!projectId) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: "Project ID is required"
+      }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    const bearerToken = env.AFFENSUS_CREDENTIALS_PASSWORD;
+    if (!bearerToken) {
+      throw new Error("AFFENSUS_CREDENTIALS_PASSWORD not configured");
+    }
+    console.log("Making API request to:", `https://apiv2.affensus.com/api/projects/${projectId}/networks`);
+    console.log("Headers:", {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${bearerToken.substring(0, 8)}...`
+    });
+    let response;
+    try {
+      response = await fetch(`https://apiv2.affensus.com/api/projects/${projectId}/networks`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${bearerToken}`
+        }
+      });
+    } catch (fetchError) {
+      console.error("Fetch error:", fetchError);
+      const errorMessage = fetchError instanceof Error ? fetchError.message : "Unknown fetch error";
+      throw new Error(`Network error: ${errorMessage}`);
+    }
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("API Response Error:", {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText
+      });
+      throw new Error(`External API error: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    const data = await response.json();
+    console.log("Networks API Response:", JSON.stringify(data, null, 2));
+    return new Response(JSON.stringify({
+      success: true,
+      data
+    }), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "private, max-age=300, s-maxage=0"
+        // 5 minutes cache for networks data
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching project networks:", error);
+    return new Response(JSON.stringify({
+      success: false,
+      error: "Failed to fetch project networks"
+    }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+}
+__name(onRequestGet7, "onRequestGet7");
+var init_networks = __esm({
+  "api/projects/[project_id]/networks.ts"() {
+    "use strict";
+    init_functionsRoutes_0_29353947605061015();
+    init_checked_fetch();
+    __name2(onRequestOptions3, "onRequestOptions");
+    __name2(onRequestGet7, "onRequestGet");
+  }
+});
+async function onRequestOptions4() {
+  return new Response(null, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization"
+    }
+  });
+}
+__name(onRequestOptions4, "onRequestOptions4");
+async function onRequestGet8(context) {
+  const { params, request, env } = context;
+  const projectId = params.project_id;
+  const url = new URL(request.url);
+  const searchQuery = url.searchParams.get("q");
+  if (!searchQuery || searchQuery.length < 2) {
+    return new Response(JSON.stringify({ error: 'Query parameter "q" is required and must be at least 2 characters long' }), {
+      status: 400,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*"
+      }
+    });
+  }
+  const cacheKey = `search_${projectId}_${searchQuery}`;
+  const cached = cache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    return new Response(JSON.stringify(cached.data), {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Cache-Control": "public, max-age=300"
+      }
+    });
+  }
+  if (ongoingRequests.has(cacheKey)) {
+    const response = await ongoingRequests.get(cacheKey);
+    return response.clone();
+  }
+  const requestPromise = (async () => {
+    try {
+      const apiUrl = `https://apiv2.affensus.com/api/projects/${projectId}/search?q=${encodeURIComponent(searchQuery)}`;
+      const response = await fetch(apiUrl, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${env.AFFENSUS_CREDENTIALS_PASSWORD}`,
+          "Content-Type": "application/json"
+        }
+      });
+      if (!response.ok) {
+        throw new Error(`API responded with status: ${response.status}`);
+      }
+      const data = await response.json();
+      cache.set(cacheKey, { data, timestamp: Date.now() });
+      return new Response(JSON.stringify(data), {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          "Cache-Control": "public, max-age=300"
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+      return new Response(JSON.stringify({ error: "Failed to fetch search results" }), {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*"
+        }
+      });
+    } finally {
+      ongoingRequests.delete(cacheKey);
+    }
+  })();
+  ongoingRequests.set(cacheKey, requestPromise);
+  return requestPromise;
+}
+__name(onRequestGet8, "onRequestGet8");
+var cache;
+var CACHE_TTL;
+var ongoingRequests;
+var init_search = __esm({
+  "api/projects/[project_id]/search.ts"() {
+    "use strict";
+    init_functionsRoutes_0_29353947605061015();
+    init_checked_fetch();
+    cache = /* @__PURE__ */ new Map();
+    CACHE_TTL = 5 * 60 * 1e3;
+    ongoingRequests = /* @__PURE__ */ new Map();
+    __name2(onRequestOptions4, "onRequestOptions");
+    __name2(onRequestGet8, "onRequestGet");
+  }
+});
+async function onRequestGet9(context) {
   try {
     const { request, env } = context;
     const FACEBOOK_APP_ID = env.FACEBOOK_APP_ID;
@@ -1244,22 +1651,22 @@ async function onRequestGet5(context) {
     });
   }
 }
+__name(onRequestGet9, "onRequestGet9");
 var init_facebook = __esm({
   "api/auth/facebook/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
-    __name(onRequestGet5, "onRequestGet");
+    __name2(onRequestGet9, "onRequestGet");
   }
 });
-
-// api/auth/github/index.ts
 function generateState() {
   const array = new Uint8Array(32);
   crypto.getRandomValues(array);
   return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
-async function onRequestGet6(context) {
+__name(generateState, "generateState");
+async function onRequestGet10(context) {
   try {
     const { env } = context;
     const GITHUB_CLIENT_ID = env.GITHUB_CLIENT_ID;
@@ -1287,18 +1694,17 @@ async function onRequestGet6(context) {
     });
   }
 }
+__name(onRequestGet10, "onRequestGet10");
 var init_github = __esm({
   "api/auth/github/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
-    __name(generateState, "generateState");
-    __name(onRequestGet6, "onRequestGet");
+    __name2(generateState, "generateState");
+    __name2(onRequestGet10, "onRequestGet");
   }
 });
-
-// api/auth/google/index.ts
-async function onRequestGet7(context) {
+async function onRequestGet11(context) {
   try {
     const { request, env } = context;
     const GOOGLE_CLIENT_ID = env.GOOGLE_CLIENT_ID;
@@ -1328,17 +1734,16 @@ async function onRequestGet7(context) {
     });
   }
 }
+__name(onRequestGet11, "onRequestGet11");
 var init_google = __esm({
   "api/auth/google/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
-    __name(onRequestGet7, "onRequestGet");
+    __name2(onRequestGet11, "onRequestGet");
   }
 });
-
-// api/auth/register/index.ts
-async function onRequestOptions() {
+async function onRequestOptions5() {
   return new Response(null, {
     status: 200,
     headers: {
@@ -1348,6 +1753,7 @@ async function onRequestOptions() {
     }
   });
 }
+__name(onRequestOptions5, "onRequestOptions5");
 async function onRequestPost2(context) {
   try {
     const { request, env } = context;
@@ -1424,17 +1830,16 @@ async function onRequestPost2(context) {
     });
   }
 }
+__name(onRequestPost2, "onRequestPost2");
 var init_register = __esm({
   "api/auth/register/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
-    __name(onRequestOptions, "onRequestOptions");
-    __name(onRequestPost2, "onRequestPost");
+    __name2(onRequestOptions5, "onRequestOptions");
+    __name2(onRequestPost2, "onRequestPost");
   }
 });
-
-// ../src/lib/jwt.ts
 async function signJwt4(payload, secret, expiresIn = 7 * 24 * 60 * 60) {
   const now = Math.floor(Date.now() / 1e3);
   const jwtPayload = {
@@ -1457,6 +1862,7 @@ async function signJwt4(payload, secret, expiresIn = 7 * 24 * 60 * 60) {
   const signatureB64 = btoa(String.fromCharCode(...new Uint8Array(signature)));
   return `${data}.${signatureB64}`;
 }
+__name(signJwt4, "signJwt4");
 async function verifyJwt(token, secret) {
   try {
     const parts = token.split(".");
@@ -1488,20 +1894,20 @@ async function verifyJwt(token, secret) {
     return null;
   }
 }
-var JWT_ALGORITHM, JWT_HEADER;
+__name(verifyJwt, "verifyJwt");
+var JWT_ALGORITHM;
+var JWT_HEADER;
 var init_jwt = __esm({
   "../src/lib/jwt.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
     JWT_ALGORITHM = "HS256";
     JWT_HEADER = { alg: JWT_ALGORITHM, typ: "JWT" };
-    __name(signJwt4, "signJwt");
-    __name(verifyJwt, "verifyJwt");
+    __name2(signJwt4, "signJwt");
+    __name2(verifyJwt, "verifyJwt");
   }
 });
-
-// api/profile/billing-address.ts
 function parseCookies4(cookieHeader) {
   const cookies = {};
   if (!cookieHeader) return cookies;
@@ -1515,7 +1921,8 @@ function parseCookies4(cookieHeader) {
   }
   return cookies;
 }
-async function onRequestGet8(context) {
+__name(parseCookies4, "parseCookies4");
+async function onRequestGet12(context) {
   try {
     const { request, env } = context;
     const cookies = parseCookies4(request.headers.get("Cookie"));
@@ -1573,6 +1980,7 @@ async function onRequestGet8(context) {
     });
   }
 }
+__name(onRequestGet12, "onRequestGet12");
 async function onRequestPut(context) {
   try {
     const { request, env } = context;
@@ -1653,19 +2061,18 @@ async function onRequestPut(context) {
     });
   }
 }
+__name(onRequestPut, "onRequestPut");
 var init_billing_address = __esm({
   "api/profile/billing-address.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
     init_jwt();
-    __name(parseCookies4, "parseCookies");
-    __name(onRequestGet8, "onRequestGet");
-    __name(onRequestPut, "onRequestPut");
+    __name2(parseCookies4, "parseCookies");
+    __name2(onRequestGet12, "onRequestGet");
+    __name2(onRequestPut, "onRequestPut");
   }
 });
-
-// api/profile/completion-status.ts
 function parseCookies5(cookieHeader) {
   if (!cookieHeader) return {};
   return cookieHeader.split(";").reduce((cookies, cookie) => {
@@ -1676,6 +2083,7 @@ function parseCookies5(cookieHeader) {
     return cookies;
   }, {});
 }
+__name(parseCookies5, "parseCookies5");
 async function getUserById(db, userId) {
   try {
     const user = await db.prepare(`
@@ -1691,7 +2099,8 @@ async function getUserById(db, userId) {
     return null;
   }
 }
-async function onRequestGet9(context) {
+__name(getUserById, "getUserById");
+async function onRequestGet13(context) {
   try {
     const { request, env } = context;
     const cookies = parseCookies5(request.headers.get("Cookie"));
@@ -1762,19 +2171,18 @@ async function onRequestGet9(context) {
     });
   }
 }
+__name(onRequestGet13, "onRequestGet13");
 var init_completion_status = __esm({
   "api/profile/completion-status.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
     init_jwt();
-    __name(parseCookies5, "parseCookies");
-    __name(getUserById, "getUserById");
-    __name(onRequestGet9, "onRequestGet");
+    __name2(parseCookies5, "parseCookies");
+    __name2(getUserById, "getUserById");
+    __name2(onRequestGet13, "onRequestGet");
   }
 });
-
-// api/profile/invoices.ts
 async function getUserInvoices(db, userId) {
   return await db.prepare(`
     SELECT * FROM stripe_invoices 
@@ -1783,7 +2191,8 @@ async function getUserInvoices(db, userId) {
     LIMIT 50
   `).bind(userId).all();
 }
-async function onRequestGet10(context) {
+__name(getUserInvoices, "getUserInvoices");
+async function onRequestGet14(context) {
   try {
     const { request, env } = context;
     const cookieHeader = request.headers.get("Cookie");
@@ -1865,24 +2274,24 @@ async function onRequestGet10(context) {
     });
   }
 }
+__name(onRequestGet14, "onRequestGet14");
 var init_invoices = __esm({
   "api/profile/invoices.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
     init_jwt();
-    __name(getUserInvoices, "getUserInvoices");
-    __name(onRequestGet10, "onRequestGet");
+    __name2(getUserInvoices, "getUserInvoices");
+    __name2(onRequestGet14, "onRequestGet");
   }
 });
-
-// api/profile/preferences.ts
 async function getUserPreferences(db, userId) {
   return await db.prepare(`
     SELECT * FROM user_preferences 
     WHERE user_id = ?
   `).bind(userId).first();
 }
+__name(getUserPreferences, "getUserPreferences");
 async function createDefaultPreferences(db, userId) {
   await db.prepare(`
     INSERT INTO user_preferences (user_id, speed_preference, audio_enabled, notifications_enabled, theme, language)
@@ -1890,7 +2299,8 @@ async function createDefaultPreferences(db, userId) {
   `).bind(userId).run();
   return await getUserPreferences(db, userId);
 }
-async function onRequestGet11(context) {
+__name(createDefaultPreferences, "createDefaultPreferences");
+async function onRequestGet15(context) {
   try {
     const { request, env } = context;
     const cookieHeader = request.headers.get("Cookie");
@@ -1963,27 +2373,26 @@ async function onRequestGet11(context) {
     });
   }
 }
+__name(onRequestGet15, "onRequestGet15");
 var init_preferences = __esm({
   "api/profile/preferences.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
     init_jwt();
-    __name(getUserPreferences, "getUserPreferences");
-    __name(createDefaultPreferences, "createDefaultPreferences");
-    __name(onRequestGet11, "onRequestGet");
+    __name2(getUserPreferences, "getUserPreferences");
+    __name2(createDefaultPreferences, "createDefaultPreferences");
+    __name2(onRequestGet15, "onRequestGet");
   }
 });
-
-// ../src/lib/invoice-generator.ts
 var invoice_generator_exports = {};
 __export(invoice_generator_exports, {
-  calculateTax: () => calculateTax,
-  createCreditNote: () => createCreditNote,
-  createInvoiceRecord: () => createInvoiceRecord,
-  generateInvoiceNumber: () => generateInvoiceNumber,
-  getUserBillingAddress: () => getUserBillingAddress,
-  processPendingInvoices: () => processPendingInvoices
+  calculateTax: /* @__PURE__ */ __name(() => calculateTax, "calculateTax"),
+  createCreditNote: /* @__PURE__ */ __name(() => createCreditNote, "createCreditNote"),
+  createInvoiceRecord: /* @__PURE__ */ __name(() => createInvoiceRecord, "createInvoiceRecord"),
+  generateInvoiceNumber: /* @__PURE__ */ __name(() => generateInvoiceNumber, "generateInvoiceNumber"),
+  getUserBillingAddress: /* @__PURE__ */ __name(() => getUserBillingAddress, "getUserBillingAddress"),
+  processPendingInvoices: /* @__PURE__ */ __name(() => processPendingInvoices, "processPendingInvoices")
 });
 async function generateInvoiceNumber(db) {
   const currentYear = (/* @__PURE__ */ new Date()).getFullYear();
@@ -1998,6 +2407,7 @@ async function generateInvoiceNumber(db) {
   const sequenceNumber = result?.sequence_number;
   return `INV-${currentYear}-${sequenceNumber.toString().padStart(3, "0")}`;
 }
+__name(generateInvoiceNumber, "generateInvoiceNumber");
 function calculateTax(amount, billingAddress) {
   const taxRate = 0;
   const taxAmount = 0;
@@ -2012,6 +2422,7 @@ function calculateTax(amount, billingAddress) {
     totalAmount
   };
 }
+__name(calculateTax, "calculateTax");
 async function createInvoiceRecord(db, invoiceData) {
   const invoiceNumber = await generateInvoiceNumber(db);
   const invoiceDate = (/* @__PURE__ */ new Date()).toISOString();
@@ -2079,6 +2490,7 @@ async function createInvoiceRecord(db, invoiceData) {
   console.log(`Generated invoice: ${invoiceNumber} for user ${invoiceData.userId}`);
   return invoiceRecord;
 }
+__name(createInvoiceRecord, "createInvoiceRecord");
 async function createCreditNote(db, originalInvoiceId, refundReason) {
   const originalInvoice = await db.prepare(`
     SELECT * FROM stripe_invoices WHERE id = ?
@@ -2109,6 +2521,7 @@ async function createCreditNote(db, originalInvoiceId, refundReason) {
   };
   return await createInvoiceRecord(db, creditNoteData);
 }
+__name(createCreditNote, "createCreditNote");
 async function getUserBillingAddress(db, userId) {
   const address = await db.prepare(`
     SELECT * FROM user_billing_addresses WHERE user_id = ?
@@ -2129,6 +2542,7 @@ async function getUserBillingAddress(db, userId) {
     taxIdNumber: address.tax_id_number
   };
 }
+__name(getUserBillingAddress, "getUserBillingAddress");
 async function processPendingInvoices(db, userId, userEmail) {
   const billingAddress = await getUserBillingAddress(db, userId);
   if (!billingAddress) {
@@ -2163,22 +2577,21 @@ async function processPendingInvoices(db, userId, userEmail) {
   console.log(`Processed ${createdInvoices.length} pending invoices for user ${userId}`);
   return createdInvoices;
 }
+__name(processPendingInvoices, "processPendingInvoices");
 var init_invoice_generator = __esm({
   "../src/lib/invoice-generator.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
-    __name(generateInvoiceNumber, "generateInvoiceNumber");
-    __name(calculateTax, "calculateTax");
-    __name(createInvoiceRecord, "createInvoiceRecord");
-    __name(createCreditNote, "createCreditNote");
-    __name(getUserBillingAddress, "getUserBillingAddress");
-    __name(processPendingInvoices, "processPendingInvoices");
+    __name2(generateInvoiceNumber, "generateInvoiceNumber");
+    __name2(calculateTax, "calculateTax");
+    __name2(createInvoiceRecord, "createInvoiceRecord");
+    __name2(createCreditNote, "createCreditNote");
+    __name2(getUserBillingAddress, "getUserBillingAddress");
+    __name2(processPendingInvoices, "processPendingInvoices");
   }
 });
-
-// api/profile/process-pending-invoices.ts
-async function onRequestOptions2() {
+async function onRequestOptions6() {
   return new Response(null, {
     status: 200,
     headers: {
@@ -2188,6 +2601,7 @@ async function onRequestOptions2() {
     }
   });
 }
+__name(onRequestOptions6, "onRequestOptions6");
 async function onRequestPost3(context) {
   try {
     const { request, env } = context;
@@ -2259,18 +2673,17 @@ async function onRequestPost3(context) {
     });
   }
 }
+__name(onRequestPost3, "onRequestPost3");
 var init_process_pending_invoices = __esm({
   "api/profile/process-pending-invoices.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
     init_jwt();
-    __name(onRequestOptions2, "onRequestOptions");
-    __name(onRequestPost3, "onRequestPost");
+    __name2(onRequestOptions6, "onRequestOptions");
+    __name2(onRequestPost3, "onRequestPost");
   }
 });
-
-// api/tools/affiliate-link-checker.ts
 async function onRequestPost4(context) {
   try {
     const body = await context.request.json();
@@ -2488,11 +2901,12 @@ async function onRequestPost4(context) {
     });
   }
 }
+__name(onRequestPost4, "onRequestPost4");
 var regexPatterns;
 var init_affiliate_link_checker = __esm({
   "api/tools/affiliate-link-checker.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
     regexPatterns = [
       { name: "Daisycon", pattern: /c\/\?si=(\d+)|ds1\.nl\/c\/.*?si=(\d+)|lt45\.net\/c\/.*?si=(\d+)|\/csd\/\?si=(\d+)&li=(\d+)&wi=(\d+)|jf79\.net\/c\/.*?si=(\d+)/, matches: [], networkId: 1 },
@@ -2559,12 +2973,10 @@ var init_affiliate_link_checker = __esm({
       { name: "DigiDum", pattern: /digidum/, matches: [], networkId: 986 },
       { name: "AdIndex", pattern: /adindex/, matches: [], networkId: 985 }
     ];
-    __name(onRequestPost4, "onRequestPost");
+    __name2(onRequestPost4, "onRequestPost");
   }
 });
-
-// api/tools/affiliate-network-uptime.ts
-async function onRequestGet12(context) {
+async function onRequestGet16(context) {
   try {
     const { env } = context;
     const uptimeKumaSecret = env.UPTIME_KUMA_SECRET;
@@ -2643,7 +3055,8 @@ async function onRequestGet12(context) {
     });
   }
 }
-async function onRequestOptions3() {
+__name(onRequestGet16, "onRequestGet16");
+async function onRequestOptions7() {
   return new Response(null, {
     status: 200,
     headers: {
@@ -2653,6 +3066,7 @@ async function onRequestOptions3() {
     }
   });
 }
+__name(onRequestOptions7, "onRequestOptions7");
 function formatNetworkDisplayName(networkName) {
   const nameMappings = {
     "involveasia": "Involve Asia",
@@ -2664,6 +3078,7 @@ function formatNetworkDisplayName(networkName) {
   const normalizedName = networkName.toLowerCase().replace(/[^a-z0-9]/g, "");
   return nameMappings[normalizedName] || networkName;
 }
+__name(formatNetworkDisplayName, "formatNetworkDisplayName");
 async function fetchStatusPageData(networkName, uptimeKumaUrl) {
   try {
     const url = `${uptimeKumaUrl || "http://152.42.135.243:3001"}/api/status-page/heartbeat/${networkName}?limit=10080`;
@@ -2678,6 +3093,7 @@ async function fetchStatusPageData(networkName, uptimeKumaUrl) {
     return null;
   }
 }
+__name(fetchStatusPageData, "fetchStatusPageData");
 async function processPrometheusMetrics(metricsText, uptimeKumaUrl) {
   const domains = /* @__PURE__ */ new Map();
   const lines = metricsText.split("\n");
@@ -2801,20 +3217,19 @@ async function processPrometheusMetrics(metricsText, uptimeKumaUrl) {
   });
   return domainsWithStatusPages;
 }
+__name(processPrometheusMetrics, "processPrometheusMetrics");
 var init_affiliate_network_uptime = __esm({
   "api/tools/affiliate-network-uptime.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
-    __name(onRequestGet12, "onRequestGet");
-    __name(onRequestOptions3, "onRequestOptions");
-    __name(formatNetworkDisplayName, "formatNetworkDisplayName");
-    __name(fetchStatusPageData, "fetchStatusPageData");
-    __name(processPrometheusMetrics, "processPrometheusMetrics");
+    __name2(onRequestGet16, "onRequestGet");
+    __name2(onRequestOptions7, "onRequestOptions");
+    __name2(formatNetworkDisplayName, "formatNetworkDisplayName");
+    __name2(fetchStatusPageData, "fetchStatusPageData");
+    __name2(processPrometheusMetrics, "processPrometheusMetrics");
   }
 });
-
-// ../src/pricing-plans.json
 var pricing_plans_default;
 var init_pricing_plans = __esm({
   "../src/pricing-plans.json"() {
@@ -2989,13 +3404,11 @@ var init_pricing_plans = __esm({
     };
   }
 });
-
-// ../src/locales/settings.ts
 var locales;
 var init_settings = __esm({
   "../src/locales/settings.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
     locales = {
       "en": {
@@ -3021,8 +3434,6 @@ var init_settings = __esm({
     };
   }
 });
-
-// api/stripe/create-checkout-session.ts
 function parseCookies6(cookieHeader) {
   const cookies = {};
   if (!cookieHeader) return cookies;
@@ -3034,16 +3445,17 @@ function parseCookies6(cookieHeader) {
   });
   return cookies;
 }
+__name(parseCookies6, "parseCookies6");
 var onRequest;
 var init_create_checkout_session = __esm({
   "api/stripe/create-checkout-session.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
     init_pricing_plans();
     init_settings();
-    __name(parseCookies6, "parseCookies");
-    onRequest = /* @__PURE__ */ __name(async (context) => {
+    __name2(parseCookies6, "parseCookies");
+    onRequest = /* @__PURE__ */ __name2(async (context) => {
       try {
         const { request, env } = context;
         const cookies = parseCookies6(request.headers.get("Cookie"));
@@ -3194,8 +3606,6 @@ var init_create_checkout_session = __esm({
     }, "onRequest");
   }
 });
-
-// api/stripe/create-portal-session.ts
 async function verifyJwt2(token, secret) {
   try {
     const [headerB64, payloadB64, signatureB64] = token.split(".");
@@ -3222,6 +3632,7 @@ async function verifyJwt2(token, secret) {
     throw new Error("Invalid token");
   }
 }
+__name(verifyJwt2, "verifyJwt2");
 function parseCookies7(cookieHeader) {
   const cookies = {};
   if (!cookieHeader) return cookies;
@@ -3233,19 +3644,21 @@ function parseCookies7(cookieHeader) {
   });
   return cookies;
 }
+__name(parseCookies7, "parseCookies7");
 async function getUserByEmail(db, email) {
   return await db.prepare("SELECT * FROM users WHERE email = ?").bind(email).first();
 }
+__name(getUserByEmail, "getUserByEmail");
 var onRequest2;
 var init_create_portal_session = __esm({
   "api/stripe/create-portal-session.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
-    __name(verifyJwt2, "verifyJwt");
-    __name(parseCookies7, "parseCookies");
-    __name(getUserByEmail, "getUserByEmail");
-    onRequest2 = /* @__PURE__ */ __name(async (context) => {
+    __name2(verifyJwt2, "verifyJwt");
+    __name2(parseCookies7, "parseCookies");
+    __name2(getUserByEmail, "getUserByEmail");
+    onRequest2 = /* @__PURE__ */ __name2(async (context) => {
       try {
         const { request, env } = context;
         const cookies = parseCookies7(request.headers.get("Cookie"));
@@ -3321,8 +3734,6 @@ var init_create_portal_session = __esm({
     }, "onRequest");
   }
 });
-
-// api/stripe/create-user-account.ts
 async function createUserAccount(db, email, loginMethod, stripeCustomerId) {
   const stmt = db.prepare(`
     INSERT OR IGNORE INTO users (email, preferred_login_method, stripe_customer_id, created_at, updated_at)
@@ -3333,6 +3744,7 @@ async function createUserAccount(db, email, loginMethod, stripeCustomerId) {
   const isNewUser = result.changes > 0;
   return { user, isNewUser };
 }
+__name(createUserAccount, "createUserAccount");
 async function updateStripeCustomerId(db, email, stripeCustomerId) {
   await db.prepare(`
     UPDATE users 
@@ -3340,16 +3752,17 @@ async function updateStripeCustomerId(db, email, stripeCustomerId) {
     WHERE email = ?
   `).bind(stripeCustomerId, email).run();
 }
+__name(updateStripeCustomerId, "updateStripeCustomerId");
 var onRequest3;
 var init_create_user_account = __esm({
   "api/stripe/create-user-account.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
     init_jwt();
-    __name(createUserAccount, "createUserAccount");
-    __name(updateStripeCustomerId, "updateStripeCustomerId");
-    onRequest3 = /* @__PURE__ */ __name(async (context) => {
+    __name2(createUserAccount, "createUserAccount");
+    __name2(updateStripeCustomerId, "updateStripeCustomerId");
+    onRequest3 = /* @__PURE__ */ __name2(async (context) => {
       try {
         const { request, env } = context;
         const { email, loginMethod, sessionId } = await request.json();
@@ -3436,8 +3849,6 @@ var init_create_user_account = __esm({
     }, "onRequest");
   }
 });
-
-// api/stripe/webhook.ts
 async function handlePaymentWithoutCustomer(db, session, stripeSecretKey, resendApiKey) {
   try {
     const { customer_details, amount_total, currency, metadata } = session;
@@ -3506,6 +3917,7 @@ async function handlePaymentWithoutCustomer(db, session, stripeSecretKey, resend
     console.error("Error handling payment without customer:", error);
   }
 }
+__name(handlePaymentWithoutCustomer, "handlePaymentWithoutCustomer");
 async function sendPaymentConfirmationEmail(email, payment, resendApiKey) {
   const emailResponse = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -3531,6 +3943,7 @@ async function sendPaymentConfirmationEmail(email, payment, resendApiKey) {
     throw new Error(`Failed to send email: ${await emailResponse.text()}`);
   }
 }
+__name(sendPaymentConfirmationEmail, "sendPaymentConfirmationEmail");
 async function updateUserSubscription(db, customerId, paymentData) {
   const { id, status, amount_total, currency, metadata } = paymentData;
   let planId = metadata?.plan_id || "basic";
@@ -3550,6 +3963,7 @@ async function updateUserSubscription(db, customerId, paymentData) {
     WHERE stripe_customer_id = ?
   `).bind(subscriptionStatus, customerId).run();
 }
+__name(updateUserSubscription, "updateUserSubscription");
 async function createInvoiceRecord2(db, customerId, paymentData, stripeSecretKey) {
   let user = await db.prepare("SELECT id, email, first_name, last_name FROM users WHERE stripe_customer_id = ?").bind(customerId).first();
   if (!user && stripeSecretKey) {
@@ -3621,6 +4035,7 @@ async function createInvoiceRecord2(db, customerId, paymentData, stripeSecretKey
   };
   await generateInvoice(db, invoiceData);
 }
+__name(createInvoiceRecord2, "createInvoiceRecord2");
 async function verifyStripeSignature(payload, signature, secret) {
   try {
     const elements = signature.split(",");
@@ -3650,18 +4065,19 @@ async function verifyStripeSignature(payload, signature, secret) {
     return false;
   }
 }
+__name(verifyStripeSignature, "verifyStripeSignature");
 var onRequest4;
 var init_webhook = __esm({
   "api/stripe/webhook.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
-    __name(handlePaymentWithoutCustomer, "handlePaymentWithoutCustomer");
-    __name(sendPaymentConfirmationEmail, "sendPaymentConfirmationEmail");
-    __name(updateUserSubscription, "updateUserSubscription");
-    __name(createInvoiceRecord2, "createInvoiceRecord");
-    __name(verifyStripeSignature, "verifyStripeSignature");
-    onRequest4 = /* @__PURE__ */ __name(async (context) => {
+    __name2(handlePaymentWithoutCustomer, "handlePaymentWithoutCustomer");
+    __name2(sendPaymentConfirmationEmail, "sendPaymentConfirmationEmail");
+    __name2(updateUserSubscription, "updateUserSubscription");
+    __name2(createInvoiceRecord2, "createInvoiceRecord");
+    __name2(verifyStripeSignature, "verifyStripeSignature");
+    onRequest4 = /* @__PURE__ */ __name2(async (context) => {
       try {
         const { request, env } = context;
         const stripeWebhookSecret = env.STRIPE_WEBHOOK_SECRET;
@@ -3751,9 +4167,7 @@ var init_webhook = __esm({
     }, "onRequest");
   }
 });
-
-// api/invoice/[invoiceNumber].ts
-async function onRequestOptions4() {
+async function onRequestOptions8() {
   return new Response(null, {
     status: 200,
     headers: {
@@ -3763,7 +4177,8 @@ async function onRequestOptions4() {
     }
   });
 }
-async function onRequestGet13(context) {
+__name(onRequestOptions8, "onRequestOptions8");
+async function onRequestGet17(context) {
   try {
     const { request, env, params } = context;
     const invoiceNumber = params.invoiceNumber;
@@ -3877,11 +4292,12 @@ async function onRequestGet13(context) {
     });
   }
 }
+__name(onRequestGet17, "onRequestGet17");
 function generateInvoiceHTML(invoice) {
   const isCredit = invoice.invoice_type === "credit_note";
   const amountPrefix = isCredit ? "-" : "";
   const documentTitle = isCredit ? "CREDIT NOTE" : "INVOICE";
-  const formatAmount = /* @__PURE__ */ __name((amount) => {
+  const formatAmount = /* @__PURE__ */ __name2((amount) => {
     const formatted = Math.abs(amount / 100).toFixed(2);
     return `${amountPrefix}$${formatted} ${(invoice.currency || "USD").toUpperCase()}`;
   }, "formatAmount");
@@ -4440,20 +4856,19 @@ function generateInvoiceHTML(invoice) {
 </html>`;
   return html;
 }
+__name(generateInvoiceHTML, "generateInvoiceHTML");
 var init_invoiceNumber = __esm({
   "api/invoice/[invoiceNumber].ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
     init_jwt();
-    __name(onRequestOptions4, "onRequestOptions");
-    __name(onRequestGet13, "onRequestGet");
-    __name(generateInvoiceHTML, "generateInvoiceHTML");
+    __name2(onRequestOptions8, "onRequestOptions");
+    __name2(onRequestGet17, "onRequestGet");
+    __name2(generateInvoiceHTML, "generateInvoiceHTML");
   }
 });
-
-// api/users/[userId]/index.ts
-async function onRequestOptions5() {
+async function onRequestOptions9() {
   return new Response(null, {
     status: 200,
     headers: {
@@ -4463,7 +4878,8 @@ async function onRequestOptions5() {
     }
   });
 }
-async function onRequestGet14(context) {
+__name(onRequestOptions9, "onRequestOptions9");
+async function onRequestGet18(context) {
   try {
     const { request, env, params } = context;
     const userId = params.userId;
@@ -4531,17 +4947,16 @@ async function onRequestGet14(context) {
     });
   }
 }
+__name(onRequestGet18, "onRequestGet18");
 var init_userId = __esm({
   "api/users/[userId]/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
-    __name(onRequestOptions5, "onRequestOptions");
-    __name(onRequestGet14, "onRequestGet");
+    __name2(onRequestOptions9, "onRequestOptions");
+    __name2(onRequestGet18, "onRequestGet");
   }
 });
-
-// api/contact/index.ts
 async function onRequestPost5(context) {
   try {
     const { request, env } = context;
@@ -4584,17 +4999,85 @@ async function onRequestPost5(context) {
     });
   }
 }
+__name(onRequestPost5, "onRequestPost5");
 var init_contact = __esm({
   "api/contact/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
-    __name(onRequestPost5, "onRequestPost");
+    __name2(onRequestPost5, "onRequestPost");
   }
 });
-
-// api/logout/index.ts
+async function onRequestOptions10() {
+  return new Response(null, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization"
+    }
+  });
+}
+__name(onRequestOptions10, "onRequestOptions10");
 async function onRequestPost6(context) {
+  try {
+    const { request, env } = context;
+    const body = await request.json();
+    if (!body.credential_id) {
+      return new Response(JSON.stringify({ error: "credential_id is required" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    const bearerToken = env.AFFENSUS_CREDENTIALS_PASSWORD;
+    if (!bearerToken) {
+      throw new Error("AFFENSUS_CREDENTIALS_PASSWORD not configured");
+    }
+    console.log("Sending import network request:", body);
+    const response = await fetch("https://apiv2.affensus.com/api/import-network", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${bearerToken}`
+      },
+      body: JSON.stringify(body)
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Import network API error:", response.status, response.statusText, errorText);
+      return new Response(JSON.stringify({ error: "Failed to start import job", details: errorText }), {
+        status: response.status,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    const data = await response.json();
+    console.log("Import network response:", data);
+    return new Response(JSON.stringify(data), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store, max-age=0"
+      }
+    });
+  } catch (error) {
+    console.error("Import network error:", error);
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+}
+__name(onRequestPost6, "onRequestPost6");
+var init_import_network = __esm({
+  "api/import-network.ts"() {
+    "use strict";
+    init_functionsRoutes_0_29353947605061015();
+    init_checked_fetch();
+    __name2(onRequestOptions10, "onRequestOptions");
+    __name2(onRequestPost6, "onRequestPost");
+  }
+});
+async function onRequestPost7(context) {
   const { env } = context;
   const isProduction = env.SITE_URL?.startsWith("https://") || false;
   const secureFlag = isProduction ? "Secure; " : "";
@@ -4607,16 +5090,15 @@ async function onRequestPost6(context) {
   response.headers.set("Set-Cookie", clearCookieHeader);
   return response;
 }
+__name(onRequestPost7, "onRequestPost7");
 var init_logout = __esm({
   "api/logout/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
-    __name(onRequestPost6, "onRequestPost");
+    __name2(onRequestPost7, "onRequestPost");
   }
 });
-
-// api/magic-login/index.ts
 async function signJwt5(payload, secret, expiresIn) {
   const header = { alg: "HS256", typ: "JWT" };
   const now = Math.floor(Date.now() / 1e3);
@@ -4640,6 +5122,7 @@ async function signJwt5(payload, secret, expiresIn) {
   const signatureB64 = btoa(String.fromCharCode(...new Uint8Array(signatureArrayBuffer))).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
   return `${headerB64}.${payloadB64}.${signatureB64}`;
 }
+__name(signJwt5, "signJwt5");
 async function getMagicLinkByToken(token, apiKey) {
   try {
     const response = await fetch(`https://apiv2.affensus.com/api/auth/magic-link/${token}`, {
@@ -4665,6 +5148,7 @@ async function getMagicLinkByToken(token, apiKey) {
     return null;
   }
 }
+__name(getMagicLinkByToken, "getMagicLinkByToken");
 async function markMagicLinkAsUsed(token, apiKey) {
   try {
     const response = await fetch(`https://apiv2.affensus.com/api/auth/magic-link/${token}/use`, {
@@ -4683,6 +5167,7 @@ async function markMagicLinkAsUsed(token, apiKey) {
     return false;
   }
 }
+__name(markMagicLinkAsUsed, "markMagicLinkAsUsed");
 async function getUserByEmail2(email, apiKey) {
   try {
     const response = await fetch(`https://apiv2.affensus.com/api/auth/user/email/${encodeURIComponent(email)}`, {
@@ -4704,6 +5189,7 @@ async function getUserByEmail2(email, apiKey) {
     return null;
   }
 }
+__name(getUserByEmail2, "getUserByEmail2");
 async function updatePreferredLoginMethod(email, method, apiKey) {
   try {
     const response = await fetch(`https://apiv2.affensus.com/api/auth/user/preferred-login-method`, {
@@ -4726,6 +5212,7 @@ async function updatePreferredLoginMethod(email, method, apiKey) {
     return false;
   }
 }
+__name(updatePreferredLoginMethod, "updatePreferredLoginMethod");
 async function processPendingPayments3(email, userId, stripeSecretKey) {
   try {
     console.log(`Processing pending payments for user ${userId} (${email})`);
@@ -4733,7 +5220,8 @@ async function processPendingPayments3(email, userId, stripeSecretKey) {
     console.error("Error processing pending payments:", error);
   }
 }
-async function onRequestGet15(context) {
+__name(processPendingPayments3, "processPendingPayments3");
+async function onRequestGet19(context) {
   try {
     const { request, env } = context;
     const url = new URL(request.url);
@@ -4836,23 +5324,22 @@ async function onRequestGet15(context) {
     });
   }
 }
+__name(onRequestGet19, "onRequestGet19");
 var init_magic_login = __esm({
   "api/magic-login/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
-    __name(signJwt5, "signJwt");
-    __name(getMagicLinkByToken, "getMagicLinkByToken");
-    __name(markMagicLinkAsUsed, "markMagicLinkAsUsed");
-    __name(getUserByEmail2, "getUserByEmail");
-    __name(updatePreferredLoginMethod, "updatePreferredLoginMethod");
-    __name(processPendingPayments3, "processPendingPayments");
-    __name(onRequestGet15, "onRequestGet");
+    __name2(signJwt5, "signJwt");
+    __name2(getMagicLinkByToken, "getMagicLinkByToken");
+    __name2(markMagicLinkAsUsed, "markMagicLinkAsUsed");
+    __name2(getUserByEmail2, "getUserByEmail");
+    __name2(updatePreferredLoginMethod, "updatePreferredLoginMethod");
+    __name2(processPendingPayments3, "processPendingPayments");
+    __name2(onRequestGet19, "onRequestGet");
   }
 });
-
-// api/mistake-report/index.ts
-async function onRequestPost7(context) {
+async function onRequestPost8(context) {
   try {
     const { request, env } = context;
     const {
@@ -4943,17 +5430,16 @@ async function onRequestPost7(context) {
     });
   }
 }
+__name(onRequestPost8, "onRequestPost8");
 var init_mistake_report = __esm({
   "api/mistake-report/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
-    __name(onRequestPost7, "onRequestPost");
+    __name2(onRequestPost8, "onRequestPost");
   }
 });
-
-// api/network-monitors/index.ts
-async function onRequestOptions6() {
+async function onRequestOptions11() {
   return new Response(null, {
     status: 200,
     headers: {
@@ -4963,7 +5449,8 @@ async function onRequestOptions6() {
     }
   });
 }
-async function onRequestGet16(context) {
+__name(onRequestOptions11, "onRequestOptions11");
+async function onRequestGet20(context) {
   try {
     const { request, env } = context;
     const url = new URL(request.url);
@@ -5026,7 +5513,8 @@ async function onRequestGet16(context) {
     });
   }
 }
-async function onRequestPost8(context) {
+__name(onRequestGet20, "onRequestGet20");
+async function onRequestPost9(context) {
   try {
     const { request, env } = context;
     const body = await request.json();
@@ -5101,6 +5589,7 @@ async function onRequestPost8(context) {
     });
   }
 }
+__name(onRequestPost9, "onRequestPost9");
 async function onRequestPut2(context) {
   try {
     const { request, env } = context;
@@ -5160,6 +5649,7 @@ async function onRequestPut2(context) {
     });
   }
 }
+__name(onRequestPut2, "onRequestPut2");
 async function onRequestDelete(context) {
   try {
     const { request, env } = context;
@@ -5215,20 +5705,19 @@ async function onRequestDelete(context) {
     });
   }
 }
+__name(onRequestDelete, "onRequestDelete");
 var init_network_monitors = __esm({
   "api/network-monitors/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
-    __name(onRequestOptions6, "onRequestOptions");
-    __name(onRequestGet16, "onRequestGet");
-    __name(onRequestPost8, "onRequestPost");
-    __name(onRequestPut2, "onRequestPut");
-    __name(onRequestDelete, "onRequestDelete");
+    __name2(onRequestOptions11, "onRequestOptions");
+    __name2(onRequestGet20, "onRequestGet");
+    __name2(onRequestPost9, "onRequestPost");
+    __name2(onRequestPut2, "onRequestPut");
+    __name2(onRequestDelete, "onRequestDelete");
   }
 });
-
-// api/profile/index.ts
 function parseCookies8(cookieHeader) {
   const cookies = {};
   if (!cookieHeader) return cookies;
@@ -5242,9 +5731,11 @@ function parseCookies8(cookieHeader) {
   }
   return cookies;
 }
+__name(parseCookies8, "parseCookies8");
 async function getUserById2(db, userId) {
   return await db.prepare("SELECT * FROM users WHERE id = ?").bind(userId).first();
 }
+__name(getUserById2, "getUserById2");
 async function updateUser(db, userId, data) {
   const { firstName, lastName } = data;
   await db.prepare(`
@@ -5254,7 +5745,8 @@ async function updateUser(db, userId, data) {
   `).bind(firstName, lastName, userId).run();
   return await getUserById2(db, userId);
 }
-async function onRequestGet17(context) {
+__name(updateUser, "updateUser");
+async function onRequestGet21(context) {
   try {
     const { request, env } = context;
     const cookies = parseCookies8(request.headers.get("Cookie"));
@@ -5327,6 +5819,7 @@ async function onRequestGet17(context) {
     });
   }
 }
+__name(onRequestGet21, "onRequestGet21");
 async function onRequestPut3(context) {
   try {
     const { request, env } = context;
@@ -5401,22 +5894,21 @@ async function onRequestPut3(context) {
     });
   }
 }
+__name(onRequestPut3, "onRequestPut3");
 var init_profile = __esm({
   "api/profile/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
     init_jwt();
-    __name(parseCookies8, "parseCookies");
-    __name(getUserById2, "getUserById");
-    __name(updateUser, "updateUser");
-    __name(onRequestGet17, "onRequestGet");
-    __name(onRequestPut3, "onRequestPut");
+    __name2(parseCookies8, "parseCookies");
+    __name2(getUserById2, "getUserById");
+    __name2(updateUser, "updateUser");
+    __name2(onRequestGet21, "onRequestGet");
+    __name2(onRequestPut3, "onRequestPut");
   }
 });
-
-// api/refund-request/index.ts
-async function onRequestOptions7() {
+async function onRequestOptions12() {
   return new Response(null, {
     status: 200,
     headers: {
@@ -5426,7 +5918,8 @@ async function onRequestOptions7() {
     }
   });
 }
-async function onRequestPost9(context) {
+__name(onRequestOptions12, "onRequestOptions12");
+async function onRequestPost10(context) {
   try {
     const { request, env } = context;
     const cookieHeader = request.headers.get("Cookie");
@@ -5685,23 +6178,23 @@ async function onRequestPost9(context) {
     });
   }
 }
+__name(onRequestPost10, "onRequestPost10");
 var init_refund_request = __esm({
   "api/refund-request/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
     init_jwt();
-    __name(onRequestOptions7, "onRequestOptions");
-    __name(onRequestPost9, "onRequestPost");
+    __name2(onRequestOptions12, "onRequestOptions");
+    __name2(onRequestPost10, "onRequestPost");
   }
 });
-
-// api/request-magic-link/index.ts
 function generateToken() {
   const array = new Uint8Array(32);
   crypto.getRandomValues(array);
   return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
+__name(generateToken, "generateToken");
 async function createUser(db, email, loginMethod = "magic_link") {
   const bearerToken = process.env.AFFENSUS_CREDENTIALS_PASSWORD;
   if (!bearerToken) {
@@ -5740,6 +6233,7 @@ async function createUser(db, email, loginMethod = "magic_link") {
   const isNewUser = response.status === 201;
   return { user, isNewUser };
 }
+__name(createUser, "createUser");
 async function createMagicLink(db, email, token) {
   const expiresAt = new Date(Date.now() + 10 * 60 * 1e3);
   const stmt = db.prepare(`
@@ -5748,9 +6242,11 @@ async function createMagicLink(db, email, token) {
   `);
   await stmt.bind(email, token, expiresAt.toISOString()).run();
 }
+__name(createMagicLink, "createMagicLink");
 async function cleanupExpiredMagicLinks(db) {
   await db.prepare('DELETE FROM magic_links WHERE expires_at < datetime("now")').run();
 }
+__name(cleanupExpiredMagicLinks, "cleanupExpiredMagicLinks");
 async function sendMagicLinkEmail(email, magicLinkUrl, resendApiKey) {
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -5812,7 +6308,8 @@ If you didn't request this email, you can safely ignore it.
   }
   return await response.json();
 }
-async function onRequestPost10(context) {
+__name(sendMagicLinkEmail, "sendMagicLinkEmail");
+async function onRequestPost11(context) {
   try {
     const { request, env } = context;
     const { email } = await request.json();
@@ -5904,22 +6401,21 @@ async function onRequestPost10(context) {
     });
   }
 }
+__name(onRequestPost11, "onRequestPost11");
 var init_request_magic_link = __esm({
   "api/request-magic-link/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
-    __name(generateToken, "generateToken");
-    __name(createUser, "createUser");
-    __name(createMagicLink, "createMagicLink");
-    __name(cleanupExpiredMagicLinks, "cleanupExpiredMagicLinks");
-    __name(sendMagicLinkEmail, "sendMagicLinkEmail");
-    __name(onRequestPost10, "onRequestPost");
+    __name2(generateToken, "generateToken");
+    __name2(createUser, "createUser");
+    __name2(createMagicLink, "createMagicLink");
+    __name2(cleanupExpiredMagicLinks, "cleanupExpiredMagicLinks");
+    __name2(sendMagicLinkEmail, "sendMagicLinkEmail");
+    __name2(onRequestPost11, "onRequestPost");
   }
 });
-
-// api/user/index.ts
-async function onRequestOptions8() {
+async function onRequestOptions13() {
   return new Response(null, {
     status: 200,
     headers: {
@@ -5929,7 +6425,8 @@ async function onRequestOptions8() {
     }
   });
 }
-async function onRequestGet18(context) {
+__name(onRequestOptions13, "onRequestOptions13");
+async function onRequestGet22(context) {
   try {
     const { request, env } = context;
     const cookieHeader = request.headers.get("Cookie");
@@ -6002,18 +6499,17 @@ async function onRequestGet18(context) {
     });
   }
 }
+__name(onRequestGet22, "onRequestGet22");
 var init_user = __esm({
   "api/user/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
     init_jwt();
-    __name(onRequestOptions8, "onRequestOptions");
-    __name(onRequestGet18, "onRequestGet");
+    __name2(onRequestOptions13, "onRequestOptions");
+    __name2(onRequestGet22, "onRequestGet");
   }
 });
-
-// api/user-preferences.ts
 async function verifyJwt3(token, secret) {
   try {
     const [headerB64, payloadB64, signatureB64] = token.split(".");
@@ -6040,6 +6536,7 @@ async function verifyJwt3(token, secret) {
     throw new Error("Invalid token");
   }
 }
+__name(verifyJwt3, "verifyJwt3");
 function parseCookies9(cookieHeader) {
   const cookies = {};
   if (!cookieHeader) return cookies;
@@ -6051,10 +6548,12 @@ function parseCookies9(cookieHeader) {
   });
   return cookies;
 }
+__name(parseCookies9, "parseCookies9");
 async function getUserByEmail3(db, email) {
   return await db.prepare("SELECT * FROM users WHERE email = ?").bind(email).first();
 }
-async function onRequestGet19(context) {
+__name(getUserByEmail3, "getUserByEmail3");
+async function onRequestGet23(context) {
   try {
     const { request, env } = context;
     const cookies = parseCookies9(request.headers.get("Cookie"));
@@ -6116,27 +6615,26 @@ async function onRequestGet19(context) {
     });
   }
 }
+__name(onRequestGet23, "onRequestGet23");
 var init_user_preferences = __esm({
   "api/user-preferences.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
-    __name(verifyJwt3, "verifyJwt");
-    __name(parseCookies9, "parseCookies");
-    __name(getUserByEmail3, "getUserByEmail");
-    __name(onRequestGet19, "onRequestGet");
+    __name2(verifyJwt3, "verifyJwt");
+    __name2(parseCookies9, "parseCookies");
+    __name2(getUserByEmail3, "getUserByEmail");
+    __name2(onRequestGet23, "onRequestGet");
   }
 });
-
-// api/currency-rates.ts
 var onRequest5;
 var init_currency_rates = __esm({
   "api/currency-rates.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_29353947605061015();
     init_checked_fetch();
     init_settings();
-    onRequest5 = /* @__PURE__ */ __name(async (context) => {
+    onRequest5 = /* @__PURE__ */ __name2(async (context) => {
       const { request } = context;
       const corsHeaders = {
         "Access-Control-Allow-Origin": "*",
@@ -6208,17 +6706,23 @@ var init_currency_rates = __esm({
     }, "onRequest");
   }
 });
-
-// ../.wrangler/tmp/pages-6KI4gc/functionsRoutes-0.38541349960275073.mjs
 var routes;
-var init_functionsRoutes_0_38541349960275073 = __esm({
-  "../.wrangler/tmp/pages-6KI4gc/functionsRoutes-0.38541349960275073.mjs"() {
+var init_functionsRoutes_0_29353947605061015 = __esm({
+  "../.wrangler/tmp/pages-jrwXhw/functionsRoutes-0.29353947605061015.mjs"() {
     "use strict";
     init_callback();
     init_callback2();
     init_callback3();
     init_courseId();
     init_courseId();
+    init_credentials_summary();
+    init_credentials_summary();
+    init_merchants();
+    init_merchants();
+    init_networks();
+    init_networks();
+    init_search();
+    init_search();
     init_facebook();
     init_github();
     init_google();
@@ -6243,6 +6747,8 @@ var init_functionsRoutes_0_38541349960275073 = __esm({
     init_userId();
     init_userId();
     init_contact();
+    init_import_network();
+    init_import_network();
     init_logout();
     init_magic_login();
     init_mistake_report();
@@ -6297,32 +6803,88 @@ var init_functionsRoutes_0_38541349960275073 = __esm({
         modules: [onRequestPost]
       },
       {
+        routePath: "/api/projects/:project_id/credentials-summary",
+        mountPath: "/api/projects/:project_id",
+        method: "GET",
+        middlewares: [],
+        modules: [onRequestGet5]
+      },
+      {
+        routePath: "/api/projects/:project_id/credentials-summary",
+        mountPath: "/api/projects/:project_id",
+        method: "OPTIONS",
+        middlewares: [],
+        modules: [onRequestOptions]
+      },
+      {
+        routePath: "/api/projects/:project_id/merchants",
+        mountPath: "/api/projects/:project_id",
+        method: "GET",
+        middlewares: [],
+        modules: [onRequestGet6]
+      },
+      {
+        routePath: "/api/projects/:project_id/merchants",
+        mountPath: "/api/projects/:project_id",
+        method: "OPTIONS",
+        middlewares: [],
+        modules: [onRequestOptions2]
+      },
+      {
+        routePath: "/api/projects/:project_id/networks",
+        mountPath: "/api/projects/:project_id",
+        method: "GET",
+        middlewares: [],
+        modules: [onRequestGet7]
+      },
+      {
+        routePath: "/api/projects/:project_id/networks",
+        mountPath: "/api/projects/:project_id",
+        method: "OPTIONS",
+        middlewares: [],
+        modules: [onRequestOptions3]
+      },
+      {
+        routePath: "/api/projects/:project_id/search",
+        mountPath: "/api/projects/:project_id",
+        method: "GET",
+        middlewares: [],
+        modules: [onRequestGet8]
+      },
+      {
+        routePath: "/api/projects/:project_id/search",
+        mountPath: "/api/projects/:project_id",
+        method: "OPTIONS",
+        middlewares: [],
+        modules: [onRequestOptions4]
+      },
+      {
         routePath: "/api/auth/facebook",
         mountPath: "/api/auth/facebook",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet5]
+        modules: [onRequestGet9]
       },
       {
         routePath: "/api/auth/github",
         mountPath: "/api/auth/github",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet6]
+        modules: [onRequestGet10]
       },
       {
         routePath: "/api/auth/google",
         mountPath: "/api/auth/google",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet7]
+        modules: [onRequestGet11]
       },
       {
         routePath: "/api/auth/register",
         mountPath: "/api/auth/register",
         method: "OPTIONS",
         middlewares: [],
-        modules: [onRequestOptions]
+        modules: [onRequestOptions5]
       },
       {
         routePath: "/api/auth/register",
@@ -6336,7 +6898,7 @@ var init_functionsRoutes_0_38541349960275073 = __esm({
         mountPath: "/api/profile",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet8]
+        modules: [onRequestGet12]
       },
       {
         routePath: "/api/profile/billing-address",
@@ -6350,28 +6912,28 @@ var init_functionsRoutes_0_38541349960275073 = __esm({
         mountPath: "/api/profile",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet9]
+        modules: [onRequestGet13]
       },
       {
         routePath: "/api/profile/invoices",
         mountPath: "/api/profile",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet10]
+        modules: [onRequestGet14]
       },
       {
         routePath: "/api/profile/preferences",
         mountPath: "/api/profile",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet11]
+        modules: [onRequestGet15]
       },
       {
         routePath: "/api/profile/process-pending-invoices",
         mountPath: "/api/profile",
         method: "OPTIONS",
         middlewares: [],
-        modules: [onRequestOptions2]
+        modules: [onRequestOptions6]
       },
       {
         routePath: "/api/profile/process-pending-invoices",
@@ -6392,14 +6954,14 @@ var init_functionsRoutes_0_38541349960275073 = __esm({
         mountPath: "/api/tools",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet12]
+        modules: [onRequestGet16]
       },
       {
         routePath: "/api/tools/affiliate-network-uptime",
         mountPath: "/api/tools",
         method: "OPTIONS",
         middlewares: [],
-        modules: [onRequestOptions3]
+        modules: [onRequestOptions7]
       },
       {
         routePath: "/api/stripe/create-checkout-session",
@@ -6434,28 +6996,28 @@ var init_functionsRoutes_0_38541349960275073 = __esm({
         mountPath: "/api/invoice",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet13]
+        modules: [onRequestGet17]
       },
       {
         routePath: "/api/invoice/:invoiceNumber",
         mountPath: "/api/invoice",
         method: "OPTIONS",
         middlewares: [],
-        modules: [onRequestOptions4]
+        modules: [onRequestOptions8]
       },
       {
         routePath: "/api/users/:userId",
         mountPath: "/api/users/:userId",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet14]
+        modules: [onRequestGet18]
       },
       {
         routePath: "/api/users/:userId",
         mountPath: "/api/users/:userId",
         method: "OPTIONS",
         middlewares: [],
-        modules: [onRequestOptions5]
+        modules: [onRequestOptions9]
       },
       {
         routePath: "/api/contact",
@@ -6465,25 +7027,39 @@ var init_functionsRoutes_0_38541349960275073 = __esm({
         modules: [onRequestPost5]
       },
       {
+        routePath: "/api/import-network",
+        mountPath: "/api",
+        method: "OPTIONS",
+        middlewares: [],
+        modules: [onRequestOptions10]
+      },
+      {
+        routePath: "/api/import-network",
+        mountPath: "/api",
+        method: "POST",
+        middlewares: [],
+        modules: [onRequestPost6]
+      },
+      {
         routePath: "/api/logout",
         mountPath: "/api/logout",
         method: "POST",
         middlewares: [],
-        modules: [onRequestPost6]
+        modules: [onRequestPost7]
       },
       {
         routePath: "/api/magic-login",
         mountPath: "/api/magic-login",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet15]
+        modules: [onRequestGet19]
       },
       {
         routePath: "/api/mistake-report",
         mountPath: "/api/mistake-report",
         method: "POST",
         middlewares: [],
-        modules: [onRequestPost7]
+        modules: [onRequestPost8]
       },
       {
         routePath: "/api/network-monitors",
@@ -6497,21 +7073,21 @@ var init_functionsRoutes_0_38541349960275073 = __esm({
         mountPath: "/api/network-monitors",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet16]
+        modules: [onRequestGet20]
       },
       {
         routePath: "/api/network-monitors",
         mountPath: "/api/network-monitors",
         method: "OPTIONS",
         middlewares: [],
-        modules: [onRequestOptions6]
+        modules: [onRequestOptions11]
       },
       {
         routePath: "/api/network-monitors",
         mountPath: "/api/network-monitors",
         method: "POST",
         middlewares: [],
-        modules: [onRequestPost8]
+        modules: [onRequestPost9]
       },
       {
         routePath: "/api/network-monitors",
@@ -6525,7 +7101,7 @@ var init_functionsRoutes_0_38541349960275073 = __esm({
         mountPath: "/api/profile",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet17]
+        modules: [onRequestGet21]
       },
       {
         routePath: "/api/profile",
@@ -6539,42 +7115,42 @@ var init_functionsRoutes_0_38541349960275073 = __esm({
         mountPath: "/api/refund-request",
         method: "OPTIONS",
         middlewares: [],
-        modules: [onRequestOptions7]
+        modules: [onRequestOptions12]
       },
       {
         routePath: "/api/refund-request",
         mountPath: "/api/refund-request",
         method: "POST",
         middlewares: [],
-        modules: [onRequestPost9]
+        modules: [onRequestPost10]
       },
       {
         routePath: "/api/request-magic-link",
         mountPath: "/api/request-magic-link",
         method: "POST",
         middlewares: [],
-        modules: [onRequestPost10]
+        modules: [onRequestPost11]
       },
       {
         routePath: "/api/user",
         mountPath: "/api/user",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet18]
+        modules: [onRequestGet22]
       },
       {
         routePath: "/api/user",
         mountPath: "/api/user",
         method: "OPTIONS",
         middlewares: [],
-        modules: [onRequestOptions8]
+        modules: [onRequestOptions13]
       },
       {
         routePath: "/api/user-preferences",
         mountPath: "/api",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet19]
+        modules: [onRequestGet23]
       },
       {
         routePath: "/api/currency-rates",
@@ -6586,21 +7162,13 @@ var init_functionsRoutes_0_38541349960275073 = __esm({
     ];
   }
 });
-
-// ../.wrangler/tmp/bundle-vZADlk/middleware-loader.entry.ts
-init_functionsRoutes_0_38541349960275073();
+init_functionsRoutes_0_29353947605061015();
 init_checked_fetch();
-
-// ../.wrangler/tmp/bundle-vZADlk/middleware-insertion-facade.js
-init_functionsRoutes_0_38541349960275073();
+init_functionsRoutes_0_29353947605061015();
 init_checked_fetch();
-
-// ../node_modules/wrangler/templates/pages-template-worker.ts
-init_functionsRoutes_0_38541349960275073();
+init_functionsRoutes_0_29353947605061015();
 init_checked_fetch();
-
-// ../node_modules/path-to-regexp/dist.es2015/index.js
-init_functionsRoutes_0_38541349960275073();
+init_functionsRoutes_0_29353947605061015();
 init_checked_fetch();
 function lexer(str) {
   var tokens = [];
@@ -6686,6 +7254,7 @@ function lexer(str) {
   return tokens;
 }
 __name(lexer, "lexer");
+__name2(lexer, "lexer");
 function parse(str, options) {
   if (options === void 0) {
     options = {};
@@ -6696,18 +7265,18 @@ function parse(str, options) {
   var key = 0;
   var i = 0;
   var path = "";
-  var tryConsume = /* @__PURE__ */ __name(function(type) {
+  var tryConsume = /* @__PURE__ */ __name2(function(type) {
     if (i < tokens.length && tokens[i].type === type)
       return tokens[i++].value;
   }, "tryConsume");
-  var mustConsume = /* @__PURE__ */ __name(function(type) {
+  var mustConsume = /* @__PURE__ */ __name2(function(type) {
     var value2 = tryConsume(type);
     if (value2 !== void 0)
       return value2;
     var _a2 = tokens[i], nextType = _a2.type, index = _a2.index;
     throw new TypeError("Unexpected ".concat(nextType, " at ").concat(index, ", expected ").concat(type));
   }, "mustConsume");
-  var consumeText = /* @__PURE__ */ __name(function() {
+  var consumeText = /* @__PURE__ */ __name2(function() {
     var result2 = "";
     var value2;
     while (value2 = tryConsume("CHAR") || tryConsume("ESCAPED_CHAR")) {
@@ -6715,7 +7284,7 @@ function parse(str, options) {
     }
     return result2;
   }, "consumeText");
-  var isSafe = /* @__PURE__ */ __name(function(value2) {
+  var isSafe = /* @__PURE__ */ __name2(function(value2) {
     for (var _i = 0, delimiter_1 = delimiter; _i < delimiter_1.length; _i++) {
       var char2 = delimiter_1[_i];
       if (value2.indexOf(char2) > -1)
@@ -6723,7 +7292,7 @@ function parse(str, options) {
     }
     return false;
   }, "isSafe");
-  var safePattern = /* @__PURE__ */ __name(function(prefix2) {
+  var safePattern = /* @__PURE__ */ __name2(function(prefix2) {
     var prev = result[result.length - 1];
     var prevText = prefix2 || (prev && typeof prev === "string" ? prev : "");
     if (prev && !prevText) {
@@ -6786,12 +7355,14 @@ function parse(str, options) {
   return result;
 }
 __name(parse, "parse");
+__name2(parse, "parse");
 function match(str, options) {
   var keys = [];
   var re = pathToRegexp(str, keys, options);
   return regexpToFunction(re, keys, options);
 }
 __name(match, "match");
+__name2(match, "match");
 function regexpToFunction(re, keys, options) {
   if (options === void 0) {
     options = {};
@@ -6805,7 +7376,7 @@ function regexpToFunction(re, keys, options) {
       return false;
     var path = m[0], index = m.index;
     var params = /* @__PURE__ */ Object.create(null);
-    var _loop_1 = /* @__PURE__ */ __name(function(i2) {
+    var _loop_1 = /* @__PURE__ */ __name2(function(i2) {
       if (m[i2] === void 0)
         return "continue";
       var key = keys[i2 - 1];
@@ -6824,14 +7395,17 @@ function regexpToFunction(re, keys, options) {
   };
 }
 __name(regexpToFunction, "regexpToFunction");
+__name2(regexpToFunction, "regexpToFunction");
 function escapeString(str) {
   return str.replace(/([.+*?=^!:${}()[\]|/\\])/g, "\\$1");
 }
 __name(escapeString, "escapeString");
+__name2(escapeString, "escapeString");
 function flags(options) {
   return options && options.sensitive ? "" : "i";
 }
 __name(flags, "flags");
+__name2(flags, "flags");
 function regexpToRegexp(path, keys) {
   if (!keys)
     return path;
@@ -6852,6 +7426,7 @@ function regexpToRegexp(path, keys) {
   return path;
 }
 __name(regexpToRegexp, "regexpToRegexp");
+__name2(regexpToRegexp, "regexpToRegexp");
 function arrayToRegexp(paths, keys, options) {
   var parts = paths.map(function(path) {
     return pathToRegexp(path, keys, options).source;
@@ -6859,10 +7434,12 @@ function arrayToRegexp(paths, keys, options) {
   return new RegExp("(?:".concat(parts.join("|"), ")"), flags(options));
 }
 __name(arrayToRegexp, "arrayToRegexp");
+__name2(arrayToRegexp, "arrayToRegexp");
 function stringToRegexp(path, keys, options) {
   return tokensToRegexp(parse(path, options), keys, options);
 }
 __name(stringToRegexp, "stringToRegexp");
+__name2(stringToRegexp, "stringToRegexp");
 function tokensToRegexp(tokens, keys, options) {
   if (options === void 0) {
     options = {};
@@ -6918,6 +7495,7 @@ function tokensToRegexp(tokens, keys, options) {
   return new RegExp(route, flags(options));
 }
 __name(tokensToRegexp, "tokensToRegexp");
+__name2(tokensToRegexp, "tokensToRegexp");
 function pathToRegexp(path, keys, options) {
   if (path instanceof RegExp)
     return regexpToRegexp(path, keys);
@@ -6926,8 +7504,7 @@ function pathToRegexp(path, keys, options) {
   return stringToRegexp(path, keys, options);
 }
 __name(pathToRegexp, "pathToRegexp");
-
-// ../node_modules/wrangler/templates/pages-template-worker.ts
+__name2(pathToRegexp, "pathToRegexp");
 var escapeRegex = /[.+?^${}()|[\]\\]/g;
 function* executeRequest(request) {
   const requestPath = new URL(request.url).pathname;
@@ -6978,13 +7555,14 @@ function* executeRequest(request) {
   }
 }
 __name(executeRequest, "executeRequest");
+__name2(executeRequest, "executeRequest");
 var pages_template_worker_default = {
   async fetch(originalRequest, env, workerContext) {
     let request = originalRequest;
     const handlerIterator = executeRequest(request);
     let data = {};
     let isFailOpen = false;
-    const next = /* @__PURE__ */ __name(async (input, init) => {
+    const next = /* @__PURE__ */ __name2(async (input, init) => {
       if (input !== void 0) {
         let url = input;
         if (typeof input === "string") {
@@ -7011,7 +7589,7 @@ var pages_template_worker_default = {
           },
           env,
           waitUntil: workerContext.waitUntil.bind(workerContext),
-          passThroughOnException: /* @__PURE__ */ __name(() => {
+          passThroughOnException: /* @__PURE__ */ __name2(() => {
             isFailOpen = true;
           }, "passThroughOnException")
         };
@@ -7039,18 +7617,16 @@ var pages_template_worker_default = {
     }
   }
 };
-var cloneResponse = /* @__PURE__ */ __name((response) => (
+var cloneResponse = /* @__PURE__ */ __name2((response) => (
   // https://fetch.spec.whatwg.org/#null-body-status
   new Response(
     [101, 204, 205, 304].includes(response.status) ? null : response.body,
     response
   )
 ), "cloneResponse");
-
-// ../node_modules/wrangler/templates/middleware/middleware-ensure-req-body-drained.ts
-init_functionsRoutes_0_38541349960275073();
+init_functionsRoutes_0_29353947605061015();
 init_checked_fetch();
-var drainBody = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
+var drainBody = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx) => {
   try {
     return await middlewareCtx.next(request, env);
   } finally {
@@ -7066,9 +7642,7 @@ var drainBody = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx)
   }
 }, "drainBody");
 var middleware_ensure_req_body_drained_default = drainBody;
-
-// ../node_modules/wrangler/templates/middleware/middleware-miniflare3-json-error.ts
-init_functionsRoutes_0_38541349960275073();
+init_functionsRoutes_0_29353947605061015();
 init_checked_fetch();
 function reduceError(e) {
   return {
@@ -7079,7 +7653,8 @@ function reduceError(e) {
   };
 }
 __name(reduceError, "reduceError");
-var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
+__name2(reduceError, "reduceError");
+var jsonError = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx) => {
   try {
     return await middlewareCtx.next(request, env);
   } catch (e) {
@@ -7091,22 +7666,19 @@ var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx)
   }
 }, "jsonError");
 var middleware_miniflare3_json_error_default = jsonError;
-
-// ../.wrangler/tmp/bundle-vZADlk/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_ensure_req_body_drained_default,
   middleware_miniflare3_json_error_default
 ];
 var middleware_insertion_facade_default = pages_template_worker_default;
-
-// ../node_modules/wrangler/templates/middleware/common.ts
-init_functionsRoutes_0_38541349960275073();
+init_functionsRoutes_0_29353947605061015();
 init_checked_fetch();
 var __facade_middleware__ = [];
 function __facade_register__(...args) {
   __facade_middleware__.push(...args.flat());
 }
 __name(__facade_register__, "__facade_register__");
+__name2(__facade_register__, "__facade_register__");
 function __facade_invokeChain__(request, env, ctx, dispatch, middlewareChain) {
   const [head, ...tail] = middlewareChain;
   const middlewareCtx = {
@@ -7118,6 +7690,7 @@ function __facade_invokeChain__(request, env, ctx, dispatch, middlewareChain) {
   return head(request, env, ctx, middlewareCtx);
 }
 __name(__facade_invokeChain__, "__facade_invokeChain__");
+__name2(__facade_invokeChain__, "__facade_invokeChain__");
 function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
   return __facade_invokeChain__(request, env, ctx, dispatch, [
     ...__facade_middleware__,
@@ -7125,16 +7698,18 @@ function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
   ]);
 }
 __name(__facade_invoke__, "__facade_invoke__");
-
-// ../.wrangler/tmp/bundle-vZADlk/middleware-loader.entry.ts
+__name2(__facade_invoke__, "__facade_invoke__");
 var __Facade_ScheduledController__ = class ___Facade_ScheduledController__ {
+  static {
+    __name(this, "___Facade_ScheduledController__");
+  }
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;
     this.cron = cron;
     this.#noRetry = noRetry;
   }
   static {
-    __name(this, "__Facade_ScheduledController__");
+    __name2(this, "__Facade_ScheduledController__");
   }
   #noRetry;
   noRetry() {
@@ -7151,7 +7726,7 @@ function wrapExportedHandler(worker) {
   for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__) {
     __facade_register__(middleware);
   }
-  const fetchDispatcher = /* @__PURE__ */ __name(function(request, env, ctx) {
+  const fetchDispatcher = /* @__PURE__ */ __name2(function(request, env, ctx) {
     if (worker.fetch === void 0) {
       throw new Error("Handler does not export a fetch() function.");
     }
@@ -7160,7 +7735,7 @@ function wrapExportedHandler(worker) {
   return {
     ...worker,
     fetch(request, env, ctx) {
-      const dispatcher = /* @__PURE__ */ __name(function(type, init) {
+      const dispatcher = /* @__PURE__ */ __name2(function(type, init) {
         if (type === "scheduled" && worker.scheduled !== void 0) {
           const controller = new __Facade_ScheduledController__(
             Date.now(),
@@ -7176,6 +7751,7 @@ function wrapExportedHandler(worker) {
   };
 }
 __name(wrapExportedHandler, "wrapExportedHandler");
+__name2(wrapExportedHandler, "wrapExportedHandler");
 function wrapWorkerEntrypoint(klass) {
   if (__INTERNAL_WRANGLER_MIDDLEWARE__ === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__.length === 0) {
     return klass;
@@ -7184,7 +7760,7 @@ function wrapWorkerEntrypoint(klass) {
     __facade_register__(middleware);
   }
   return class extends klass {
-    #fetchDispatcher = /* @__PURE__ */ __name((request, env, ctx) => {
+    #fetchDispatcher = /* @__PURE__ */ __name2((request, env, ctx) => {
       this.env = env;
       this.ctx = ctx;
       if (super.fetch === void 0) {
@@ -7192,7 +7768,7 @@ function wrapWorkerEntrypoint(klass) {
       }
       return super.fetch(request);
     }, "#fetchDispatcher");
-    #dispatcher = /* @__PURE__ */ __name((type, init) => {
+    #dispatcher = /* @__PURE__ */ __name2((type, init) => {
       if (type === "scheduled" && super.scheduled !== void 0) {
         const controller = new __Facade_ScheduledController__(
           Date.now(),
@@ -7215,6 +7791,7 @@ function wrapWorkerEntrypoint(klass) {
   };
 }
 __name(wrapWorkerEntrypoint, "wrapWorkerEntrypoint");
+__name2(wrapWorkerEntrypoint, "wrapWorkerEntrypoint");
 var WRAPPED_ENTRY;
 if (typeof middleware_insertion_facade_default === "object") {
   WRAPPED_ENTRY = wrapExportedHandler(middleware_insertion_facade_default);
@@ -7222,8 +7799,178 @@ if (typeof middleware_insertion_facade_default === "object") {
   WRAPPED_ENTRY = wrapWorkerEntrypoint(middleware_insertion_facade_default);
 }
 var middleware_loader_entry_default = WRAPPED_ENTRY;
-export {
-  __INTERNAL_WRANGLER_MIDDLEWARE__,
-  middleware_loader_entry_default as default
+
+// node_modules/wrangler/templates/middleware/middleware-ensure-req-body-drained.ts
+var drainBody2 = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
+  try {
+    return await middlewareCtx.next(request, env);
+  } finally {
+    try {
+      if (request.body !== null && !request.bodyUsed) {
+        const reader = request.body.getReader();
+        while (!(await reader.read()).done) {
+        }
+      }
+    } catch (e) {
+      console.error("Failed to drain the unused request body.", e);
+    }
+  }
+}, "drainBody");
+var middleware_ensure_req_body_drained_default2 = drainBody2;
+
+// node_modules/wrangler/templates/middleware/middleware-miniflare3-json-error.ts
+function reduceError2(e) {
+  return {
+    name: e?.name,
+    message: e?.message ?? String(e),
+    stack: e?.stack,
+    cause: e?.cause === void 0 ? void 0 : reduceError2(e.cause)
+  };
+}
+__name(reduceError2, "reduceError");
+var jsonError2 = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
+  try {
+    return await middlewareCtx.next(request, env);
+  } catch (e) {
+    const error = reduceError2(e);
+    return Response.json(error, {
+      status: 500,
+      headers: { "MF-Experimental-Error-Stack": "true" }
+    });
+  }
+}, "jsonError");
+var middleware_miniflare3_json_error_default2 = jsonError2;
+
+// .wrangler/tmp/bundle-iFZfG5/middleware-insertion-facade.js
+var __INTERNAL_WRANGLER_MIDDLEWARE__2 = [
+  middleware_ensure_req_body_drained_default2,
+  middleware_miniflare3_json_error_default2
+];
+var middleware_insertion_facade_default2 = middleware_loader_entry_default;
+
+// node_modules/wrangler/templates/middleware/common.ts
+var __facade_middleware__2 = [];
+function __facade_register__2(...args) {
+  __facade_middleware__2.push(...args.flat());
+}
+__name(__facade_register__2, "__facade_register__");
+function __facade_invokeChain__2(request, env, ctx, dispatch, middlewareChain) {
+  const [head, ...tail] = middlewareChain;
+  const middlewareCtx = {
+    dispatch,
+    next(newRequest, newEnv) {
+      return __facade_invokeChain__2(newRequest, newEnv, ctx, dispatch, tail);
+    }
+  };
+  return head(request, env, ctx, middlewareCtx);
+}
+__name(__facade_invokeChain__2, "__facade_invokeChain__");
+function __facade_invoke__2(request, env, ctx, dispatch, finalMiddleware) {
+  return __facade_invokeChain__2(request, env, ctx, dispatch, [
+    ...__facade_middleware__2,
+    finalMiddleware
+  ]);
+}
+__name(__facade_invoke__2, "__facade_invoke__");
+
+// .wrangler/tmp/bundle-iFZfG5/middleware-loader.entry.ts
+var __Facade_ScheduledController__2 = class ___Facade_ScheduledController__2 {
+  constructor(scheduledTime, cron, noRetry) {
+    this.scheduledTime = scheduledTime;
+    this.cron = cron;
+    this.#noRetry = noRetry;
+  }
+  static {
+    __name(this, "__Facade_ScheduledController__");
+  }
+  #noRetry;
+  noRetry() {
+    if (!(this instanceof ___Facade_ScheduledController__2)) {
+      throw new TypeError("Illegal invocation");
+    }
+    this.#noRetry();
+  }
 };
-//# sourceMappingURL=functionsWorker-0.6355327904101307.mjs.map
+function wrapExportedHandler2(worker) {
+  if (__INTERNAL_WRANGLER_MIDDLEWARE__2 === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__2.length === 0) {
+    return worker;
+  }
+  for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__2) {
+    __facade_register__2(middleware);
+  }
+  const fetchDispatcher = /* @__PURE__ */ __name(function(request, env, ctx) {
+    if (worker.fetch === void 0) {
+      throw new Error("Handler does not export a fetch() function.");
+    }
+    return worker.fetch(request, env, ctx);
+  }, "fetchDispatcher");
+  return {
+    ...worker,
+    fetch(request, env, ctx) {
+      const dispatcher = /* @__PURE__ */ __name(function(type, init) {
+        if (type === "scheduled" && worker.scheduled !== void 0) {
+          const controller = new __Facade_ScheduledController__2(
+            Date.now(),
+            init.cron ?? "",
+            () => {
+            }
+          );
+          return worker.scheduled(controller, env, ctx);
+        }
+      }, "dispatcher");
+      return __facade_invoke__2(request, env, ctx, dispatcher, fetchDispatcher);
+    }
+  };
+}
+__name(wrapExportedHandler2, "wrapExportedHandler");
+function wrapWorkerEntrypoint2(klass) {
+  if (__INTERNAL_WRANGLER_MIDDLEWARE__2 === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__2.length === 0) {
+    return klass;
+  }
+  for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__2) {
+    __facade_register__2(middleware);
+  }
+  return class extends klass {
+    #fetchDispatcher = /* @__PURE__ */ __name((request, env, ctx) => {
+      this.env = env;
+      this.ctx = ctx;
+      if (super.fetch === void 0) {
+        throw new Error("Entrypoint class does not define a fetch() function.");
+      }
+      return super.fetch(request);
+    }, "#fetchDispatcher");
+    #dispatcher = /* @__PURE__ */ __name((type, init) => {
+      if (type === "scheduled" && super.scheduled !== void 0) {
+        const controller = new __Facade_ScheduledController__2(
+          Date.now(),
+          init.cron ?? "",
+          () => {
+          }
+        );
+        return super.scheduled(controller);
+      }
+    }, "#dispatcher");
+    fetch(request) {
+      return __facade_invoke__2(
+        request,
+        this.env,
+        this.ctx,
+        this.#dispatcher,
+        this.#fetchDispatcher
+      );
+    }
+  };
+}
+__name(wrapWorkerEntrypoint2, "wrapWorkerEntrypoint");
+var WRAPPED_ENTRY2;
+if (typeof middleware_insertion_facade_default2 === "object") {
+  WRAPPED_ENTRY2 = wrapExportedHandler2(middleware_insertion_facade_default2);
+} else if (typeof middleware_insertion_facade_default2 === "function") {
+  WRAPPED_ENTRY2 = wrapWorkerEntrypoint2(middleware_insertion_facade_default2);
+}
+var middleware_loader_entry_default2 = WRAPPED_ENTRY2;
+export {
+  __INTERNAL_WRANGLER_MIDDLEWARE__2 as __INTERNAL_WRANGLER_MIDDLEWARE__,
+  middleware_loader_entry_default2 as default
+};
+//# sourceMappingURL=functionsWorker-0.4843416702354857.js.map

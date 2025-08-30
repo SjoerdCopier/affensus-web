@@ -1,7 +1,7 @@
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 
-// .wrangler/tmp/bundle-dSmJ1Y/checked-fetch.js
+// .wrangler/tmp/bundle-28E9Q4/checked-fetch.js
 var urls = /* @__PURE__ */ new Set();
 function checkURL(request, init) {
   const url = request instanceof URL ? request : new URL(
@@ -27,7 +27,7 @@ globalThis.fetch = new Proxy(globalThis.fetch, {
   }
 });
 
-// .wrangler/tmp/pages-6KI4gc/functionsWorker-0.6355327904101307.mjs
+// .wrangler/tmp/pages-iC2Pv8/functionsWorker-0.2551829519122899.mjs
 var __defProp2 = Object.defineProperty;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __name2 = /* @__PURE__ */ __name((target, value) => __defProp2(target, "name", { value, configurable: true }), "__name");
@@ -56,7 +56,7 @@ function checkURL2(request, init) {
 __name(checkURL2, "checkURL");
 var urls2;
 var init_checked_fetch = __esm({
-  "../.wrangler/tmp/bundle-vZADlk/checked-fetch.js"() {
+  "../.wrangler/tmp/bundle-OAnean/checked-fetch.js"() {
     "use strict";
     urls2 = /* @__PURE__ */ new Set();
     __name2(checkURL2, "checkURL");
@@ -136,7 +136,7 @@ __name(sendNewUserNotification, "sendNewUserNotification");
 var init_email_notifications = __esm({
   "api/auth/shared/email-notifications.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
     __name2(sendNewUserNotification, "sendNewUserNotification");
   }
@@ -368,7 +368,7 @@ __name(onRequestGet, "onRequestGet");
 var init_callback = __esm({
   "api/auth/facebook/callback.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
     __name2(parseCookies, "parseCookies");
     __name2(signJwt, "signJwt");
@@ -706,7 +706,7 @@ __name(onRequestGet2, "onRequestGet2");
 var init_callback2 = __esm({
   "api/auth/github/callback.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
     __name2(parseCookies2, "parseCookies");
     __name2(signJwt2, "signJwt");
@@ -1054,7 +1054,7 @@ __name(onRequestGet3, "onRequestGet3");
 var init_callback3 = __esm({
   "api/auth/google/callback.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
     __name2(parseCookies3, "parseCookies");
     __name2(signJwt3, "signJwt");
@@ -1239,13 +1239,608 @@ __name(onRequestPost, "onRequestPost");
 var init_courseId = __esm({
   "api/user/progress/[courseId]/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
     __name2(onRequestGet4, "onRequestGet");
     __name2(onRequestPost, "onRequestPost");
   }
 });
+async function onRequestOptions() {
+  return new Response(null, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization"
+    }
+  });
+}
+__name(onRequestOptions, "onRequestOptions");
 async function onRequestGet5(context) {
+  try {
+    const { request, env, params } = context;
+    const jobId = params.job_id;
+    if (!jobId) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: "Job ID is required"
+      }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    const bearerToken = env.AFFENSUS_CREDENTIALS_PASSWORD;
+    if (!bearerToken) {
+      throw new Error("AFFENSUS_CREDENTIALS_PASSWORD not configured");
+    }
+    console.log("Making API request to:", `https://apiv2.affensus.com/api/job/${jobId}/monitor`);
+    let response;
+    try {
+      response = await fetch(`https://apiv2.affensus.com/api/job/${jobId}/monitor`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${bearerToken}`
+        }
+      });
+    } catch (fetchError) {
+      console.error("Fetch error:", fetchError);
+      const errorMessage = fetchError instanceof Error ? fetchError.message : "Unknown fetch error";
+      throw new Error(`Network error: ${errorMessage}`);
+    }
+    if (response.status === 204) {
+      return new Response(JSON.stringify({
+        job_id: jobId,
+        status: "completed",
+        message: "Job completed successfully",
+        queue_info: {
+          currently_processing: 0,
+          total_queued: 0,
+          total_waiting: 0
+        }
+      }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("API Response Error:", {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText
+      });
+      throw new Error(`External API error: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    const data = await response.json();
+    if (!data.job_id) {
+      data.job_id = jobId;
+    }
+    if (data.result && typeof data.result === "string") {
+      try {
+        const parsedResult = JSON.parse(data.result);
+        if (parsedResult.import_result) {
+          data.result = parsedResult.import_result;
+        } else {
+          data.result = parsedResult;
+        }
+      } catch (e) {
+        console.error("Failed to parse result JSON:", e);
+      }
+    }
+    console.log("Job Monitor API Response:", JSON.stringify(data, null, 2));
+    return new Response(JSON.stringify(data), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store, max-age=0"
+      }
+    });
+  } catch (error) {
+    console.error("Job monitor error:", error);
+    return new Response(JSON.stringify({
+      success: false,
+      error: error instanceof Error ? error.message : "Internal server error"
+    }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+}
+__name(onRequestGet5, "onRequestGet5");
+var init_monitor = __esm({
+  "api/job/[job_id]/monitor.ts"() {
+    "use strict";
+    init_functionsRoutes_0_3883291400772385();
+    init_checked_fetch();
+    __name2(onRequestOptions, "onRequestOptions");
+    __name2(onRequestGet5, "onRequestGet");
+  }
+});
+async function onRequestOptions2() {
+  return new Response(null, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization"
+    }
+  });
+}
+__name(onRequestOptions2, "onRequestOptions2");
+async function onRequestGet6(context) {
+  try {
+    const { request, env, params } = context;
+    const jobId = params.job_id;
+    if (!jobId) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: "Job ID is required"
+      }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    const bearerToken = env.AFFENSUS_CREDENTIALS_PASSWORD;
+    if (!bearerToken) {
+      throw new Error("AFFENSUS_CREDENTIALS_PASSWORD not configured");
+    }
+    console.log("Making API request to:", `https://apiv2.affensus.com/api/job/${jobId}/status`);
+    let response;
+    try {
+      response = await fetch(`https://apiv2.affensus.com/api/job/${jobId}/status`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${bearerToken}`
+        }
+      });
+    } catch (fetchError) {
+      console.error("Fetch error:", fetchError);
+      const errorMessage = fetchError instanceof Error ? fetchError.message : "Unknown fetch error";
+      throw new Error(`Network error: ${errorMessage}`);
+    }
+    if (response.status === 204) {
+      return new Response(JSON.stringify({
+        job_id: jobId,
+        status: "completed",
+        message: "Job completed successfully"
+      }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("API Response Error:", {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText
+      });
+      throw new Error(`External API error: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    const data = await response.json();
+    if (!data.job_id) {
+      data.job_id = jobId;
+    }
+    if (data.result && typeof data.result === "string") {
+      try {
+        const parsedResult = JSON.parse(data.result);
+        if (parsedResult.import_result) {
+          data.result = parsedResult.import_result;
+        } else {
+          data.result = parsedResult;
+        }
+      } catch (e) {
+        console.error("Failed to parse result JSON:", e);
+      }
+    }
+    console.log("Job Status API Response:", JSON.stringify(data, null, 2));
+    return new Response(JSON.stringify(data), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store, max-age=0"
+      }
+    });
+  } catch (error) {
+    console.error("Job status error:", error);
+    return new Response(JSON.stringify({
+      success: false,
+      error: error instanceof Error ? error.message : "Internal server error"
+    }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+}
+__name(onRequestGet6, "onRequestGet6");
+var init_status = __esm({
+  "api/job/[job_id]/status.ts"() {
+    "use strict";
+    init_functionsRoutes_0_3883291400772385();
+    init_checked_fetch();
+    __name2(onRequestOptions2, "onRequestOptions");
+    __name2(onRequestGet6, "onRequestGet");
+  }
+});
+async function onRequestOptions3() {
+  return new Response(null, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization"
+    }
+  });
+}
+__name(onRequestOptions3, "onRequestOptions3");
+async function onRequestGet7(context) {
+  try {
+    const { request, env, params } = context;
+    const projectId = params.project_id;
+    if (!projectId) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: "Project ID is required"
+      }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    const bearerToken = env.AFFENSUS_CREDENTIALS_PASSWORD;
+    if (!bearerToken) {
+      throw new Error("AFFENSUS_CREDENTIALS_PASSWORD not configured");
+    }
+    console.log("Making API request to:", `https://apiv2.affensus.com/api/projects/${projectId}/credentials-summary`);
+    console.log("Headers:", {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${bearerToken.substring(0, 8)}...`
+    });
+    let response;
+    try {
+      response = await fetch(`https://apiv2.affensus.com/api/projects/${projectId}/credentials-summary`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${bearerToken}`
+        }
+      });
+    } catch (fetchError) {
+      console.error("Fetch error:", fetchError);
+      const errorMessage = fetchError instanceof Error ? fetchError.message : "Unknown fetch error";
+      throw new Error(`Network error: ${errorMessage}`);
+    }
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("API Response Error:", {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText
+      });
+      throw new Error(`External API error: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    const data = await response.json();
+    return new Response(JSON.stringify({
+      success: true,
+      data
+    }), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "private, max-age=300, s-maxage=0"
+        // 5 minutes cache for project credentials data
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching project credentials summary:", error);
+    return new Response(JSON.stringify({
+      success: false,
+      error: "Failed to fetch project credentials summary"
+    }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+}
+__name(onRequestGet7, "onRequestGet7");
+var init_credentials_summary = __esm({
+  "api/projects/[project_id]/credentials-summary.ts"() {
+    "use strict";
+    init_functionsRoutes_0_3883291400772385();
+    init_checked_fetch();
+    __name2(onRequestOptions3, "onRequestOptions");
+    __name2(onRequestGet7, "onRequestGet");
+  }
+});
+async function onRequestOptions4() {
+  return new Response(null, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization"
+    }
+  });
+}
+__name(onRequestOptions4, "onRequestOptions4");
+async function onRequestGet8(context) {
+  try {
+    const { request, env, params } = context;
+    const projectId = params.project_id;
+    if (!projectId) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: "Project ID is required"
+      }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    const url = new URL(request.url);
+    const networkId = url.searchParams.get("network_id");
+    const credentialId = url.searchParams.get("credential_id");
+    if (!networkId || !credentialId) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: "network_id and credential_id are required"
+      }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    const bearerToken = env.AFFENSUS_CREDENTIALS_PASSWORD;
+    if (!bearerToken) {
+      throw new Error("AFFENSUS_CREDENTIALS_PASSWORD not configured");
+    }
+    const apiUrl = `https://apiv2.affensus.com/api/projects/${projectId}/merchants?network_id=${networkId}&credential_id=${credentialId}`;
+    console.log("Making API request to:", apiUrl);
+    console.log("Headers:", {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${bearerToken.substring(0, 8)}...`
+    });
+    let response;
+    try {
+      response = await fetch(apiUrl, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${bearerToken}`
+        }
+      });
+    } catch (fetchError) {
+      console.error("Fetch error:", fetchError);
+      const errorMessage = fetchError instanceof Error ? fetchError.message : "Unknown fetch error";
+      throw new Error(`Network error: ${errorMessage}`);
+    }
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("API Response Error:", {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText
+      });
+      throw new Error(`External API error: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    const data = await response.json();
+    console.log("Merchants API Response:", JSON.stringify(data, null, 2));
+    return new Response(JSON.stringify({
+      success: true,
+      data
+    }), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "private, max-age=300, s-maxage=0"
+        // 5 minutes cache for merchants data
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching project merchants:", error);
+    return new Response(JSON.stringify({
+      success: false,
+      error: "Failed to fetch project merchants"
+    }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+}
+__name(onRequestGet8, "onRequestGet8");
+var init_merchants = __esm({
+  "api/projects/[project_id]/merchants.ts"() {
+    "use strict";
+    init_functionsRoutes_0_3883291400772385();
+    init_checked_fetch();
+    __name2(onRequestOptions4, "onRequestOptions");
+    __name2(onRequestGet8, "onRequestGet");
+  }
+});
+async function onRequestOptions5() {
+  return new Response(null, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization"
+    }
+  });
+}
+__name(onRequestOptions5, "onRequestOptions5");
+async function onRequestGet9(context) {
+  try {
+    const { request, env, params } = context;
+    const projectId = params.project_id;
+    if (!projectId) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: "Project ID is required"
+      }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    const bearerToken = env.AFFENSUS_CREDENTIALS_PASSWORD;
+    if (!bearerToken) {
+      throw new Error("AFFENSUS_CREDENTIALS_PASSWORD not configured");
+    }
+    console.log("Making API request to:", `https://apiv2.affensus.com/api/projects/${projectId}/networks`);
+    console.log("Headers:", {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${bearerToken.substring(0, 8)}...`
+    });
+    let response;
+    try {
+      response = await fetch(`https://apiv2.affensus.com/api/projects/${projectId}/networks`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${bearerToken}`
+        }
+      });
+    } catch (fetchError) {
+      console.error("Fetch error:", fetchError);
+      const errorMessage = fetchError instanceof Error ? fetchError.message : "Unknown fetch error";
+      throw new Error(`Network error: ${errorMessage}`);
+    }
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("API Response Error:", {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText
+      });
+      throw new Error(`External API error: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    const data = await response.json();
+    console.log("Networks API Response:", JSON.stringify(data, null, 2));
+    return new Response(JSON.stringify({
+      success: true,
+      data
+    }), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "private, max-age=300, s-maxage=0"
+        // 5 minutes cache for networks data
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching project networks:", error);
+    return new Response(JSON.stringify({
+      success: false,
+      error: "Failed to fetch project networks"
+    }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+}
+__name(onRequestGet9, "onRequestGet9");
+var init_networks = __esm({
+  "api/projects/[project_id]/networks.ts"() {
+    "use strict";
+    init_functionsRoutes_0_3883291400772385();
+    init_checked_fetch();
+    __name2(onRequestOptions5, "onRequestOptions");
+    __name2(onRequestGet9, "onRequestGet");
+  }
+});
+async function onRequestOptions6() {
+  return new Response(null, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization"
+    }
+  });
+}
+__name(onRequestOptions6, "onRequestOptions6");
+async function onRequestGet10(context) {
+  const { params, request, env } = context;
+  const projectId = params.project_id;
+  const url = new URL(request.url);
+  const searchQuery = url.searchParams.get("q");
+  if (!searchQuery || searchQuery.length < 2) {
+    return new Response(JSON.stringify({ error: 'Query parameter "q" is required and must be at least 2 characters long' }), {
+      status: 400,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*"
+      }
+    });
+  }
+  const cacheKey = `search_${projectId}_${searchQuery}`;
+  const cached = cache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    return new Response(JSON.stringify(cached.data), {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Cache-Control": "public, max-age=300"
+      }
+    });
+  }
+  if (ongoingRequests.has(cacheKey)) {
+    const response = await ongoingRequests.get(cacheKey);
+    return response.clone();
+  }
+  const requestPromise = (async () => {
+    try {
+      const apiUrl = `https://apiv2.affensus.com/api/projects/${projectId}/search?q=${encodeURIComponent(searchQuery)}`;
+      const response = await fetch(apiUrl, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${env.AFFENSUS_CREDENTIALS_PASSWORD}`,
+          "Content-Type": "application/json"
+        }
+      });
+      if (!response.ok) {
+        throw new Error(`API responded with status: ${response.status}`);
+      }
+      const data = await response.json();
+      cache.set(cacheKey, { data, timestamp: Date.now() });
+      return new Response(JSON.stringify(data), {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          "Cache-Control": "public, max-age=300"
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+      return new Response(JSON.stringify({ error: "Failed to fetch search results" }), {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*"
+        }
+      });
+    } finally {
+      ongoingRequests.delete(cacheKey);
+    }
+  })();
+  ongoingRequests.set(cacheKey, requestPromise);
+  return requestPromise;
+}
+__name(onRequestGet10, "onRequestGet10");
+var cache;
+var CACHE_TTL;
+var ongoingRequests;
+var init_search = __esm({
+  "api/projects/[project_id]/search.ts"() {
+    "use strict";
+    init_functionsRoutes_0_3883291400772385();
+    init_checked_fetch();
+    cache = /* @__PURE__ */ new Map();
+    CACHE_TTL = 5 * 60 * 1e3;
+    ongoingRequests = /* @__PURE__ */ new Map();
+    __name2(onRequestOptions6, "onRequestOptions");
+    __name2(onRequestGet10, "onRequestGet");
+  }
+});
+async function onRequestGet11(context) {
   try {
     const { request, env } = context;
     const FACEBOOK_APP_ID = env.FACEBOOK_APP_ID;
@@ -1275,13 +1870,13 @@ async function onRequestGet5(context) {
     });
   }
 }
-__name(onRequestGet5, "onRequestGet5");
+__name(onRequestGet11, "onRequestGet11");
 var init_facebook = __esm({
   "api/auth/facebook/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
-    __name2(onRequestGet5, "onRequestGet");
+    __name2(onRequestGet11, "onRequestGet");
   }
 });
 function generateState() {
@@ -1290,7 +1885,7 @@ function generateState() {
   return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 __name(generateState, "generateState");
-async function onRequestGet6(context) {
+async function onRequestGet12(context) {
   try {
     const { env } = context;
     const GITHUB_CLIENT_ID = env.GITHUB_CLIENT_ID;
@@ -1318,17 +1913,17 @@ async function onRequestGet6(context) {
     });
   }
 }
-__name(onRequestGet6, "onRequestGet6");
+__name(onRequestGet12, "onRequestGet12");
 var init_github = __esm({
   "api/auth/github/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
     __name2(generateState, "generateState");
-    __name2(onRequestGet6, "onRequestGet");
+    __name2(onRequestGet12, "onRequestGet");
   }
 });
-async function onRequestGet7(context) {
+async function onRequestGet13(context) {
   try {
     const { request, env } = context;
     const GOOGLE_CLIENT_ID = env.GOOGLE_CLIENT_ID;
@@ -1358,16 +1953,16 @@ async function onRequestGet7(context) {
     });
   }
 }
-__name(onRequestGet7, "onRequestGet7");
+__name(onRequestGet13, "onRequestGet13");
 var init_google = __esm({
   "api/auth/google/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
-    __name2(onRequestGet7, "onRequestGet");
+    __name2(onRequestGet13, "onRequestGet");
   }
 });
-async function onRequestOptions() {
+async function onRequestOptions7() {
   return new Response(null, {
     status: 200,
     headers: {
@@ -1377,7 +1972,7 @@ async function onRequestOptions() {
     }
   });
 }
-__name(onRequestOptions, "onRequestOptions");
+__name(onRequestOptions7, "onRequestOptions7");
 async function onRequestPost2(context) {
   try {
     const { request, env } = context;
@@ -1458,9 +2053,9 @@ __name(onRequestPost2, "onRequestPost2");
 var init_register = __esm({
   "api/auth/register/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
-    __name2(onRequestOptions, "onRequestOptions");
+    __name2(onRequestOptions7, "onRequestOptions");
     __name2(onRequestPost2, "onRequestPost");
   }
 });
@@ -1524,7 +2119,7 @@ var JWT_HEADER;
 var init_jwt = __esm({
   "../src/lib/jwt.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
     JWT_ALGORITHM = "HS256";
     JWT_HEADER = { alg: JWT_ALGORITHM, typ: "JWT" };
@@ -1546,7 +2141,7 @@ function parseCookies4(cookieHeader) {
   return cookies;
 }
 __name(parseCookies4, "parseCookies4");
-async function onRequestGet8(context) {
+async function onRequestGet14(context) {
   try {
     const { request, env } = context;
     const cookies = parseCookies4(request.headers.get("Cookie"));
@@ -1604,7 +2199,7 @@ async function onRequestGet8(context) {
     });
   }
 }
-__name(onRequestGet8, "onRequestGet8");
+__name(onRequestGet14, "onRequestGet14");
 async function onRequestPut(context) {
   try {
     const { request, env } = context;
@@ -1689,11 +2284,11 @@ __name(onRequestPut, "onRequestPut");
 var init_billing_address = __esm({
   "api/profile/billing-address.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
     init_jwt();
     __name2(parseCookies4, "parseCookies");
-    __name2(onRequestGet8, "onRequestGet");
+    __name2(onRequestGet14, "onRequestGet");
     __name2(onRequestPut, "onRequestPut");
   }
 });
@@ -1724,7 +2319,7 @@ async function getUserById(db, userId) {
   }
 }
 __name(getUserById, "getUserById");
-async function onRequestGet9(context) {
+async function onRequestGet15(context) {
   try {
     const { request, env } = context;
     const cookies = parseCookies5(request.headers.get("Cookie"));
@@ -1795,16 +2390,16 @@ async function onRequestGet9(context) {
     });
   }
 }
-__name(onRequestGet9, "onRequestGet9");
+__name(onRequestGet15, "onRequestGet15");
 var init_completion_status = __esm({
   "api/profile/completion-status.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
     init_jwt();
     __name2(parseCookies5, "parseCookies");
     __name2(getUserById, "getUserById");
-    __name2(onRequestGet9, "onRequestGet");
+    __name2(onRequestGet15, "onRequestGet");
   }
 });
 async function getUserInvoices(db, userId) {
@@ -1816,7 +2411,7 @@ async function getUserInvoices(db, userId) {
   `).bind(userId).all();
 }
 __name(getUserInvoices, "getUserInvoices");
-async function onRequestGet10(context) {
+async function onRequestGet16(context) {
   try {
     const { request, env } = context;
     const cookieHeader = request.headers.get("Cookie");
@@ -1898,15 +2493,15 @@ async function onRequestGet10(context) {
     });
   }
 }
-__name(onRequestGet10, "onRequestGet10");
+__name(onRequestGet16, "onRequestGet16");
 var init_invoices = __esm({
   "api/profile/invoices.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
     init_jwt();
     __name2(getUserInvoices, "getUserInvoices");
-    __name2(onRequestGet10, "onRequestGet");
+    __name2(onRequestGet16, "onRequestGet");
   }
 });
 async function getUserPreferences(db, userId) {
@@ -1924,7 +2519,7 @@ async function createDefaultPreferences(db, userId) {
   return await getUserPreferences(db, userId);
 }
 __name(createDefaultPreferences, "createDefaultPreferences");
-async function onRequestGet11(context) {
+async function onRequestGet17(context) {
   try {
     const { request, env } = context;
     const cookieHeader = request.headers.get("Cookie");
@@ -1997,16 +2592,16 @@ async function onRequestGet11(context) {
     });
   }
 }
-__name(onRequestGet11, "onRequestGet11");
+__name(onRequestGet17, "onRequestGet17");
 var init_preferences = __esm({
   "api/profile/preferences.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
     init_jwt();
     __name2(getUserPreferences, "getUserPreferences");
     __name2(createDefaultPreferences, "createDefaultPreferences");
-    __name2(onRequestGet11, "onRequestGet");
+    __name2(onRequestGet17, "onRequestGet");
   }
 });
 var invoice_generator_exports = {};
@@ -2205,7 +2800,7 @@ __name(processPendingInvoices, "processPendingInvoices");
 var init_invoice_generator = __esm({
   "../src/lib/invoice-generator.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
     __name2(generateInvoiceNumber, "generateInvoiceNumber");
     __name2(calculateTax, "calculateTax");
@@ -2215,7 +2810,7 @@ var init_invoice_generator = __esm({
     __name2(processPendingInvoices, "processPendingInvoices");
   }
 });
-async function onRequestOptions2() {
+async function onRequestOptions8() {
   return new Response(null, {
     status: 200,
     headers: {
@@ -2225,7 +2820,7 @@ async function onRequestOptions2() {
     }
   });
 }
-__name(onRequestOptions2, "onRequestOptions2");
+__name(onRequestOptions8, "onRequestOptions8");
 async function onRequestPost3(context) {
   try {
     const { request, env } = context;
@@ -2301,11 +2896,82 @@ __name(onRequestPost3, "onRequestPost3");
 var init_process_pending_invoices = __esm({
   "api/profile/process-pending-invoices.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
     init_jwt();
-    __name2(onRequestOptions2, "onRequestOptions");
+    __name2(onRequestOptions8, "onRequestOptions");
     __name2(onRequestPost3, "onRequestPost");
+  }
+});
+async function onRequestOptions9() {
+  return new Response(null, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization"
+    }
+  });
+}
+__name(onRequestOptions9, "onRequestOptions9");
+async function onRequestGet18(context) {
+  try {
+    const { request, env } = context;
+    const bearerToken = env.AFFENSUS_CREDENTIALS_PASSWORD;
+    if (!bearerToken) {
+      throw new Error("AFFENSUS_CREDENTIALS_PASSWORD not configured");
+    }
+    console.log("Making API request to:", "https://apiv2.affensus.com/api/queue/status");
+    let response;
+    try {
+      response = await fetch("https://apiv2.affensus.com/api/queue/status", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${bearerToken}`
+        }
+      });
+    } catch (fetchError) {
+      console.error("Fetch error:", fetchError);
+      const errorMessage = fetchError instanceof Error ? fetchError.message : "Unknown fetch error";
+      throw new Error(`Network error: ${errorMessage}`);
+    }
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("API Response Error:", {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText
+      });
+      throw new Error(`External API error: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    const data = await response.json();
+    return new Response(JSON.stringify(data), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store, max-age=0"
+      }
+    });
+  } catch (error) {
+    console.error("Queue status error:", error);
+    return new Response(JSON.stringify({
+      success: false,
+      error: error instanceof Error ? error.message : "Internal server error"
+    }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+}
+__name(onRequestGet18, "onRequestGet18");
+var init_status2 = __esm({
+  "api/queue/status.ts"() {
+    "use strict";
+    init_functionsRoutes_0_3883291400772385();
+    init_checked_fetch();
+    __name2(onRequestOptions9, "onRequestOptions");
+    __name2(onRequestGet18, "onRequestGet");
   }
 });
 async function onRequestPost4(context) {
@@ -2530,7 +3196,7 @@ var regexPatterns;
 var init_affiliate_link_checker = __esm({
   "api/tools/affiliate-link-checker.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
     regexPatterns = [
       { name: "Daisycon", pattern: /c\/\?si=(\d+)|ds1\.nl\/c\/.*?si=(\d+)|lt45\.net\/c\/.*?si=(\d+)|\/csd\/\?si=(\d+)&li=(\d+)&wi=(\d+)|jf79\.net\/c\/.*?si=(\d+)/, matches: [], networkId: 1 },
@@ -2600,7 +3266,7 @@ var init_affiliate_link_checker = __esm({
     __name2(onRequestPost4, "onRequestPost");
   }
 });
-async function onRequestGet12(context) {
+async function onRequestGet19(context) {
   try {
     const { env } = context;
     const uptimeKumaSecret = env.UPTIME_KUMA_SECRET;
@@ -2679,8 +3345,8 @@ async function onRequestGet12(context) {
     });
   }
 }
-__name(onRequestGet12, "onRequestGet12");
-async function onRequestOptions3() {
+__name(onRequestGet19, "onRequestGet19");
+async function onRequestOptions10() {
   return new Response(null, {
     status: 200,
     headers: {
@@ -2690,7 +3356,7 @@ async function onRequestOptions3() {
     }
   });
 }
-__name(onRequestOptions3, "onRequestOptions3");
+__name(onRequestOptions10, "onRequestOptions10");
 function formatNetworkDisplayName(networkName) {
   const nameMappings = {
     "involveasia": "Involve Asia",
@@ -2845,10 +3511,10 @@ __name(processPrometheusMetrics, "processPrometheusMetrics");
 var init_affiliate_network_uptime = __esm({
   "api/tools/affiliate-network-uptime.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
-    __name2(onRequestGet12, "onRequestGet");
-    __name2(onRequestOptions3, "onRequestOptions");
+    __name2(onRequestGet19, "onRequestGet");
+    __name2(onRequestOptions10, "onRequestOptions");
     __name2(formatNetworkDisplayName, "formatNetworkDisplayName");
     __name2(fetchStatusPageData, "fetchStatusPageData");
     __name2(processPrometheusMetrics, "processPrometheusMetrics");
@@ -3032,7 +3698,7 @@ var locales;
 var init_settings = __esm({
   "../src/locales/settings.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
     locales = {
       "en": {
@@ -3074,7 +3740,7 @@ var onRequest;
 var init_create_checkout_session = __esm({
   "api/stripe/create-checkout-session.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
     init_pricing_plans();
     init_settings();
@@ -3277,7 +3943,7 @@ var onRequest2;
 var init_create_portal_session = __esm({
   "api/stripe/create-portal-session.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
     __name2(verifyJwt2, "verifyJwt");
     __name2(parseCookies7, "parseCookies");
@@ -3381,7 +4047,7 @@ var onRequest3;
 var init_create_user_account = __esm({
   "api/stripe/create-user-account.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
     init_jwt();
     __name2(createUserAccount, "createUserAccount");
@@ -3694,7 +4360,7 @@ var onRequest4;
 var init_webhook = __esm({
   "api/stripe/webhook.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
     __name2(handlePaymentWithoutCustomer, "handlePaymentWithoutCustomer");
     __name2(sendPaymentConfirmationEmail, "sendPaymentConfirmationEmail");
@@ -3791,7 +4457,7 @@ var init_webhook = __esm({
     }, "onRequest");
   }
 });
-async function onRequestOptions4() {
+async function onRequestOptions11() {
   return new Response(null, {
     status: 200,
     headers: {
@@ -3801,8 +4467,8 @@ async function onRequestOptions4() {
     }
   });
 }
-__name(onRequestOptions4, "onRequestOptions4");
-async function onRequestGet13(context) {
+__name(onRequestOptions11, "onRequestOptions11");
+async function onRequestGet20(context) {
   try {
     const { request, env, params } = context;
     const invoiceNumber = params.invoiceNumber;
@@ -3916,7 +4582,7 @@ async function onRequestGet13(context) {
     });
   }
 }
-__name(onRequestGet13, "onRequestGet13");
+__name(onRequestGet20, "onRequestGet20");
 function generateInvoiceHTML(invoice) {
   const isCredit = invoice.invoice_type === "credit_note";
   const amountPrefix = isCredit ? "-" : "";
@@ -4484,15 +5150,15 @@ __name(generateInvoiceHTML, "generateInvoiceHTML");
 var init_invoiceNumber = __esm({
   "api/invoice/[invoiceNumber].ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
     init_jwt();
-    __name2(onRequestOptions4, "onRequestOptions");
-    __name2(onRequestGet13, "onRequestGet");
+    __name2(onRequestOptions11, "onRequestOptions");
+    __name2(onRequestGet20, "onRequestGet");
     __name2(generateInvoiceHTML, "generateInvoiceHTML");
   }
 });
-async function onRequestOptions5() {
+async function onRequestOptions12() {
   return new Response(null, {
     status: 200,
     headers: {
@@ -4502,8 +5168,8 @@ async function onRequestOptions5() {
     }
   });
 }
-__name(onRequestOptions5, "onRequestOptions5");
-async function onRequestGet14(context) {
+__name(onRequestOptions12, "onRequestOptions12");
+async function onRequestGet21(context) {
   try {
     const { request, env, params } = context;
     const userId = params.userId;
@@ -4571,14 +5237,14 @@ async function onRequestGet14(context) {
     });
   }
 }
-__name(onRequestGet14, "onRequestGet14");
+__name(onRequestGet21, "onRequestGet21");
 var init_userId = __esm({
   "api/users/[userId]/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
-    __name2(onRequestOptions5, "onRequestOptions");
-    __name2(onRequestGet14, "onRequestGet");
+    __name2(onRequestOptions12, "onRequestOptions");
+    __name2(onRequestGet21, "onRequestGet");
   }
 });
 async function onRequestPost5(context) {
@@ -4627,12 +5293,81 @@ __name(onRequestPost5, "onRequestPost5");
 var init_contact = __esm({
   "api/contact/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
     __name2(onRequestPost5, "onRequestPost");
   }
 });
+async function onRequestOptions13() {
+  return new Response(null, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization"
+    }
+  });
+}
+__name(onRequestOptions13, "onRequestOptions13");
 async function onRequestPost6(context) {
+  try {
+    const { request, env } = context;
+    const body = await request.json();
+    if (!body.credential_id) {
+      return new Response(JSON.stringify({ error: "credential_id is required" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    const bearerToken = env.AFFENSUS_CREDENTIALS_PASSWORD;
+    if (!bearerToken) {
+      throw new Error("AFFENSUS_CREDENTIALS_PASSWORD not configured");
+    }
+    console.log("Sending import network request:", body);
+    const response = await fetch("https://apiv2.affensus.com/api/import-network", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${bearerToken}`
+      },
+      body: JSON.stringify(body)
+    });
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Import network API error:", response.status, response.statusText, errorText);
+      return new Response(JSON.stringify({ error: "Failed to start import job", details: errorText }), {
+        status: response.status,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    const data = await response.json();
+    console.log("Import network response:", data);
+    return new Response(JSON.stringify(data), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store, max-age=0"
+      }
+    });
+  } catch (error) {
+    console.error("Import network error:", error);
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+}
+__name(onRequestPost6, "onRequestPost6");
+var init_import_network = __esm({
+  "api/import-network.ts"() {
+    "use strict";
+    init_functionsRoutes_0_3883291400772385();
+    init_checked_fetch();
+    __name2(onRequestOptions13, "onRequestOptions");
+    __name2(onRequestPost6, "onRequestPost");
+  }
+});
+async function onRequestPost7(context) {
   const { env } = context;
   const isProduction = env.SITE_URL?.startsWith("https://") || false;
   const secureFlag = isProduction ? "Secure; " : "";
@@ -4645,13 +5380,13 @@ async function onRequestPost6(context) {
   response.headers.set("Set-Cookie", clearCookieHeader);
   return response;
 }
-__name(onRequestPost6, "onRequestPost6");
+__name(onRequestPost7, "onRequestPost7");
 var init_logout = __esm({
   "api/logout/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
-    __name2(onRequestPost6, "onRequestPost");
+    __name2(onRequestPost7, "onRequestPost");
   }
 });
 async function signJwt5(payload, secret, expiresIn) {
@@ -4776,7 +5511,7 @@ async function processPendingPayments3(email, userId, stripeSecretKey) {
   }
 }
 __name(processPendingPayments3, "processPendingPayments3");
-async function onRequestGet15(context) {
+async function onRequestGet22(context) {
   try {
     const { request, env } = context;
     const url = new URL(request.url);
@@ -4879,11 +5614,11 @@ async function onRequestGet15(context) {
     });
   }
 }
-__name(onRequestGet15, "onRequestGet15");
+__name(onRequestGet22, "onRequestGet22");
 var init_magic_login = __esm({
   "api/magic-login/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
     __name2(signJwt5, "signJwt");
     __name2(getMagicLinkByToken, "getMagicLinkByToken");
@@ -4891,10 +5626,10 @@ var init_magic_login = __esm({
     __name2(getUserByEmail2, "getUserByEmail");
     __name2(updatePreferredLoginMethod, "updatePreferredLoginMethod");
     __name2(processPendingPayments3, "processPendingPayments");
-    __name2(onRequestGet15, "onRequestGet");
+    __name2(onRequestGet22, "onRequestGet");
   }
 });
-async function onRequestPost7(context) {
+async function onRequestPost8(context) {
   try {
     const { request, env } = context;
     const {
@@ -4985,16 +5720,16 @@ async function onRequestPost7(context) {
     });
   }
 }
-__name(onRequestPost7, "onRequestPost7");
+__name(onRequestPost8, "onRequestPost8");
 var init_mistake_report = __esm({
   "api/mistake-report/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
-    __name2(onRequestPost7, "onRequestPost");
+    __name2(onRequestPost8, "onRequestPost");
   }
 });
-async function onRequestOptions6() {
+async function onRequestOptions14() {
   return new Response(null, {
     status: 200,
     headers: {
@@ -5004,8 +5739,8 @@ async function onRequestOptions6() {
     }
   });
 }
-__name(onRequestOptions6, "onRequestOptions6");
-async function onRequestGet16(context) {
+__name(onRequestOptions14, "onRequestOptions14");
+async function onRequestGet23(context) {
   try {
     const { request, env } = context;
     const url = new URL(request.url);
@@ -5068,8 +5803,8 @@ async function onRequestGet16(context) {
     });
   }
 }
-__name(onRequestGet16, "onRequestGet16");
-async function onRequestPost8(context) {
+__name(onRequestGet23, "onRequestGet23");
+async function onRequestPost9(context) {
   try {
     const { request, env } = context;
     const body = await request.json();
@@ -5144,7 +5879,7 @@ async function onRequestPost8(context) {
     });
   }
 }
-__name(onRequestPost8, "onRequestPost8");
+__name(onRequestPost9, "onRequestPost9");
 async function onRequestPut2(context) {
   try {
     const { request, env } = context;
@@ -5264,11 +5999,11 @@ __name(onRequestDelete, "onRequestDelete");
 var init_network_monitors = __esm({
   "api/network-monitors/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
-    __name2(onRequestOptions6, "onRequestOptions");
-    __name2(onRequestGet16, "onRequestGet");
-    __name2(onRequestPost8, "onRequestPost");
+    __name2(onRequestOptions14, "onRequestOptions");
+    __name2(onRequestGet23, "onRequestGet");
+    __name2(onRequestPost9, "onRequestPost");
     __name2(onRequestPut2, "onRequestPut");
     __name2(onRequestDelete, "onRequestDelete");
   }
@@ -5301,7 +6036,7 @@ async function updateUser(db, userId, data) {
   return await getUserById2(db, userId);
 }
 __name(updateUser, "updateUser");
-async function onRequestGet17(context) {
+async function onRequestGet24(context) {
   try {
     const { request, env } = context;
     const cookies = parseCookies8(request.headers.get("Cookie"));
@@ -5374,7 +6109,7 @@ async function onRequestGet17(context) {
     });
   }
 }
-__name(onRequestGet17, "onRequestGet17");
+__name(onRequestGet24, "onRequestGet24");
 async function onRequestPut3(context) {
   try {
     const { request, env } = context;
@@ -5453,17 +6188,17 @@ __name(onRequestPut3, "onRequestPut3");
 var init_profile = __esm({
   "api/profile/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
     init_jwt();
     __name2(parseCookies8, "parseCookies");
     __name2(getUserById2, "getUserById");
     __name2(updateUser, "updateUser");
-    __name2(onRequestGet17, "onRequestGet");
+    __name2(onRequestGet24, "onRequestGet");
     __name2(onRequestPut3, "onRequestPut");
   }
 });
-async function onRequestOptions7() {
+async function onRequestOptions15() {
   return new Response(null, {
     status: 200,
     headers: {
@@ -5473,8 +6208,8 @@ async function onRequestOptions7() {
     }
   });
 }
-__name(onRequestOptions7, "onRequestOptions7");
-async function onRequestPost9(context) {
+__name(onRequestOptions15, "onRequestOptions15");
+async function onRequestPost10(context) {
   try {
     const { request, env } = context;
     const cookieHeader = request.headers.get("Cookie");
@@ -5733,15 +6468,15 @@ async function onRequestPost9(context) {
     });
   }
 }
-__name(onRequestPost9, "onRequestPost9");
+__name(onRequestPost10, "onRequestPost10");
 var init_refund_request = __esm({
   "api/refund-request/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
     init_jwt();
-    __name2(onRequestOptions7, "onRequestOptions");
-    __name2(onRequestPost9, "onRequestPost");
+    __name2(onRequestOptions15, "onRequestOptions");
+    __name2(onRequestPost10, "onRequestPost");
   }
 });
 function generateToken() {
@@ -5864,7 +6599,7 @@ If you didn't request this email, you can safely ignore it.
   return await response.json();
 }
 __name(sendMagicLinkEmail, "sendMagicLinkEmail");
-async function onRequestPost10(context) {
+async function onRequestPost11(context) {
   try {
     const { request, env } = context;
     const { email } = await request.json();
@@ -5956,21 +6691,21 @@ async function onRequestPost10(context) {
     });
   }
 }
-__name(onRequestPost10, "onRequestPost10");
+__name(onRequestPost11, "onRequestPost11");
 var init_request_magic_link = __esm({
   "api/request-magic-link/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
     __name2(generateToken, "generateToken");
     __name2(createUser, "createUser");
     __name2(createMagicLink, "createMagicLink");
     __name2(cleanupExpiredMagicLinks, "cleanupExpiredMagicLinks");
     __name2(sendMagicLinkEmail, "sendMagicLinkEmail");
-    __name2(onRequestPost10, "onRequestPost");
+    __name2(onRequestPost11, "onRequestPost");
   }
 });
-async function onRequestOptions8() {
+async function onRequestOptions16() {
   return new Response(null, {
     status: 200,
     headers: {
@@ -5980,8 +6715,8 @@ async function onRequestOptions8() {
     }
   });
 }
-__name(onRequestOptions8, "onRequestOptions8");
-async function onRequestGet18(context) {
+__name(onRequestOptions16, "onRequestOptions16");
+async function onRequestGet25(context) {
   try {
     const { request, env } = context;
     const cookieHeader = request.headers.get("Cookie");
@@ -6054,15 +6789,15 @@ async function onRequestGet18(context) {
     });
   }
 }
-__name(onRequestGet18, "onRequestGet18");
+__name(onRequestGet25, "onRequestGet25");
 var init_user = __esm({
   "api/user/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
     init_jwt();
-    __name2(onRequestOptions8, "onRequestOptions");
-    __name2(onRequestGet18, "onRequestGet");
+    __name2(onRequestOptions16, "onRequestOptions");
+    __name2(onRequestGet25, "onRequestGet");
   }
 });
 async function verifyJwt3(token, secret) {
@@ -6108,7 +6843,7 @@ async function getUserByEmail3(db, email) {
   return await db.prepare("SELECT * FROM users WHERE email = ?").bind(email).first();
 }
 __name(getUserByEmail3, "getUserByEmail3");
-async function onRequestGet19(context) {
+async function onRequestGet26(context) {
   try {
     const { request, env } = context;
     const cookies = parseCookies9(request.headers.get("Cookie"));
@@ -6170,23 +6905,23 @@ async function onRequestGet19(context) {
     });
   }
 }
-__name(onRequestGet19, "onRequestGet19");
+__name(onRequestGet26, "onRequestGet26");
 var init_user_preferences = __esm({
   "api/user-preferences.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
     __name2(verifyJwt3, "verifyJwt");
     __name2(parseCookies9, "parseCookies");
     __name2(getUserByEmail3, "getUserByEmail");
-    __name2(onRequestGet19, "onRequestGet");
+    __name2(onRequestGet26, "onRequestGet");
   }
 });
 var onRequest5;
 var init_currency_rates = __esm({
   "api/currency-rates.ts"() {
     "use strict";
-    init_functionsRoutes_0_38541349960275073();
+    init_functionsRoutes_0_3883291400772385();
     init_checked_fetch();
     init_settings();
     onRequest5 = /* @__PURE__ */ __name2(async (context) => {
@@ -6262,14 +6997,26 @@ var init_currency_rates = __esm({
   }
 });
 var routes;
-var init_functionsRoutes_0_38541349960275073 = __esm({
-  "../.wrangler/tmp/pages-6KI4gc/functionsRoutes-0.38541349960275073.mjs"() {
+var init_functionsRoutes_0_3883291400772385 = __esm({
+  "../.wrangler/tmp/pages-iC2Pv8/functionsRoutes-0.3883291400772385.mjs"() {
     "use strict";
     init_callback();
     init_callback2();
     init_callback3();
     init_courseId();
     init_courseId();
+    init_monitor();
+    init_monitor();
+    init_status();
+    init_status();
+    init_credentials_summary();
+    init_credentials_summary();
+    init_merchants();
+    init_merchants();
+    init_networks();
+    init_networks();
+    init_search();
+    init_search();
     init_facebook();
     init_github();
     init_google();
@@ -6282,6 +7029,8 @@ var init_functionsRoutes_0_38541349960275073 = __esm({
     init_preferences();
     init_process_pending_invoices();
     init_process_pending_invoices();
+    init_status2();
+    init_status2();
     init_affiliate_link_checker();
     init_affiliate_network_uptime();
     init_affiliate_network_uptime();
@@ -6294,6 +7043,8 @@ var init_functionsRoutes_0_38541349960275073 = __esm({
     init_userId();
     init_userId();
     init_contact();
+    init_import_network();
+    init_import_network();
     init_logout();
     init_magic_login();
     init_mistake_report();
@@ -6348,32 +7099,116 @@ var init_functionsRoutes_0_38541349960275073 = __esm({
         modules: [onRequestPost]
       },
       {
+        routePath: "/api/job/:job_id/monitor",
+        mountPath: "/api/job/:job_id",
+        method: "GET",
+        middlewares: [],
+        modules: [onRequestGet5]
+      },
+      {
+        routePath: "/api/job/:job_id/monitor",
+        mountPath: "/api/job/:job_id",
+        method: "OPTIONS",
+        middlewares: [],
+        modules: [onRequestOptions]
+      },
+      {
+        routePath: "/api/job/:job_id/status",
+        mountPath: "/api/job/:job_id",
+        method: "GET",
+        middlewares: [],
+        modules: [onRequestGet6]
+      },
+      {
+        routePath: "/api/job/:job_id/status",
+        mountPath: "/api/job/:job_id",
+        method: "OPTIONS",
+        middlewares: [],
+        modules: [onRequestOptions2]
+      },
+      {
+        routePath: "/api/projects/:project_id/credentials-summary",
+        mountPath: "/api/projects/:project_id",
+        method: "GET",
+        middlewares: [],
+        modules: [onRequestGet7]
+      },
+      {
+        routePath: "/api/projects/:project_id/credentials-summary",
+        mountPath: "/api/projects/:project_id",
+        method: "OPTIONS",
+        middlewares: [],
+        modules: [onRequestOptions3]
+      },
+      {
+        routePath: "/api/projects/:project_id/merchants",
+        mountPath: "/api/projects/:project_id",
+        method: "GET",
+        middlewares: [],
+        modules: [onRequestGet8]
+      },
+      {
+        routePath: "/api/projects/:project_id/merchants",
+        mountPath: "/api/projects/:project_id",
+        method: "OPTIONS",
+        middlewares: [],
+        modules: [onRequestOptions4]
+      },
+      {
+        routePath: "/api/projects/:project_id/networks",
+        mountPath: "/api/projects/:project_id",
+        method: "GET",
+        middlewares: [],
+        modules: [onRequestGet9]
+      },
+      {
+        routePath: "/api/projects/:project_id/networks",
+        mountPath: "/api/projects/:project_id",
+        method: "OPTIONS",
+        middlewares: [],
+        modules: [onRequestOptions5]
+      },
+      {
+        routePath: "/api/projects/:project_id/search",
+        mountPath: "/api/projects/:project_id",
+        method: "GET",
+        middlewares: [],
+        modules: [onRequestGet10]
+      },
+      {
+        routePath: "/api/projects/:project_id/search",
+        mountPath: "/api/projects/:project_id",
+        method: "OPTIONS",
+        middlewares: [],
+        modules: [onRequestOptions6]
+      },
+      {
         routePath: "/api/auth/facebook",
         mountPath: "/api/auth/facebook",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet5]
+        modules: [onRequestGet11]
       },
       {
         routePath: "/api/auth/github",
         mountPath: "/api/auth/github",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet6]
+        modules: [onRequestGet12]
       },
       {
         routePath: "/api/auth/google",
         mountPath: "/api/auth/google",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet7]
+        modules: [onRequestGet13]
       },
       {
         routePath: "/api/auth/register",
         mountPath: "/api/auth/register",
         method: "OPTIONS",
         middlewares: [],
-        modules: [onRequestOptions]
+        modules: [onRequestOptions7]
       },
       {
         routePath: "/api/auth/register",
@@ -6387,7 +7222,7 @@ var init_functionsRoutes_0_38541349960275073 = __esm({
         mountPath: "/api/profile",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet8]
+        modules: [onRequestGet14]
       },
       {
         routePath: "/api/profile/billing-address",
@@ -6401,28 +7236,28 @@ var init_functionsRoutes_0_38541349960275073 = __esm({
         mountPath: "/api/profile",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet9]
+        modules: [onRequestGet15]
       },
       {
         routePath: "/api/profile/invoices",
         mountPath: "/api/profile",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet10]
+        modules: [onRequestGet16]
       },
       {
         routePath: "/api/profile/preferences",
         mountPath: "/api/profile",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet11]
+        modules: [onRequestGet17]
       },
       {
         routePath: "/api/profile/process-pending-invoices",
         mountPath: "/api/profile",
         method: "OPTIONS",
         middlewares: [],
-        modules: [onRequestOptions2]
+        modules: [onRequestOptions8]
       },
       {
         routePath: "/api/profile/process-pending-invoices",
@@ -6430,6 +7265,20 @@ var init_functionsRoutes_0_38541349960275073 = __esm({
         method: "POST",
         middlewares: [],
         modules: [onRequestPost3]
+      },
+      {
+        routePath: "/api/queue/status",
+        mountPath: "/api/queue",
+        method: "GET",
+        middlewares: [],
+        modules: [onRequestGet18]
+      },
+      {
+        routePath: "/api/queue/status",
+        mountPath: "/api/queue",
+        method: "OPTIONS",
+        middlewares: [],
+        modules: [onRequestOptions9]
       },
       {
         routePath: "/api/tools/affiliate-link-checker",
@@ -6443,14 +7292,14 @@ var init_functionsRoutes_0_38541349960275073 = __esm({
         mountPath: "/api/tools",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet12]
+        modules: [onRequestGet19]
       },
       {
         routePath: "/api/tools/affiliate-network-uptime",
         mountPath: "/api/tools",
         method: "OPTIONS",
         middlewares: [],
-        modules: [onRequestOptions3]
+        modules: [onRequestOptions10]
       },
       {
         routePath: "/api/stripe/create-checkout-session",
@@ -6485,28 +7334,28 @@ var init_functionsRoutes_0_38541349960275073 = __esm({
         mountPath: "/api/invoice",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet13]
+        modules: [onRequestGet20]
       },
       {
         routePath: "/api/invoice/:invoiceNumber",
         mountPath: "/api/invoice",
         method: "OPTIONS",
         middlewares: [],
-        modules: [onRequestOptions4]
+        modules: [onRequestOptions11]
       },
       {
         routePath: "/api/users/:userId",
         mountPath: "/api/users/:userId",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet14]
+        modules: [onRequestGet21]
       },
       {
         routePath: "/api/users/:userId",
         mountPath: "/api/users/:userId",
         method: "OPTIONS",
         middlewares: [],
-        modules: [onRequestOptions5]
+        modules: [onRequestOptions12]
       },
       {
         routePath: "/api/contact",
@@ -6516,25 +7365,39 @@ var init_functionsRoutes_0_38541349960275073 = __esm({
         modules: [onRequestPost5]
       },
       {
+        routePath: "/api/import-network",
+        mountPath: "/api",
+        method: "OPTIONS",
+        middlewares: [],
+        modules: [onRequestOptions13]
+      },
+      {
+        routePath: "/api/import-network",
+        mountPath: "/api",
+        method: "POST",
+        middlewares: [],
+        modules: [onRequestPost6]
+      },
+      {
         routePath: "/api/logout",
         mountPath: "/api/logout",
         method: "POST",
         middlewares: [],
-        modules: [onRequestPost6]
+        modules: [onRequestPost7]
       },
       {
         routePath: "/api/magic-login",
         mountPath: "/api/magic-login",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet15]
+        modules: [onRequestGet22]
       },
       {
         routePath: "/api/mistake-report",
         mountPath: "/api/mistake-report",
         method: "POST",
         middlewares: [],
-        modules: [onRequestPost7]
+        modules: [onRequestPost8]
       },
       {
         routePath: "/api/network-monitors",
@@ -6548,21 +7411,21 @@ var init_functionsRoutes_0_38541349960275073 = __esm({
         mountPath: "/api/network-monitors",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet16]
+        modules: [onRequestGet23]
       },
       {
         routePath: "/api/network-monitors",
         mountPath: "/api/network-monitors",
         method: "OPTIONS",
         middlewares: [],
-        modules: [onRequestOptions6]
+        modules: [onRequestOptions14]
       },
       {
         routePath: "/api/network-monitors",
         mountPath: "/api/network-monitors",
         method: "POST",
         middlewares: [],
-        modules: [onRequestPost8]
+        modules: [onRequestPost9]
       },
       {
         routePath: "/api/network-monitors",
@@ -6576,7 +7439,7 @@ var init_functionsRoutes_0_38541349960275073 = __esm({
         mountPath: "/api/profile",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet17]
+        modules: [onRequestGet24]
       },
       {
         routePath: "/api/profile",
@@ -6590,42 +7453,42 @@ var init_functionsRoutes_0_38541349960275073 = __esm({
         mountPath: "/api/refund-request",
         method: "OPTIONS",
         middlewares: [],
-        modules: [onRequestOptions7]
+        modules: [onRequestOptions15]
       },
       {
         routePath: "/api/refund-request",
         mountPath: "/api/refund-request",
         method: "POST",
         middlewares: [],
-        modules: [onRequestPost9]
+        modules: [onRequestPost10]
       },
       {
         routePath: "/api/request-magic-link",
         mountPath: "/api/request-magic-link",
         method: "POST",
         middlewares: [],
-        modules: [onRequestPost10]
+        modules: [onRequestPost11]
       },
       {
         routePath: "/api/user",
         mountPath: "/api/user",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet18]
+        modules: [onRequestGet25]
       },
       {
         routePath: "/api/user",
         mountPath: "/api/user",
         method: "OPTIONS",
         middlewares: [],
-        modules: [onRequestOptions8]
+        modules: [onRequestOptions16]
       },
       {
         routePath: "/api/user-preferences",
         mountPath: "/api",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet19]
+        modules: [onRequestGet26]
       },
       {
         routePath: "/api/currency-rates",
@@ -6637,13 +7500,13 @@ var init_functionsRoutes_0_38541349960275073 = __esm({
     ];
   }
 });
-init_functionsRoutes_0_38541349960275073();
+init_functionsRoutes_0_3883291400772385();
 init_checked_fetch();
-init_functionsRoutes_0_38541349960275073();
+init_functionsRoutes_0_3883291400772385();
 init_checked_fetch();
-init_functionsRoutes_0_38541349960275073();
+init_functionsRoutes_0_3883291400772385();
 init_checked_fetch();
-init_functionsRoutes_0_38541349960275073();
+init_functionsRoutes_0_3883291400772385();
 init_checked_fetch();
 function lexer(str) {
   var tokens = [];
@@ -7099,7 +7962,7 @@ var cloneResponse = /* @__PURE__ */ __name2((response) => (
     response
   )
 ), "cloneResponse");
-init_functionsRoutes_0_38541349960275073();
+init_functionsRoutes_0_3883291400772385();
 init_checked_fetch();
 var drainBody = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx) => {
   try {
@@ -7117,7 +7980,7 @@ var drainBody = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx
   }
 }, "drainBody");
 var middleware_ensure_req_body_drained_default = drainBody;
-init_functionsRoutes_0_38541349960275073();
+init_functionsRoutes_0_3883291400772385();
 init_checked_fetch();
 function reduceError(e) {
   return {
@@ -7146,7 +8009,7 @@ var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_miniflare3_json_error_default
 ];
 var middleware_insertion_facade_default = pages_template_worker_default;
-init_functionsRoutes_0_38541349960275073();
+init_functionsRoutes_0_3883291400772385();
 init_checked_fetch();
 var __facade_middleware__ = [];
 function __facade_register__(...args) {
@@ -7316,7 +8179,7 @@ var jsonError2 = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx
 }, "jsonError");
 var middleware_miniflare3_json_error_default2 = jsonError2;
 
-// .wrangler/tmp/bundle-dSmJ1Y/middleware-insertion-facade.js
+// .wrangler/tmp/bundle-28E9Q4/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__2 = [
   middleware_ensure_req_body_drained_default2,
   middleware_miniflare3_json_error_default2
@@ -7348,7 +8211,7 @@ function __facade_invoke__2(request, env, ctx, dispatch, finalMiddleware) {
 }
 __name(__facade_invoke__2, "__facade_invoke__");
 
-// .wrangler/tmp/bundle-dSmJ1Y/middleware-loader.entry.ts
+// .wrangler/tmp/bundle-28E9Q4/middleware-loader.entry.ts
 var __Facade_ScheduledController__2 = class ___Facade_ScheduledController__2 {
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;
@@ -7448,4 +8311,4 @@ export {
   __INTERNAL_WRANGLER_MIDDLEWARE__2 as __INTERNAL_WRANGLER_MIDDLEWARE__,
   middleware_loader_entry_default2 as default
 };
-//# sourceMappingURL=functionsWorker-0.6355327904101307.js.map
+//# sourceMappingURL=functionsWorker-0.2551829519122899.js.map

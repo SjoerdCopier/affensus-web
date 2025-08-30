@@ -3,6 +3,14 @@ import { onRequestGet as __api_auth_github_callback_ts_onRequestGet } from "/Use
 import { onRequestGet as __api_auth_google_callback_ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/auth/google/callback.ts"
 import { onRequestGet as __api_user_progress__courseId__index_ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/user/progress/[courseId]/index.ts"
 import { onRequestPost as __api_user_progress__courseId__index_ts_onRequestPost } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/user/progress/[courseId]/index.ts"
+import { onRequestGet as __api_projects__project_id__credentials_summary_ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/projects/[project_id]/credentials-summary.ts"
+import { onRequestOptions as __api_projects__project_id__credentials_summary_ts_onRequestOptions } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/projects/[project_id]/credentials-summary.ts"
+import { onRequestGet as __api_projects__project_id__merchants_ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/projects/[project_id]/merchants.ts"
+import { onRequestOptions as __api_projects__project_id__merchants_ts_onRequestOptions } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/projects/[project_id]/merchants.ts"
+import { onRequestGet as __api_projects__project_id__networks_ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/projects/[project_id]/networks.ts"
+import { onRequestOptions as __api_projects__project_id__networks_ts_onRequestOptions } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/projects/[project_id]/networks.ts"
+import { onRequestGet as __api_projects__project_id__search_ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/projects/[project_id]/search.ts"
+import { onRequestOptions as __api_projects__project_id__search_ts_onRequestOptions } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/projects/[project_id]/search.ts"
 import { onRequestGet as __api_auth_facebook_index_ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/auth/facebook/index.ts"
 import { onRequestGet as __api_auth_github_index_ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/auth/github/index.ts"
 import { onRequestGet as __api_auth_google_index_ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/auth/google/index.ts"
@@ -27,6 +35,8 @@ import { onRequestOptions as __api_invoice__invoiceNumber__ts_onRequestOptions }
 import { onRequestGet as __api_users__userId__index_ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/users/[userId]/index.ts"
 import { onRequestOptions as __api_users__userId__index_ts_onRequestOptions } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/users/[userId]/index.ts"
 import { onRequestPost as __api_contact_index_ts_onRequestPost } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/contact/index.ts"
+import { onRequestOptions as __api_import_network_ts_onRequestOptions } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/import-network.ts"
+import { onRequestPost as __api_import_network_ts_onRequestPost } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/import-network.ts"
 import { onRequestPost as __api_logout_index_ts_onRequestPost } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/logout/index.ts"
 import { onRequestGet as __api_magic_login_index_ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/magic-login/index.ts"
 import { onRequestPost as __api_mistake_report_index_ts_onRequestPost } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/mistake-report/index.ts"
@@ -80,6 +90,62 @@ export const routes = [
       method: "POST",
       middlewares: [],
       modules: [__api_user_progress__courseId__index_ts_onRequestPost],
+    },
+  {
+      routePath: "/api/projects/:project_id/credentials-summary",
+      mountPath: "/api/projects/:project_id",
+      method: "GET",
+      middlewares: [],
+      modules: [__api_projects__project_id__credentials_summary_ts_onRequestGet],
+    },
+  {
+      routePath: "/api/projects/:project_id/credentials-summary",
+      mountPath: "/api/projects/:project_id",
+      method: "OPTIONS",
+      middlewares: [],
+      modules: [__api_projects__project_id__credentials_summary_ts_onRequestOptions],
+    },
+  {
+      routePath: "/api/projects/:project_id/merchants",
+      mountPath: "/api/projects/:project_id",
+      method: "GET",
+      middlewares: [],
+      modules: [__api_projects__project_id__merchants_ts_onRequestGet],
+    },
+  {
+      routePath: "/api/projects/:project_id/merchants",
+      mountPath: "/api/projects/:project_id",
+      method: "OPTIONS",
+      middlewares: [],
+      modules: [__api_projects__project_id__merchants_ts_onRequestOptions],
+    },
+  {
+      routePath: "/api/projects/:project_id/networks",
+      mountPath: "/api/projects/:project_id",
+      method: "GET",
+      middlewares: [],
+      modules: [__api_projects__project_id__networks_ts_onRequestGet],
+    },
+  {
+      routePath: "/api/projects/:project_id/networks",
+      mountPath: "/api/projects/:project_id",
+      method: "OPTIONS",
+      middlewares: [],
+      modules: [__api_projects__project_id__networks_ts_onRequestOptions],
+    },
+  {
+      routePath: "/api/projects/:project_id/search",
+      mountPath: "/api/projects/:project_id",
+      method: "GET",
+      middlewares: [],
+      modules: [__api_projects__project_id__search_ts_onRequestGet],
+    },
+  {
+      routePath: "/api/projects/:project_id/search",
+      mountPath: "/api/projects/:project_id",
+      method: "OPTIONS",
+      middlewares: [],
+      modules: [__api_projects__project_id__search_ts_onRequestOptions],
     },
   {
       routePath: "/api/auth/facebook",
@@ -248,6 +314,20 @@ export const routes = [
       method: "POST",
       middlewares: [],
       modules: [__api_contact_index_ts_onRequestPost],
+    },
+  {
+      routePath: "/api/import-network",
+      mountPath: "/api",
+      method: "OPTIONS",
+      middlewares: [],
+      modules: [__api_import_network_ts_onRequestOptions],
+    },
+  {
+      routePath: "/api/import-network",
+      mountPath: "/api",
+      method: "POST",
+      middlewares: [],
+      modules: [__api_import_network_ts_onRequestPost],
     },
   {
       routePath: "/api/logout",

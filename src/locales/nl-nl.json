@@ -46,6 +46,10 @@
         "networkUptime": {
           "title": "Netwerk Uptime Dashboard | Monitor Affiliate Netwerken | Affensus",
           "description": "Monitor affiliate netwerk uptime vanuit je dashboard. Selecteer netwerken voor notificaties en volg real-time status van affiliate platforms."
+        },
+        "networks": {
+          "title": "Netwerken Dashboard | Beheer Affiliate Netwerken | Affensus",
+          "description": "Beheer en monitor je affiliate netwerken vanuit je dashboard. Configureer netwerkinstellingen, notificaties en tracking voorkeuren."
         }
       }
     },

@@ -4,12 +4,13 @@ import React from 'react'
 import DashboardSidebar from './sidebar'
 import DashboardHeader from './header'
 import './dashboard.css'
+import { Project } from '../../hooks/use-project-selection'
 
 interface DashboardLayoutProps {
   children: React.ReactNode
-  userData?: {profile: object, projects: {id: string, name: string, country: string}[]} | null
-  selectedProject?: {id: string, name: string, country: string} | null
-  onProjectSelect?: (project: {id: string, name: string, country: string}) => void
+  userData?: {profile: object, projects: Project[]} | null
+  selectedProject?: Project | null
+  onProjectSelect?: (project: Project) => void
 }
 
 export default function DashboardLayout({ 
@@ -29,7 +30,7 @@ export default function DashboardLayout({
         
         {/* Main Content Area */}
         <div className="flex-grow flex flex-col">
-          <DashboardHeader />
+          <DashboardHeader selectedProject={selectedProject} />
           
           {/* Content */}
           <div className="flex-grow min-h-screen">

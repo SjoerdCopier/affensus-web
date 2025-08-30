@@ -1,6 +1,7 @@
 export { default as Dashboard } from './dashboard'
 export { default as DashboardWrapper } from './dashboard-wrapper'
 export { default as DashboardNetworkUptime } from './network-uptime'
+export { default as DashboardNetworks } from './networks'
 export { default as DashboardLayout } from './layout'
 export { default as DashboardSidebar } from './sidebar'
 export { default as DashboardHeader } from './header'

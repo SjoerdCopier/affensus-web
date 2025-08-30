@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Bell, Wifi, AlertCircle } from 'lucide-react';
-import { DashboardLayout } from '@/components/dashboard';
+
 import { useUser } from '@/hooks/use-user';
 
 // Interface definitions
@@ -64,7 +64,7 @@ const HoverCard = ({ children }: { children: React.ReactNode }) => {
     <div className="relative inline-block" onMouseEnter={() => setIsOpen(true)} onMouseLeave={() => setIsOpen(false)}>
       {trigger}
       {isOpen && (
-        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 z-50 pointer-events-none">
+        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 z-50">
           {content}
         </div>
       )}
@@ -137,7 +137,7 @@ const HeartbeatBar = ({ heartbeats, showTimeRange = false }: { heartbeats: Statu
           Heartbeats ({getTimeRange()})
         </h4>
       )}
-      <div className="flex overflow-hidden">
+      <div className="flex">
         {recentHeartbeats.map((heartbeat, index) => renderHeartbeatBar(heartbeat, index))}
       </div>
     </div>
@@ -177,7 +177,7 @@ const UptimeBar = ({ uptimeList }: { uptimeList?: UptimeList }) => {
       <h4 className="text-xs font-medium text-gray-600 mb-2 text-left">
         Daily Uptime (Last 30 days)
       </h4>
-      <div className="flex overflow-hidden">
+      <div className="flex">
         {sortedUptime.map(([day, uptime]) => renderBar(day, uptime))}
       </div>
     </div>
@@ -412,39 +412,7 @@ export default function DashboardNetworkUptime({ }: DashboardNetworkUptimeProps)
     }
   };
 
-  const handleDeleteMonitor = async (dashboardId: string) => {
-    if (!user?.id) return; // Don't proceed if user is not authenticated
-    
-    const network = selectedNetworks.find(n => n.dashboardId === dashboardId);
-    if (!network?.id) return; // Can't delete if no ID (not saved yet)
 
-    try {
-      const response = await fetch('/api/network-monitors', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: network.id,
-          user_id: user.id
-        }),
-      });
-
-      if (response.ok) {
-        // Remove from local state
-        setSelectedNetworks(prev => 
-          prev.map(n => 
-            n.dashboardId === dashboardId 
-              ? { ...n, enabled: false, id: undefined }
-              : n
-          )
-        );
-      }
-    } catch (error) {
-      console.error('Error deleting network monitor:', error);
-      // Could add toast notification here in the future
-    }
-  };
 
 
 
@@ -456,10 +424,7 @@ export default function DashboardNetworkUptime({ }: DashboardNetworkUptimeProps)
     enabledNetworkDomains.includes(domain.domain)
   );
 
-  const sortDomains = useCallback((option: string) => {
-    // This function is now just for updating the sort option
-    // The actual sorting is handled by useMemo
-  }, []);
+
 
 
 

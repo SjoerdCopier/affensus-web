@@ -15,11 +15,12 @@ import {
   Wifi,
   FileText
 } from "lucide-react"
+import { Project } from '../../hooks/use-project-selection'
 
 interface DashboardSidebarProps {
-  userData?: {profile: object, projects: {id: string, name: string, country: string}[]} | null
-  selectedProject?: {id: string, name: string, country: string} | null
-  onProjectSelect?: (project: {id: string, name: string, country: string}) => void
+  userData?: {profile: object, projects: Project[]} | null
+  selectedProject?: Project | null
+  onProjectSelect?: (project: Project) => void
 }
 
 export default function DashboardSidebar({ 
