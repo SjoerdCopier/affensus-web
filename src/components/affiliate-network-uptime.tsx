@@ -206,11 +206,15 @@ function AffiliateNetworkUptimeContent() {
       setIsLoading(true);
       try {
         // Use relative path to API route (works with wrangler dev on any port)
-        const response = await fetch('/api/tools/affiliate-network-uptime', {
+        // Add cache-busting to ensure fresh data
+        const response = await fetch(`/api/tools/affiliate-network-uptime?t=${Date.now()}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache',
           },
+          cache: 'no-store', // Next.js specific
         });
         
         if (!response.ok) {
