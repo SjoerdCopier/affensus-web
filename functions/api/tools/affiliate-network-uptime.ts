@@ -57,10 +57,38 @@ export async function onRequestGet(context: { env: Env, request: Request }): Pro
 
     // Debug mode - return environment info
     if (debug) {
+      // Try to fetch data and include network count in debug response
+      let networkCount = 0;
+      let fetchError = null;
+      
+      try {
+        const uptimeKumaUrl = env.UPTIME_KUMA_URL || 'http://uptime.affensus.com:3001';
+        const monitorsResponse = await fetch(`${uptimeKumaUrl}/metrics`, {
+          headers: {
+            'Authorization': `Basic ${btoa(':' + uptimeKumaSecret)}`,
+            'Accept': 'text/plain'
+          }
+        });
+        
+        if (monitorsResponse.ok) {
+          const metricsText = await monitorsResponse.text();
+          if (!metricsText.startsWith('<!DOCTYPE') && !metricsText.includes('<html')) {
+            const processedDomains = await processPrometheusMetrics(metricsText, env.UPTIME_KUMA_URL);
+            networkCount = processedDomains.length;
+          }
+        } else {
+          fetchError = `HTTP ${monitorsResponse.status}: ${monitorsResponse.statusText}`;
+        }
+      } catch (error) {
+        fetchError = error instanceof Error ? error.message : 'Unknown error';
+      }
+      
       return new Response(JSON.stringify({
         environment: typeof caches !== 'undefined' ? 'cloudflare' : 'local',
         hasSecret: !!uptimeKumaSecret,
         uptimeKumaUrl: env.UPTIME_KUMA_URL || 'http://uptime.affensus.com:3001',
+        networkCount,
+        fetchError,
         timestamp: new Date().toISOString()
       }), {
         headers: {
@@ -76,24 +104,37 @@ export async function onRequestGet(context: { env: Env, request: Request }): Pro
     let success = false;
 
     // First try the metrics endpoint with Basic Auth
+    const uptimeKumaUrl = env.UPTIME_KUMA_URL || 'http://uptime.affensus.com:3001';
+    const metricsUrl = `${uptimeKumaUrl}/metrics`;
+    
+    console.log('Fetching from:', metricsUrl);
+    
     try {
-      const monitorsResponse = await fetch(`${env.UPTIME_KUMA_URL || 'http://uptime.affensus.com:3001'}/metrics`, {
+      const monitorsResponse = await fetch(metricsUrl, {
         headers: {
           'Authorization': `Basic ${btoa(':' + uptimeKumaSecret)}`,
           'Accept': 'text/plain'
         }
       });
 
+      console.log('Response status:', monitorsResponse.status, monitorsResponse.statusText);
+
       if (monitorsResponse.ok) {
         metricsText = await monitorsResponse.text();
+        console.log('Metrics text length:', metricsText.length);
+        console.log('First 200 chars:', metricsText.substring(0, 200));
         
         // Check if we got HTML instead of metrics
         if (metricsText.startsWith('<!DOCTYPE') || metricsText.includes('<html')) {
+          console.log('Received HTML instead of metrics');
         } else {
           success = true;
+          console.log('Successfully fetched metrics data');
         }
       } else {
         console.error('Metrics endpoint failed:', monitorsResponse.status, monitorsResponse.statusText);
+        const errorText = await monitorsResponse.text();
+        console.error('Error response:', errorText.substring(0, 500));
       }
     } catch (error) {
       console.error('Error fetching metrics:', error);
