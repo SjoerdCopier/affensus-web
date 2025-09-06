@@ -86,6 +86,8 @@ export async function onRequestGet(context: { env: Env, request: Request }): Pro
       return new Response(JSON.stringify({
         environment: typeof caches !== 'undefined' ? 'cloudflare' : 'local',
         hasSecret: !!uptimeKumaSecret,
+        secretLength: uptimeKumaSecret?.length || 0,
+        secretPrefix: uptimeKumaSecret?.substring(0, 4) || 'none',
         uptimeKumaUrl: env.UPTIME_KUMA_URL || 'http://uptime.affensus.com:3001',
         networkCount,
         fetchError,
