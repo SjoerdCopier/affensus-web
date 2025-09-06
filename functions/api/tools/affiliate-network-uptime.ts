@@ -42,7 +42,9 @@ interface Domain {
 
 export async function onRequestGet(context: { env: Env, request: Request }): Promise<Response> {
   try {
-    const { env } = context;
+    const { env, request } = context;
+    const url = new URL(request.url);
+    const debug = url.searchParams.get('debug') === 'true';
     
     const uptimeKumaSecret = env.UPTIME_KUMA_SECRET;
 
@@ -50,6 +52,22 @@ export async function onRequestGet(context: { env: Env, request: Request }): Pro
       return new Response(JSON.stringify({ error: 'Uptime Kuma secret not configured' }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Debug mode - return environment info
+    if (debug) {
+      return new Response(JSON.stringify({
+        environment: typeof caches !== 'undefined' ? 'cloudflare' : 'local',
+        hasSecret: !!uptimeKumaSecret,
+        uptimeKumaUrl: env.UPTIME_KUMA_URL || 'http://uptime.affensus.com:3001',
+        timestamp: new Date().toISOString()
+      }), {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Cache-Control': 'no-store, must-revalidate'
+        }
       });
     }
 
@@ -113,6 +131,9 @@ export async function onRequestGet(context: { env: Env, request: Request }): Pro
 
     // Process the Prometheus metrics to match our expected format
     const processedDomains = await processPrometheusMetrics(metricsText, env.UPTIME_KUMA_URL);
+    
+    console.log(`Processed ${processedDomains.length} domains`);
+    console.log('Domain names:', processedDomains.map(d => d.displayName || d.domain));
 
     return new Response(JSON.stringify(processedDomains), {
       headers: {
