@@ -59,7 +59,7 @@ export async function onRequestGet(context: { env: Env, request: Request }): Pro
 
     // First try the metrics endpoint with Basic Auth
     try {
-      const monitorsResponse = await fetch(`${env.UPTIME_KUMA_URL || 'http://152.42.135.243:3001'}/metrics`, {
+      const monitorsResponse = await fetch(`${env.UPTIME_KUMA_URL || 'http://uptime.affensus.com:3001'}/metrics`, {
         headers: {
           'Authorization': `Basic ${btoa(':' + uptimeKumaSecret)}`,
           'Accept': 'text/plain'
@@ -89,7 +89,7 @@ export async function onRequestGet(context: { env: Env, request: Request }): Pro
       
       let errorMessage = 'Unable to fetch data from Uptime Kuma';
       if (usingPrivateIp) {
-        errorMessage += ' - Private IP access blocked in production. Please configure UPTIME_KUMA_URL environment variable with a public domain.';
+        errorMessage += ' - Unable to access Uptime Kuma server. Please check network connectivity.';
       }
       
       return new Response(JSON.stringify({ 
@@ -167,7 +167,7 @@ function formatNetworkDisplayName(networkName: string): string {
 
 async function fetchStatusPageData(networkName: string, uptimeKumaUrl?: string): Promise<StatusPageResponse | null> {
   try {
-    const url = `${uptimeKumaUrl || 'http://152.42.135.243:3001'}/api/status-page/heartbeat/${networkName}?limit=10080`;
+    const url = `${uptimeKumaUrl || 'http://uptime.affensus.com:3001'}/api/status-page/heartbeat/${networkName}?limit=10080`;
     
     const response = await fetch(url);
     
