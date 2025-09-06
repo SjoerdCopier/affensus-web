@@ -58,33 +58,38 @@ export function useProjectMerchants(
   const fetchMerchants = useCallback(async (
     projectId: string, 
     networkId: string, 
-    credentialId: string
+    credentialId: string,
+    forceRefresh: boolean = false
   ): Promise<ProjectMerchants> => {
     const cacheKey = `merchants_${projectId}_${networkId}_${credentialId}`
     const now = Date.now()
 
-    // Check cache first
-    const cached = merchantsCache.get(cacheKey)
-    if (cached && now < cached.expiresAt) {
-      return cached.data
-    }
+    // Check cache first (unless force refresh)
+    if (!forceRefresh) {
+      const cached = merchantsCache.get(cacheKey)
+      if (cached && now < cached.expiresAt) {
+        return cached.data
+      }
 
-    // Check if there's an ongoing request
-    const ongoing = ongoingRequests.get(cacheKey)
-    if (ongoing) {
-      return ongoing
+      // Check if there's an ongoing request
+      const ongoing = ongoingRequests.get(cacheKey)
+      if (ongoing) {
+        return ongoing
+      }
     }
 
     // Create new request
     const requestPromise = (async () => {
       try {
-        const response = await fetch(
-          `/api/projects/${projectId}/merchants?network_id=${networkId}&credential_id=${credentialId}`,
-          {
-            cache: 'force-cache',
-            next: { revalidate: 300 } // 5 minutes
-          }
-        )
+        // Add cache buster for force refresh
+        const url = forceRefresh 
+          ? `/api/projects/${projectId}/merchants?network_id=${networkId}&credential_id=${credentialId}&_t=${Date.now()}`
+          : `/api/projects/${projectId}/merchants?network_id=${networkId}&credential_id=${credentialId}`
+          
+        const response = await fetch(url, {
+          cache: forceRefresh ? 'no-store' : 'force-cache',
+          next: forceRefresh ? { revalidate: 0 } : { revalidate: 300 } // 5 minutes
+        })
 
         if (!response.ok) {
           throw new Error(`Failed to fetch project merchants: ${response.status}`)
@@ -120,7 +125,7 @@ export function useProjectMerchants(
     return requestPromise
   }, [])
 
-  const loadMerchants = useCallback(async () => {
+  const loadMerchants = useCallback(async (forceRefresh: boolean = false) => {
     if (!projectId || !networkId || !credentialId) {
       setMerchants(null)
       setIsLoading(false)
@@ -131,7 +136,7 @@ export function useProjectMerchants(
     setError(null)
 
     try {
-      const data = await fetchMerchants(projectId, networkId, credentialId)
+      const data = await fetchMerchants(projectId, networkId, credentialId, forceRefresh)
       setMerchants(data)
     } catch (err) {
       console.error('Failed to fetch project merchants:', err)
@@ -151,7 +156,7 @@ export function useProjectMerchants(
 
   const refreshMerchants = useCallback(async () => {
     invalidateCache()
-    await loadMerchants()
+    await loadMerchants(true) // Force refresh when explicitly refreshing
   }, [invalidateCache, loadMerchants])
 
   useEffect(() => {

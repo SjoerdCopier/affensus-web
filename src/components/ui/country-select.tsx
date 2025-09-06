@@ -50,7 +50,7 @@ export function CountrySelect({
           aria-expanded={open}
           aria-controls="country-listbox"
           className={cn(
-            "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+            "w-full px-3 py-2 text-xs border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent flex items-center justify-between",
             disabled && "cursor-not-allowed opacity-50"
           )}
           disabled={disabled}
@@ -61,8 +61,8 @@ export function CountrySelect({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </button>
       </PopoverTrigger>
-      <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
-        <Command>
+      <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0 bg-white border border-gray-300">
+        <Command className="bg-white">
           <CommandInput placeholder="Search country..." />
           <CommandList id="country-listbox">
             <CommandEmpty>No country found.</CommandEmpty>
@@ -75,6 +75,7 @@ export function CountrySelect({
                     onValueChange?.(country.value)
                     setOpen(false)
                   }}
+                  className="cursor-pointer hover:bg-gray-100"
                 >
                   <Check
                     className={cn(

@@ -2,7 +2,7 @@ export const regexPatterns = [
     { name: 'Daisycon', pattern: /c\/\?si=(\d+)|ds1\.nl\/c\/.*?si=(\d+)|lt45\.net\/c\/.*?si=(\d+)|\/csd\/\?si=(\d+)&li=(\d+)&wi=(\d+)|jf79\.net\/c\/.*?si=(\d+)/, matches: [], networkId: 1 },
     { name: 'Daisycon', pattern: /c\/\?si=(\d+)/, matches: [], networkId: 1 },
     { name: 'Brandreward', pattern: /brandreward\.com\/?(?:\?key=[^&]+&url=([^&]+))/, matches: [], networkId: 2 },
-    { name: 'TradeTracker', pattern: /https:\/\/tc\.tradetracker\.net\/\?c=(\d+)|\/tt\/\?tt=(\d+)_/, matches: [], networkId: 3 },
+    { name: 'TradeTracker', pattern: /(?:https?:\/\/)?tc\.tradetracker\.net\/\?c=(\d+)|\/tt\/\?tt=(\d+)_/, matches: [], networkId: 3 },
     { name: 'TradeTracker', pattern: /tt=(\d+)_/, matches: [], networkId: 3 },
     { name: 'TradeTracker', pattern: /\/tt\/index\.php\?tt=(\d+)/, matches: [], networkId: 3 },
     { name: 'TradeTracker', pattern: /c\?c=(\d+)/, matches: [], networkId: 3 },
@@ -30,7 +30,7 @@ export const regexPatterns = [
     { name: 'Partnerboost', pattern: /https?:\/\/app\.partnermatic\.com\/track\/([a-zA-Z0-9_\-]+)\?/, matches: [], networkId: 21 },
     { name: 'Involveasia', pattern: /\/aff_m\?offer_id=([0-9]+)/, matches: [], networkId: 22 },
     { name: 'Chinesean', pattern: /https?:\/\/www\.chinesean\.com\/affiliate\/clickBanner\.do\?.*pId=(\d+)/, matches: [], networkId: 23 },
-    { name: 'Rakuten', pattern: /https:\/\/click\.linksynergy\.com\/(?:deeplink\?|link\?)(?:.*&)?(?:mid|offerid)=(\d+)/, matches: [], networkId: 24 },
+    { name: 'Rakuten', pattern: /(?:https?:\/\/)?click\.linksynergy\.com\/(?:deeplink\?|link\?)(?:.*&)?(?:mid|offerid)=(\d+)/, matches: [], networkId: 24 },
     { name: 'Yieldkit', pattern: /https:\/\/r\.linksprf\.com/, matches: [], networkId: 25 },
     { name: 'Indoleads', pattern: /\.xyz\/([a-zA-Z0-9]+)/, matches: [], networkId: 26 },
     { name: 'Commissionfactory', pattern: /https:\/\/t\.cfjump\.com\/[0-9]+\/t\/([0-9]+)/, matches: [], networkId: 27 },
@@ -98,6 +98,14 @@ export async function onRequestPost(context: any) {
                 const response = await fetch(currentUrl, {
                     method: 'GET',
                     redirect: 'manual',
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                        'Accept-Language': 'en-US,en;q=0.5',
+                        'DNT': '1',
+                        'Connection': 'keep-alive',
+                        'Upgrade-Insecure-Requests': '1',
+                    }
                 });
 
                 let redirectedUrl = response.headers.get('location');
@@ -142,12 +150,26 @@ export async function onRequestPost(context: any) {
 
                 // Check for meta redirects or JS redirects
                 const html = await response.text();
+                console.log(`HTML content length: ${html.length}`);
+                console.log(`HTML preview: ${html.substring(0, 500)}`);
 
-                // Meta refresh detection
-                const metaRedirect = html.match(/<meta[^>]*http-equiv=["']refresh["'][^>]*content=["']\d+;\s*url=([^"']+)/i);
+                // Meta refresh detection - improved pattern
+                const metaRedirect = html.match(/<meta[^>]*http-equiv=["']refresh["'][^>]*content=["'](\d+);\s*url=([^"']+)/i) ||
+                                   html.match(/<meta[^>]*content=["'](\d+);\s*url=([^"']+)["'][^>]*http-equiv=["']refresh["']/i) ||
+                                   html.match(/<meta[^>]*http-equiv=["']refresh["'][^>]*content=["'](\d+);url=([^"']+)/i);
+                
                 if (metaRedirect) {
-                    console.log(`Meta Redirect detected: ${metaRedirect[1]}`);
-                    currentUrl = metaRedirect[1];
+                    const delay = parseInt(metaRedirect[1]);
+                    const redirectUrl = metaRedirect[2];
+                    console.log(`Meta Redirect detected: ${redirectUrl} (delay: ${delay}s)`);
+                    
+                    // For delayed redirects, we should follow them (convert seconds to milliseconds)
+                    if (delay > 0 && delay <= 5) { // Only wait up to 5 seconds
+                        console.log(`Waiting ${delay}s for delayed redirect...`);
+                        await new Promise(resolve => setTimeout(resolve, delay * 1000));
+                    }
+                    
+                    currentUrl = redirectUrl;
                     redirects.push({
                         url: currentUrl,
                         status: 200,
@@ -155,6 +177,31 @@ export async function onRequestPost(context: any) {
                         name: matchName
                     });
                     continue;
+                }
+                
+                // Debug: Check if there are any meta tags with refresh
+                const metaRefreshDebug = html.match(/<meta[^>]*refresh[^>]*>/gi);
+                if (metaRefreshDebug) {
+                    console.log(`Found meta refresh tags: ${metaRefreshDebug.join(', ')}`);
+                }
+                
+                // Debug: Check for any JavaScript that might be doing redirects
+                const jsDebug = html.match(/window\.location[^;]*;/gi);
+                if (jsDebug) {
+                    console.log(`Found JavaScript redirects: ${jsDebug.join(', ')}`);
+                }
+                
+                // Check for any script tags that might contain redirect logic
+                const scriptDebug = html.match(/<script[^>]*>[\s\S]*?<\/script>/gi);
+                if (scriptDebug) {
+                    console.log(`Found ${scriptDebug.length} script tags`);
+                    // Look for redirect-related scripts
+                    const redirectScripts = scriptDebug.filter(script => 
+                        script.includes('location') || script.includes('redirect') || script.includes('window')
+                    );
+                    if (redirectScripts.length > 0) {
+                        console.log(`Found ${redirectScripts.length} redirect-related scripts`);
+                    }
                 }
 
                 // JavaScript redirect detection
@@ -185,22 +232,6 @@ export async function onRequestPost(context: any) {
                         url: currentUrl,
                         status: 200,
                         type: 'HTML-based Redirect',
-                        name: matchName
-                    });
-                    continue;
-                }
-
-                // Add a check for query parameter-based redirects
-                const queryRedirect = new URL(currentUrl).searchParams.get('deeplink') || 
-                                      new URL(currentUrl).searchParams.get('url') ||
-                                      new URL(currentUrl).searchParams.get('u');
-                if (queryRedirect) {
-                    console.log(`Query Parameter Redirect detected: ${queryRedirect}`);
-                    currentUrl = decodeURIComponent(queryRedirect);
-                    redirects.push({
-                        url: currentUrl,
-                        status: 200,
-                        type: 'Query Parameter Redirect',
                         name: matchName
                     });
                     continue;
@@ -285,6 +316,22 @@ export async function onRequestPost(context: any) {
                     } catch (error: any) {
                         console.log(`Error handling Linksprf URL: ${error.message}`);
                     }
+                }
+
+                // Check for query parameter-based redirects (as last resort)
+                const queryRedirect = new URL(currentUrl).searchParams.get('deeplink') || 
+                                      new URL(currentUrl).searchParams.get('url') ||
+                                      new URL(currentUrl).searchParams.get('u');
+                if (queryRedirect) {
+                    console.log(`Query Parameter Redirect detected: ${queryRedirect}`);
+                    currentUrl = decodeURIComponent(queryRedirect);
+                    redirects.push({
+                        url: currentUrl,
+                        status: 200,
+                        type: 'Query Parameter Redirect',
+                        name: matchName
+                    });
+                    continue;
                 }
 
                 // If no more redirects are detected, check the final URL

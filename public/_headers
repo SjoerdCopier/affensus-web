@@ -1,95 +1,88 @@
+# Global security & defaults
+/*
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+  Origin-Agent-Cluster: ?1
 
-# Cache static assets for 1 year
-/images/*
-  Cache-Control: public, max-age=31536000, immutable
-
-/company/*
-  Cache-Control: public, max-age=31536000, immutable
-
-/*.svg
-  Cache-Control: public, max-age=31536000, immutable
-
-/*.png
-  Cache-Control: public, max-age=31536000, immutable
-
-/*.jpg
-  Cache-Control: public, max-age=31536000, immutable
-
-/*.jpeg
-  Cache-Control: public, max-age=31536000, immutable
-
-/*.webp
-  Cache-Control: public, max-age=31536000, immutable
-
-/*.ico
-  Cache-Control: public, max-age=2592000
-
-# Cache CSS and JS with content hashing
+# Immutable build output (Next.js)
+# Files in this folder are content-hashed
 /_next/static/*
   Cache-Control: public, max-age=31536000, immutable
 
-# Cache fonts
-/*.woff2
+# Static assets in known folders
+/images/* 
+  Cache-Control: public, max-age=31536000, immutable
+/company/*
+  Cache-Control: public, max-age=31536000, immutable
+/fonts/*
   Cache-Control: public, max-age=31536000, immutable
 
-/*.woff
-  Cache-Control: public, max-age=31536000, immutable
+# Favicon (rotate occasionally)
+# Avoid year-long caching so updates propagate
+/favicon.ico
+  Cache-Control: public, max-age=2592000
 
-# Cache HTML pages with shorter TTL
-/*.html
-  Cache-Control: public, max-age=3600, s-maxage=86400
-
-# Home page
+# HTML/document routes (SSR/SSG pages)
+# Cache briefly in browser, longer at the edge
 /
   Cache-Control: public, max-age=3600, s-maxage=86400
+  Vary: Accept-Language
 
-# Locale pages
-/nl-nl
+/nl-nl/*
   Cache-Control: public, max-age=3600, s-maxage=86400
+  Vary: Accept-Language
 
-/en
+/en/*
   Cache-Control: public, max-age=3600, s-maxage=86400
+  Vary: Accept-Language
 
-# Tool pages (can be cached longer as they're mostly static)
+# Tool pages – mostly static
 /tools/*
   Cache-Control: public, max-age=7200, s-maxage=172800
-
 /*/tools/*
   Cache-Control: public, max-age=7200, s-maxage=172800
 
-# Legal pages (can be cached longer)
+# EXCEPTION: Affiliate Network Uptime – must always be fresh
+/tools/affiliate-network-uptime
+  Cache-Control: no-store
+  Vary: Authorization, Cookie, Accept-Language
+/*/tools/affiliate-network-uptime
+  Cache-Control: no-store
+  Vary: Authorization, Cookie, Accept-Language
+
+# Legal pages – safe to cache longer
 /privacy
   Cache-Control: public, max-age=86400, s-maxage=604800
-
 /terms
   Cache-Control: public, max-age=86400, s-maxage=604800
-
 /refund-policy
   Cache-Control: public, max-age=86400, s-maxage=604800
 
 /*/privacy
   Cache-Control: public, max-age=86400, s-maxage=604800
-
 /*/terms
   Cache-Control: public, max-age=86400, s-maxage=604800
-
 /*/refund-policy
   Cache-Control: public, max-age=86400, s-maxage=604800
 
-# Dashboard pages should not be cached
+# Dashboard – never cache
 /dashboard/*
   Cache-Control: no-cache, no-store, must-revalidate
-
 /*/dashboard/*
   Cache-Control: no-cache, no-store, must-revalidate
 
-# Auth pages should not be cached
+# Auth – never cache
 /auth
   Cache-Control: no-cache, no-store, must-revalidate
-
 /*/auth
   Cache-Control: no-cache, no-store, must-revalidate
 
-# API responses are handled by their own headers
+# API – force fresh responses and avoid shared-cache mixing
 /api/*
-  Cache-Control: no-cache
+  Cache-Control: no-store, must-revalidate
+  Vary: Authorization, Origin

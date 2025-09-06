@@ -105,7 +105,8 @@ export async function onRequestGet(context: { env: Env, request: Request }): Pro
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': 'GET, OPTIONS',
-          'Access-Control-Allow-Headers': 'Content-Type'
+          'Access-Control-Allow-Headers': 'Content-Type',
+          'Cache-Control': 'no-store, must-revalidate'
         }
       });
     }
@@ -119,7 +120,7 @@ export async function onRequestGet(context: { env: Env, request: Request }): Pro
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, OPTIONS',
         'Access-Control-Allow-Headers': 'Content-Type',
-        'Cache-Control': 'public, max-age=300, s-maxage=600' // 5 min client, 10 min CDN
+        'Cache-Control': 'no-store, must-revalidate'
       }
     });
 
@@ -133,7 +134,8 @@ export async function onRequestGet(context: { env: Env, request: Request }): Pro
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type'
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Cache-Control': 'no-store, must-revalidate'
       }
     });
   }

@@ -1,12 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Project } from '../../hooks/use-project-selection';
 import { useProjectCredentials } from '../../hooks/use-project-credentials';
 import { useProjectNetworks } from '../../hooks/use-project-networks';
-import { useProjectMerchants } from '../../hooks/use-project-merchants';
+import { useProjectMerchants, clearMerchantsCache } from '../../hooks/use-project-merchants';
 import { useJobMonitor } from '../../hooks/use-job-monitor';
 import { getStatusBadgeStylesWithFontSize } from '../../lib/status-utils';
+import { SlidePanel } from '../ui/slide-panel';
+import { MerchantDetailsPanel } from './merchant-details-panel';
 
 interface NetworksProps {
   locale?: string;
@@ -22,6 +26,8 @@ interface Network {
   network_id: number;
   updated: number;
   credential_name?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 interface GroupedNetwork {
@@ -54,17 +60,53 @@ interface ProjectCredentialsResponse {
   error_details?: ErrorDetail[];
 }
 
+interface Merchant {
+  id: number;
+  clean_name: string;
+  status: string;
+  display_url: string;
+  published_tag?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
 
 
 export default function DashboardNetworks({ selectedProject }: NetworksProps) {
+  const searchParams = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedNetwork, setSelectedNetwork] = useState<Network | null>(null);
   const [merchantSearchTerm, setMerchantSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [selectedMerchant, setSelectedMerchant] = useState<Merchant | null>(null);
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [publishedTagFilter, setPublishedTagFilter] = useState('');
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [currentJobId, setCurrentJobId] = useState<string | null>(null);
   const [updatedTimestamps, setUpdatedTimestamps] = useState<{ [credentialId: string]: number }>({});
+  const [rowsPerPage, setRowsPerPage] = useState<number>(50);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [orderFilter, setOrderFilter] = useState<'newest' | 'oldest' | 'recently_updated' | 'recently_approved' | ''>('');
+  const [importStartTime, setImportStartTime] = useState<Date | null>(null);
+  const [merchantsKey, setMerchantsKey] = useState(0);
+  
+  // Get last login time from localStorage
+  const [lastLoginTime, setLastLoginTime] = useState<Date | null>(() => {
+    if (typeof window !== 'undefined') {
+      const lastLogin = localStorage.getItem('lastLoginTime');
+      return lastLogin ? new Date(lastLogin) : null;
+    }
+    return null;
+  });
+  
+  // Initialize updated names from sessionStorage
+  const [updatedNames, setUpdatedNames] = useState<{ [credentialId: string]: string }>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = sessionStorage.getItem('updatedCredentialNames');
+      return stored ? JSON.parse(stored) : {};
+    }
+    return {};
+  });
   
   // Job monitoring hook
   const { jobStatus, resetMonitor } = useJobMonitor(currentJobId);
@@ -73,7 +115,7 @@ export default function DashboardNetworks({ selectedProject }: NetworksProps) {
   const { credentials, isLoading, error } = useProjectCredentials(selectedProject?.id || null);
   
   // Fetch project networks using the hook
-  const { networks: networksData, isLoading: networksLoading, error: networksError } = useProjectNetworks(selectedProject?.id || null);
+  const { networks: networksData, isLoading: networksLoading, error: networksError, refreshNetworks } = useProjectNetworks(selectedProject?.id || null);
   
   // Get network details for merchants API
   const selectedNetworkData = selectedNetwork && networksData && typeof networksData === 'object' && 'networks' in networksData
@@ -87,7 +129,7 @@ export default function DashboardNetworks({ selectedProject }: NetworksProps) {
     : null;
 
   // Fetch merchants for selected network
-  const { merchants, isLoading: merchantsLoading, error: merchantsError } = useProjectMerchants(
+  const { merchants, isLoading: merchantsLoading, error: merchantsError, refreshMerchants } = useProjectMerchants(
     selectedProject?.id || null,
     selectedNetworkData?.network_id?.toString() || null,
     selectedNetwork?.id || null
@@ -98,7 +140,84 @@ export default function DashboardNetworks({ selectedProject }: NetworksProps) {
     setMerchantSearchTerm('');
     setStatusFilter('');
     setPublishedTagFilter('');
+    setCurrentPage(1);
   }, [selectedNetwork?.id]);
+
+  // Reset to page 1 when filters or rows per page change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [merchantSearchTerm, statusFilter, publishedTagFilter, rowsPerPage]);
+
+  // Persist updatedNames to sessionStorage whenever it changes
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('updatedCredentialNames', JSON.stringify(updatedNames));
+    }
+  }, [updatedNames]);
+
+  // Listen for refresh parameter and refresh networks data
+  useEffect(() => {
+    const refreshed = searchParams.get('refreshed');
+    const credentialId = searchParams.get('credentialId');
+    const newName = searchParams.get('newName');
+    
+    if (refreshed) {
+      // If we have the new name, update it immediately in local state
+      if (credentialId && newName) {
+        const decodedName = decodeURIComponent(newName);
+        
+        // Update the local state with the new credential name
+        setUpdatedNames(prev => {
+          const updated = {
+            ...prev,
+            [credentialId]: decodedName
+          };
+          return updated;
+        });
+      }
+      
+      // Refresh the data from server
+      if (refreshNetworks) {
+        refreshNetworks();
+      }
+      
+      // Clear the parameters from URL without refreshing the page
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.delete('refreshed');
+      newUrl.searchParams.delete('credentialId'); 
+      newUrl.searchParams.delete('newName');
+      window.history.replaceState({}, '', newUrl.toString());
+    }
+  }, [searchParams, refreshNetworks]);
+
+  // Clean up updatedNames when server data matches
+  useEffect(() => {
+    if (networksData && typeof networksData === 'object' && 'networks' in networksData) {
+      const networks = networksData.networks as Array<{
+        credential_id: string;
+        credential_name?: string;
+        updated_at?: string;
+      }>;
+      
+      // Only clean up if we have actual data changes from server
+      setUpdatedNames(prev => {
+        const newUpdatedNames = { ...prev };
+        let hasChanges = false;
+        
+        Object.keys(newUpdatedNames).forEach(credId => {
+          const network = networks.find(n => n.credential_id === credId);
+          if (network && network.credential_name === newUpdatedNames[credId]) {
+            // Server has caught up, remove from local state
+            delete newUpdatedNames[credId];
+            hasChanges = true;
+          }
+        });
+        
+        // Only return new object if there were actual changes
+        return hasChanges ? newUpdatedNames : prev;
+      });
+    }
+  }, [networksData]);
 
   // Import network functionality
   const handleImportNetwork = async () => {
@@ -106,6 +225,9 @@ export default function DashboardNetworks({ selectedProject }: NetworksProps) {
       return; // Prevent importing if already importing
     }
 
+    // Track when the import started
+    setImportStartTime(new Date());
+    
     // Set a temporary job ID immediately to show loader
     setCurrentJobId('starting');
 
@@ -142,7 +264,7 @@ export default function DashboardNetworks({ selectedProject }: NetworksProps) {
   }, [jobStatus]);
 
   // Handle clearing completed/failed jobs
-  const handleClearJob = () => {
+  const handleClearJob = async () => {
     // Update the selected network's timestamp to current time
     if (selectedNetwork && selectedNetworkData) {
       const currentTimestamp = Math.floor(Date.now() / 1000);
@@ -155,8 +277,34 @@ export default function DashboardNetworks({ selectedProject }: NetworksProps) {
       setSelectedNetwork(prev => prev ? { ...prev, updated: currentTimestamp } : null);
     }
     
+    // If import was successful, set order filter to newest to show new merchants first
+    if (jobStatus && jobStatus.status === 'completed') {
+      setOrderFilter('newest');
+      
+      // Use the import start time minus 1 second as the new "last login" time
+      // This ensures all merchants created during the import will show as new
+      if (importStartTime) {
+        const beforeImport = new Date(importStartTime.getTime() - 1000); // 1 second before import
+        localStorage.setItem('lastLoginTime', beforeImport.toISOString());
+        setLastLoginTime(beforeImport);
+      }
+      
+      // Clear the entire merchants cache to ensure fresh data
+      clearMerchantsCache();
+      
+      // Force re-render of merchants by updating key
+      setMerchantsKey(prev => prev + 1);
+      
+      // Refresh merchants data to show the newly imported merchants
+      // The refreshMerchants function now forces a fresh fetch bypassing all caches
+      if (refreshMerchants) {
+        await refreshMerchants();
+      }
+    }
+    
     setCurrentJobId(null);
     resetMonitor();
+    setImportStartTime(null);
   };
 
   useEffect(() => {
@@ -173,14 +321,14 @@ export default function DashboardNetworks({ selectedProject }: NetworksProps) {
   }, [openMenuId]);
 
   const handleEditCredential = (credentialId: string) => {
-    // For now, we'll show the credential details in a simple alert
-    // This can be replaced with a modal or navigation to an edit page
-    const network = networks.find(n => n.id === credentialId);
-    if (network) {
-      alert(`Edit credential for ${network.name}\nCredential ID: ${credentialId}`);
-    }
+    // Navigate to edit page with credential ID as query parameter
+    const currentPath = window.location.pathname;
+    const editPath = currentPath + '/edit?credential_id=' + credentialId;
+    window.location.href = editPath;
     setOpenMenuId(null);
   };
+
+
   
   // Transform networks data to networks format based on actual API response
   const networks: Network[] = networksData && typeof networksData === 'object' && 'networks' in networksData && Array.isArray(networksData.networks)
@@ -190,6 +338,7 @@ export default function DashboardNetworks({ selectedProject }: NetworksProps) {
         network_name: string
         updated: number
         updated_at: string
+        created_at?: string
         error_message?: string | null
         credential_name?: string
       }>).map((network) => ({
@@ -200,7 +349,9 @@ export default function DashboardNetworks({ selectedProject }: NetworksProps) {
         credential_id: network.credential_id,
         network_id: network.network_id,
         updated: new Date(network.updated_at).getTime() / 1000,
-        credential_name: network.credential_name,
+        credential_name: updatedNames[network.credential_id] || network.credential_name,
+        created_at: network.created_at,
+        updated_at: network.updated_at,
       }))
     : [];
 
@@ -284,8 +435,9 @@ export default function DashboardNetworks({ selectedProject }: NetworksProps) {
   }
 
   return (
-    <div className="pt-4 pl-4 pr-4 pb-6">
-      <div className="flex gap-3">
+    <>
+      <div className="pt-4 pl-4 pr-4 pb-6">
+        <div className="flex gap-3">
         {/* Left Column - Networks List */}
         <div className="w-56 flex-shrink-0 bg-white border border-gray-200 rounded-lg p-3 flex flex-col">
           <div className="flex-grow">
@@ -330,7 +482,7 @@ export default function DashboardNetworks({ selectedProject }: NetworksProps) {
                             >
                               <span className="text-xs text-gray-500 mr-2">└─</span>
                               <span className="text-xs text-gray-600 truncate">
-                                {instance.credential_name || `ID: ${instance.id.substring(0, 16)}...`}
+                                {updatedNames[instance.id] || instance.credential_name || `ID: ${instance.id.substring(0, 16)}...`}
                               </span>
                             </div>
                             <div className="menu-container relative">
@@ -427,6 +579,15 @@ export default function DashboardNetworks({ selectedProject }: NetworksProps) {
               )}
             </ul>
           </div>
+          <Link 
+            href="/dashboard/networks/add"
+            className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 hover:text-gray-700 mt-auto w-full px-2 py-1"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-3 h-3">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
+            </svg>
+            Add new Network
+          </Link>
         </div>
 
         {/* Right Column - Network Details */}
@@ -504,11 +665,23 @@ export default function DashboardNetworks({ selectedProject }: NetworksProps) {
                           ) : null;
                         })()}
                       </select>
+                      <select
+                        className="px-2 py-1 text-xs border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        value={orderFilter}
+                        onChange={(e) => setOrderFilter(e.target.value as 'newest' | 'oldest' | 'recently_updated' | 'recently_approved' | '')}
+                      >
+                        <option value="">Default Order</option>
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="recently_updated">Recently Updated</option>
+                        <option value="recently_approved">Recently Approved</option>
+                      </select>
                       <button
                         onClick={() => {
                           setMerchantSearchTerm('');
                           setStatusFilter('');
                           setPublishedTagFilter('');
+                          setOrderFilter('');
                         }}
                         className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 hover:text-gray-700 px-2 py-1"
                       >
@@ -620,7 +793,7 @@ export default function DashboardNetworks({ selectedProject }: NetworksProps) {
                           )}
                           {jobStatus.queue_info && (
                             <div className="text-xs text-gray-600 mt-2">
-                              <p>Queue: {jobStatus.queue_info.currently_processing} processing, {jobStatus.queue_info.total_waiting} waiting</p>
+                              <p>Queue: {jobStatus.queue_info.currently_processing} processing, {jobStatus.queue_position === 0 ? Math.max(0, jobStatus.queue_info.total_waiting - 1) : jobStatus.queue_info.total_waiting} waiting</p>
                             </div>
                           )}
                         </div>
@@ -678,8 +851,49 @@ export default function DashboardNetworks({ selectedProject }: NetworksProps) {
                       return matchesSearch && matchesStatus && matchesPublishedTag;
                     });
                     
-                    return filteredMerchants.length > 0 ? (
-                  <div className="border border-gray-200 rounded-md overflow-hidden">
+                    // Apply ordering to merchants
+                    const orderedMerchants = [...filteredMerchants].sort((a, b) => {
+                      if (orderFilter === 'newest') {
+                        // Sort by created_at descending (newest first)
+                        const aCreated = a.created_at ? new Date(a.created_at).getTime() : 0;
+                        const bCreated = b.created_at ? new Date(b.created_at).getTime() : 0;
+                        return bCreated - aCreated;
+                      } else if (orderFilter === 'oldest') {
+                        // Sort by created_at ascending (oldest first)
+                        const aCreated = a.created_at ? new Date(a.created_at).getTime() : 0;
+                        const bCreated = b.created_at ? new Date(b.created_at).getTime() : 0;
+                        return aCreated - bCreated;
+                      } else if (orderFilter === 'recently_updated') {
+                        // Sort by updated_at descending (most recently updated first)
+                        const aUpdated = a.updated_at ? new Date(a.updated_at).getTime() : 0;
+                        const bUpdated = b.updated_at ? new Date(b.updated_at).getTime() : 0;
+                        return bUpdated - aUpdated;
+                      } else if (orderFilter === 'recently_approved') {
+                        // First, put approved merchants at the top, then sort by updated_at descending
+                        const aIsApproved = a.status.toLowerCase() === 'approved';
+                        const bIsApproved = b.status.toLowerCase() === 'approved';
+                        
+                        // If one is approved and the other isn't, approved comes first
+                        if (aIsApproved && !bIsApproved) return -1;
+                        if (!aIsApproved && bIsApproved) return 1;
+                        
+                        // If both have the same approval status, sort by updated_at
+                        const aUpdated = a.updated_at ? new Date(a.updated_at).getTime() : 0;
+                        const bUpdated = b.updated_at ? new Date(b.updated_at).getTime() : 0;
+                        return bUpdated - aUpdated;
+                      }
+                      // Default: maintain original order
+                      return 0;
+                    });
+                    
+                    // Apply pagination
+                    const startIndex = (currentPage - 1) * rowsPerPage;
+                    const endIndex = startIndex + rowsPerPage;
+                    const displayedMerchants = orderedMerchants.slice(startIndex, endIndex);
+                    const totalPages = Math.ceil(orderedMerchants.length / rowsPerPage);
+                    
+                    return orderedMerchants.length > 0 ? (
+                  <div key={merchantsKey} className="border border-gray-200 rounded-md overflow-hidden">
                     <div className="overflow-x-auto">
                       <table className="min-w-full divide-y divide-gray-200">
                         <thead>
@@ -689,15 +903,31 @@ export default function DashboardNetworks({ selectedProject }: NetworksProps) {
                             <th className="px-2 py-1 text-left text-xs font-medium text-gray-500">Status</th>
                             <th className="px-2 py-1 text-left text-xs font-medium text-gray-500">Display URL</th>
                             <th className="px-2 py-1 text-left text-xs font-medium text-gray-500">Published Tag</th>
+                            <th className="px-2 py-1 text-left text-xs font-medium text-gray-500">Actions</th>
                           </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                          {filteredMerchants.map((merchant) => (
-                            <tr key={merchant.id} className="hover:bg-gray-50">
+                          {displayedMerchants.map((merchant) => {
+                            const isNew = lastLoginTime && merchant.created_at && new Date(merchant.created_at) > lastLoginTime;
+                            return (
+                            <tr 
+                              key={merchant.id} 
+                              className={`hover:bg-gray-50 cursor-pointer ${isNew ? 'bg-green-50' : ''}`}
+                              onClick={(e) => {
+                                // Don't open panel if clicking on the display URL link
+                                const target = e.target as HTMLElement;
+                                if (target.tagName === 'A' || target.closest('a')) {
+                                  return;
+                                }
+                                setSelectedMerchant(merchant);
+                                setIsPanelOpen(true);
+                              }}
+                            >
                               <td className="px-2 py-1">
                                 <input
                                   type="checkbox"
                                   className="border border-gray-200 rounded text-xs"
+                                  onClick={(e) => e.stopPropagation()}
                                 />
                               </td>
                               <td className="px-2 py-1">
@@ -726,15 +956,85 @@ export default function DashboardNetworks({ selectedProject }: NetworksProps) {
                    </span>
                  )}
                               </td>
+                              <td className="px-2 py-1 whitespace-nowrap text-xs">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-ellipsis h-4 w-4">
+                                  <circle cx="12" cy="12" r="1"></circle>
+                                  <circle cx="19" cy="12" r="1"></circle>
+                                  <circle cx="5" cy="12" r="1"></circle>
+                                </svg>
+                              </td>
                             </tr>
-                          ))}
+                            );
+                          })}
                         </tbody>
                       </table>
                 </div>
                     <div className="bg-gray-50 px-2 py-1 border-t border-gray-200">
-                      <p className="text-xs text-gray-500">
-                        Showing: {filteredMerchants.length} of {merchants.total_merchants} merchants
-                      </p>
+                      <div className="flex justify-between items-center">
+                        <p className="text-xs text-gray-500">
+                          Showing: {displayedMerchants.length} of {orderedMerchants.length} filtered ({merchants.total_merchants} total) merchants
+                        </p>
+                        <div className="flex items-center space-x-2">
+                          {totalPages > 1 && (
+                            <>
+                              <button
+                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                disabled={currentPage === 1}
+                                className="inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-md text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 hover:text-gray-700 px-2 py-1"
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-3 h-3">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                                </svg>
+                                Previous
+                              </button>
+                              <span className="text-xs text-gray-500 px-2">
+                                Page {currentPage} of {totalPages}
+                              </span>
+                              <button
+                                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                disabled={currentPage === totalPages}
+                                className="inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-md text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 hover:text-gray-700 px-2 py-1"
+                              >
+                                Next
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-3 h-3">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                </svg>
+                              </button>
+                            </>
+                          )}
+                          <div className="flex space-x-2">
+                          <button
+                            disabled={true}
+                            className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 hover:text-gray-700 px-2 py-1"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-3 h-3">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"></path>
+                            </svg>
+                            Hide Selected Rows
+                          </button>
+                          <button
+                            className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 hover:text-gray-700 px-2 py-1"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-3 h-3">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m.75 12 3 3m0 0 3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"></path>
+                            </svg>
+                            Export to Excel
+                          </button>
+                          <select
+                            value={rowsPerPage}
+                            onChange={(e) => setRowsPerPage(Number(e.target.value))}
+                            className="px-2 py-1 text-xs border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                          >
+                            <option value={50}>50 rows</option>
+                            <option value={100}>100 rows</option>
+                            <option value={150}>150 rows</option>
+                            <option value={200}>200 rows</option>
+                            <option value={250}>250 rows</option>
+                            <option value={500}>500 rows</option>
+                          </select>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                     ) : (
@@ -876,6 +1176,34 @@ export default function DashboardNetworks({ selectedProject }: NetworksProps) {
           )}
         </div>
       </div>
-    </div>
+      </div>
+
+      {/* Merchant Details Slide Panel */}
+      <SlidePanel
+        isOpen={isPanelOpen}
+        onClose={() => {
+          setIsPanelOpen(false);
+          setSelectedMerchant(null);
+        }}
+        initialWidth={40}
+        minWidth={20}
+        maxWidth={60}
+      >
+        <MerchantDetailsPanel 
+          merchant={selectedMerchant}
+          onClose={() => {
+            setIsPanelOpen(false);
+            setSelectedMerchant(null);
+          }}
+        />
+      </SlidePanel>
+    </>
   );
+}
+
+// Export a function to clear the cache when needed
+export function clearCredentialNamesCache() {
+  if (typeof window !== 'undefined') {
+    sessionStorage.removeItem('updatedCredentialNames');
+  }
 }

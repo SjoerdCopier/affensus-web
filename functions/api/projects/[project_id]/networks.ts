@@ -65,9 +65,6 @@ export async function onRequestGet(context: { request: Request; env: any; params
 
     const data = await response.json();
     
-    // Log the response for debugging
-    console.log('Networks API Response:', JSON.stringify(data, null, 2));
-    
     return new Response(JSON.stringify({
       success: true,
       data: data

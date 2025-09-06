@@ -17,16 +17,32 @@ import { getStatusBadgeStyles } from '@/lib/status-utils'
 
 interface DashboardHeaderProps {
   selectedProject?: Project | null
+  notifications?: {
+    notifications: Array<{
+      id: number
+      project_id: string
+      message: string
+      type: string
+      is_read: boolean
+      created_at: string
+      updated_at: string
+      action_url: string | null
+    }>
+    total_notifications: number
+  } | null
 }
 
-export default function DashboardHeader({ selectedProject }: DashboardHeaderProps) {
+export default function DashboardHeader({ selectedProject, notifications }: DashboardHeaderProps) {
   const [searchValue, setSearchValue] = useState('')
   const [showResults, setShowResults] = useState(false)
   const [selectedNetwork, setSelectedNetwork] = useState<string>('')
-  const [hideRejected, setHideRejected] = useState(false)
+  const [hideRejected, setHideRejected] = useState(true)
+  const [hideDeleted, setHideDeleted] = useState(true)
+  const [showNotifications, setShowNotifications] = useState(false)
   const { user, userProfile, isLoading } = useUser()
   const { searchResults, isLoading: isSearchLoading, error, updateSearchQuery } = useProjectSearch(selectedProject?.id || null)
   const searchRef = useRef<HTMLDivElement>(null)
+  const notificationsRef = useRef<HTMLDivElement>(null)
 
   // Get unique networks from search results
   const uniqueNetworks = useMemo(() => {
@@ -34,6 +50,18 @@ export default function DashboardHeader({ selectedProject }: DashboardHeaderProp
     const networks = [...new Set(searchResults.merchants.map(m => m.network_name))]
     return networks.sort()
   }, [searchResults])
+
+  // Get unread notification count
+  const unreadCount = useMemo(() => {
+    if (!notifications?.notifications) return 0
+    return notifications.notifications.filter(n => !n.is_read).length
+  }, [notifications])
+
+  // Simple mark as read function (for now, just a placeholder)
+  const markAsRead = (notificationId: number) => {
+    // TODO: Implement mark as read functionality
+    console.log('Mark as read:', notificationId)
+  }
 
   // Filter merchants based on selected filters
   const filteredMerchants = useMemo(() => {
@@ -50,9 +78,14 @@ export default function DashboardHeader({ selectedProject }: DashboardHeaderProp
         return false
       }
       
+      // Filter out deleted if hideDeleted is enabled
+      if (hideDeleted && merchant.status.toLowerCase() === 'deleted') {
+        return false
+      }
+      
       return true
     })
-  }, [searchResults, selectedNetwork, hideRejected])
+  }, [searchResults, selectedNetwork, hideRejected, hideDeleted])
 
   // Handle search input change
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,15 +97,19 @@ export default function DashboardHeader({ selectedProject }: DashboardHeaderProp
     // Reset filters when starting a new search
     if (value.length < 2) {
       setSelectedNetwork('')
-      setHideRejected(false)
+      setHideRejected(true)
+      setHideDeleted(true)
     }
   }
 
-  // Handle click outside to close results
+  // Handle click outside to close results and notifications
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
         setShowResults(false)
+      }
+      if (notificationsRef.current && !notificationsRef.current.contains(event.target as Node)) {
+        setShowNotifications(false)
       }
     }
 
@@ -82,11 +119,12 @@ export default function DashboardHeader({ selectedProject }: DashboardHeaderProp
     }
   }, [])
 
-  // Handle ESC key to close results
+  // Handle ESC key to close results and notifications
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setShowResults(false)
+        setShowNotifications(false)
       }
     }
 
@@ -152,6 +190,15 @@ export default function DashboardHeader({ selectedProject }: DashboardHeaderProp
                         className="text-xs"
                       />
                       Hide Rejected
+                    </label>
+                    <label className="flex items-center gap-1 text-xs text-gray-600">
+                      <input
+                        type="checkbox"
+                        checked={hideDeleted}
+                        onChange={(e) => setHideDeleted(e.target.checked)}
+                        className="text-xs"
+                      />
+                      Hide Deleted
                     </label>
                   </div>
                 </div>
@@ -228,9 +275,87 @@ export default function DashboardHeader({ selectedProject }: DashboardHeaderProp
         <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
           <FileText className="h-3 w-3" />
         </Button>
-        <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
-          <Bell className="h-3 w-3" />
-        </Button>
+        <div className="relative" ref={notificationsRef}>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="h-7 w-7 p-0 relative"
+            onClick={() => setShowNotifications(!showNotifications)}
+          >
+            <Bell className="h-3 w-3" />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] rounded-full h-3 w-3 flex items-center justify-center min-w-[12px]">
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </span>
+            )}
+          </Button>
+          
+          {/* Notifications Dropdown */}
+          {showNotifications && (
+            <div className="absolute right-0 top-8 w-80 bg-white border border-gray-300 rounded-md shadow-lg z-20 max-h-96 overflow-hidden">
+              <div className="p-3 border-b border-gray-100 bg-gray-50">
+                <h3 className="text-sm font-medium text-gray-900">Notifications</h3>
+                {notifications && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    {unreadCount} unread of {notifications.total_notifications} total
+                  </p>
+                )}
+              </div>
+              
+              <div className="max-h-80 overflow-y-auto">
+                {notifications && notifications.notifications.length > 0 ? (
+                  <div className="divide-y divide-gray-100">
+                    {notifications.notifications.map((notification) => (
+                      <div
+                        key={notification.id}
+                        className={`p-3 hover:bg-gray-50 cursor-pointer ${
+                          !notification.is_read ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                        }`}
+                        onClick={() => {
+                          if (!notification.is_read) {
+                            markAsRead(notification.id)
+                          }
+                          if (notification.action_url) {
+                            window.location.href = notification.action_url
+                          }
+                          setShowNotifications(false)
+                        }}
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm text-gray-900 font-medium">
+                              {notification.message}
+                            </p>
+                            <p className="text-xs text-gray-500 mt-1">
+                              {new Date(notification.created_at).toLocaleDateString()} at{' '}
+                              {new Date(notification.created_at).toLocaleTimeString([], {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </p>
+                            <span className="inline-block mt-1 px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded-full">
+                              {notification.type.replace('_', ' ')}
+                            </span>
+                          </div>
+                          {!notification.is_read && (
+                            <div className="ml-2 flex-shrink-0">
+                              <div className="h-2 w-2 bg-blue-500 rounded-full"></div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-4 text-center text-gray-500">
+                    <Bell className="h-8 w-8 mx-auto mb-2 text-gray-300" />
+                    <p className="text-sm">No notifications</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
         <Link href="/dashboard/profile">
           <Button variant="ghost" size="sm" className="flex items-center space-x-1 h-7 px-2">
             <div className="relative flex h-5 w-5 shrink-0 overflow-hidden rounded-full">

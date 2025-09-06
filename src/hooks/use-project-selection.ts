@@ -6,6 +6,16 @@ export interface Project {
   id: string
   name: string
   country: string
+  notifications?: Array<{
+    id: number
+    project_id: string
+    message: string
+    type: string
+    is_read: boolean
+    created_at: string
+    updated_at: string
+    action_url: string | null
+  }>
 }
 
 interface UseProjectSelectionReturn {

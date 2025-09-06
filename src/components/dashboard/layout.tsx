@@ -30,7 +30,13 @@ export default function DashboardLayout({
         
         {/* Main Content Area */}
         <div className="flex-grow flex flex-col">
-          <DashboardHeader selectedProject={selectedProject} />
+          <DashboardHeader 
+            selectedProject={selectedProject} 
+            notifications={selectedProject ? {
+              notifications: selectedProject.notifications || [],
+              total_notifications: selectedProject.notifications?.length || 0
+            } : null}
+          />
           
           {/* Content */}
           <div className="flex-grow min-h-screen">
