@@ -110,6 +110,7 @@ export async function onRequestGet(context: { env: Env, request: Request }): Pro
     const metricsUrl = `${uptimeKumaUrl}/metrics`;
     
     console.log('Fetching from:', metricsUrl);
+    console.log('Environment variables updated - triggering new deployment');
     
     try {
       const monitorsResponse = await fetch(metricsUrl, {
