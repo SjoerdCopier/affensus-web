@@ -198,7 +198,7 @@ function AffiliateNetworkUptimeContent() {
   // const [expandedDomain, setExpandedDomain] = useState<string | null>(null); // Commented out - used for expand/collapse functionality
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [sortOption, setSortOption] = useState('default');
+  const [sortOption, setSortOption] = useState('highest-downtime');
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
@@ -278,6 +278,47 @@ function AffiliateNetworkUptimeContent() {
             const uptimeB = getActualUptimeValue(b);
             // Sort by lowest uptime first (highest downtime)
             return uptimeA - uptimeB;
+          });
+          break;
+        case 'highest-response-time':
+          sortedDomains.sort((a, b) => {
+            const responseTimeA = calculateAverageResponseTime(a.urls);
+            const responseTimeB = calculateAverageResponseTime(b.urls);
+            // Sort by highest response time first
+            return responseTimeB - responseTimeA;
+          });
+          break;
+        case 'lowest-response-time':
+          sortedDomains.sort((a, b) => {
+            const responseTimeA = calculateAverageResponseTime(a.urls);
+            const responseTimeB = calculateAverageResponseTime(b.urls);
+            // Sort by lowest response time first
+            return responseTimeA - responseTimeB;
+          });
+          break;
+        case 'recently-down':
+          sortedDomains.sort((a, b) => {
+            // Get the most recent heartbeat for each domain
+            const getMostRecentHeartbeat = (domain: Domain) => {
+              const heartbeats = domain.urls.find(url => url.heartbeats)?.heartbeats || [];
+              if (heartbeats.length === 0) return null;
+              return heartbeats.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())[0];
+            };
+            
+            const heartbeatA = getMostRecentHeartbeat(a);
+            const heartbeatB = getMostRecentHeartbeat(b);
+            
+            // If no heartbeats, put at the end
+            if (!heartbeatA && !heartbeatB) return 0;
+            if (!heartbeatA) return 1;
+            if (!heartbeatB) return -1;
+            
+            // Sort by most recent down status first, then by most recent time
+            if (heartbeatA.status === 0 && heartbeatB.status === 1) return -1;
+            if (heartbeatA.status === 1 && heartbeatB.status === 0) return 1;
+            
+            // If both have same status, sort by most recent time
+            return new Date(heartbeatB.time).getTime() - new Date(heartbeatA.time).getTime();
           });
           break;
         default:
@@ -405,8 +446,8 @@ function AffiliateNetworkUptimeContent() {
             {/* Login/Register Button */}
             <div className="mb-8">
               <Link href="/auth">
-                <Button className="bg-green-600 hover:bg-green-700 text-white px-8 py-3">
-                  Login or Register for Alerts
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3">
+                  Login or Register for Free Alerts
                 </Button>
               </Link>
             </div>
@@ -424,11 +465,14 @@ function AffiliateNetworkUptimeContent() {
               <select 
                 value={sortOption} 
                 onChange={(e) => setSortOption(e.target.value)}
-                className="w-[180px] px-3 py-2 border border-gray-300 rounded-md bg-white"
+                className="w-[220px] px-3 py-2 border border-gray-300 rounded-md bg-white"
               >
                 <option value="default">{t('tools.affiliateNetworkUptime.sortOptions.default')}</option>
                 <option value="uptime">{t('tools.affiliateNetworkUptime.sortOptions.uptime')}</option>
                 <option value="highest-downtime">{t('tools.affiliateNetworkUptime.sortOptions.highestDowntime')}</option>
+                <option value="highest-response-time">{t('tools.affiliateNetworkUptime.sortOptions.highestResponseTime')}</option>
+                <option value="lowest-response-time">{t('tools.affiliateNetworkUptime.sortOptions.lowestResponseTime')}</option>
+                <option value="recently-down">{t('tools.affiliateNetworkUptime.sortOptions.recentlyDown')}</option>
               </select>
             </div>
             

@@ -244,6 +244,31 @@ export async function onRequestGet(context: any) {
       })
     }
 
+    // Get user by email from external API
+    const getUserByEmail = async (email: string, apiKey: string) => {
+      try {
+        const response = await fetch(`https://apiv2.affensus.com/api/auth/user/email/${encodeURIComponent(email)}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+          },
+        })
+
+        if (!response.ok) {
+          if (response.status === 404) {
+            return null // User not found
+          }
+          throw new Error(`API error: ${response.status}`)
+        }
+
+        return await response.json()
+      } catch (error) {
+        console.error('Error fetching user by email:', error)
+        return null
+      }
+    }
+
     // Create or update user with Google login method
     const createUser = async (db: any, email: string, loginMethod: string = 'google') => {
       // Use external API instead of D1
@@ -274,6 +299,27 @@ export async function onRequestGet(context: any) {
       if (!response.ok) {
         const errorText = await response.text();
         console.error('API registration failed:', response.status, errorText);
+        
+        // If email already exists, try to get the existing user
+        if (response.status === 400 && errorText.includes('Email already exists')) {
+          console.log('User already exists, fetching existing user...');
+          const existingUser = await getUserByEmail(email.toLowerCase(), bearerToken);
+          
+          if (existingUser) {
+            // Return existing user data
+            const user = {
+              id: existingUser.id || existingUser.user_id || Date.now(),
+              email: email.toLowerCase(),
+              preferred_login_method: loginMethod,
+              subscription_status: existingUser.subscription_status || 'free',
+              created_at: existingUser.created_at || new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            };
+            
+            return { user, isNewUser: false };
+          }
+        }
+        
         throw new Error(`Registration failed: ${response.status} ${errorText}`);
       }
 
@@ -295,12 +341,24 @@ export async function onRequestGet(context: any) {
       return { user, isNewUser };
     }
 
-    const updatePreferredLoginMethod = async (db: any, email: string, method: string) => {
-      await db.prepare(`
-        UPDATE users 
-        SET preferred_login_method = ?, updated_at = datetime('now')
-        WHERE email = ?
-      `).bind(method, email).run()
+    const updatePreferredLoginMethod = async (email: string, method: string, apiKey: string) => {
+      try {
+        const response = await fetch(`https://apiv2.affensus.com/api/auth/user/email/${encodeURIComponent(email)}/login-method`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            login_method: method
+          }),
+        })
+
+        return response.ok
+      } catch (error) {
+        console.error('Error updating preferred login method:', error)
+        return false
+      }
     }
 
     // If this is a paid user, try to link with Stripe customer
@@ -336,7 +394,7 @@ export async function onRequestGet(context: any) {
     const { user, isNewUser } = await createUser(db, userInfo.email.toLowerCase(), 'google')
 
     // Update user's preferred login method
-    await updatePreferredLoginMethod(db, userInfo.email.toLowerCase(), 'google')
+    await updatePreferredLoginMethod(userInfo.email.toLowerCase(), 'google', env.AFFENSUS_CREDENTIALS_PASSWORD)
 
     // Check for pending payments after user creation/update
     await processPendingPayments(db, userInfo.email.toLowerCase(), user.id, env.STRIPE_SECRET_KEY)

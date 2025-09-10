@@ -30,9 +30,11 @@ interface DashboardHeaderProps {
     }>
     total_notifications: number
   } | null
+  onNotificationRead?: (notificationId: number) => void
+  onAllNotificationsRead?: () => void
 }
 
-export default function DashboardHeader({ selectedProject, notifications }: DashboardHeaderProps) {
+export default function DashboardHeader({ selectedProject, notifications, onNotificationRead, onAllNotificationsRead }: DashboardHeaderProps) {
   const [searchValue, setSearchValue] = useState('')
   const [showResults, setShowResults] = useState(false)
   const [selectedNetwork, setSelectedNetwork] = useState<string>('')
@@ -57,10 +59,50 @@ export default function DashboardHeader({ selectedProject, notifications }: Dash
     return notifications.notifications.filter(n => !n.is_read).length
   }, [notifications])
 
-  // Simple mark as read function (for now, just a placeholder)
-  const markAsRead = (notificationId: number) => {
-    // TODO: Implement mark as read functionality
-    console.log('Mark as read:', notificationId)
+  // Mark single notification as read
+  const markAsRead = async (notificationId: number) => {
+    if (!selectedProject?.id) return
+
+    // Update UI immediately for better UX
+    onNotificationRead?.(notificationId)
+
+    try {
+      const response = await fetch(`/api/notifications/${selectedProject.id}/${notificationId}/read`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error(`Failed to mark notification as read: ${response.status}`)
+      }
+    } catch (err) {
+      console.error('Failed to mark notification as read:', err)
+    }
+  }
+
+  // Mark all notifications as read
+  const markAllAsRead = async () => {
+    if (!selectedProject?.id) return
+
+    // Update UI immediately for better UX
+    onAllNotificationsRead?.()
+
+    try {
+      const response = await fetch(`/api/notifications/${selectedProject.id}/read-all`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error(`Failed to mark all notifications as read: ${response.status}`)
+      }
+    } catch (err) {
+      console.error('Failed to mark all notifications as read:', err)
+    }
   }
 
   // Filter merchants based on selected filters
@@ -294,12 +336,29 @@ export default function DashboardHeader({ selectedProject, notifications }: Dash
           {showNotifications && (
             <div className="absolute right-0 top-8 w-80 bg-white border border-gray-300 rounded-md shadow-lg z-20 max-h-96 overflow-hidden">
               <div className="p-3 border-b border-gray-100 bg-gray-50">
-                <h3 className="text-sm font-medium text-gray-900">Notifications</h3>
-                {notifications && (
-                  <p className="text-xs text-gray-500 mt-1">
-                    {unreadCount} unread of {notifications.total_notifications} total
-                  </p>
-                )}
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-900">Notifications</h3>
+                    {notifications && (
+                      <p className="text-xs text-gray-500 mt-1">
+                        {unreadCount} unread of {notifications.total_notifications} total
+                      </p>
+                    )}
+                  </div>
+                  {unreadCount > 0 && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 px-2 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        markAllAsRead()
+                      }}
+                    >
+                      Mark all read
+                    </Button>
+                  )}
+                </div>
               </div>
               
               <div className="max-h-80 overflow-y-auto">
@@ -311,9 +370,9 @@ export default function DashboardHeader({ selectedProject, notifications }: Dash
                         className={`p-3 hover:bg-gray-50 cursor-pointer ${
                           !notification.is_read ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
                         }`}
-                        onClick={() => {
+                        onClick={async () => {
                           if (!notification.is_read) {
-                            markAsRead(notification.id)
+                            await markAsRead(notification.id)
                           }
                           if (notification.action_url) {
                             window.location.href = notification.action_url

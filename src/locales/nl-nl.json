@@ -807,7 +807,10 @@
         "default": "Standaard",
         "uptime": "Hoogste Uptime",
         "down": "Momenteel Uitgeschakeld",
-        "highestDowntime": "Hoogste Downtime"
+        "highestDowntime": "Hoogste Downtime",
+        "highestResponseTime": "Hoogste Reactietijd",
+        "lowestResponseTime": "Laagste Reactietijd",
+        "recentlyDown": "Recent Uitgeschakeld"
       },
       "status": {
         "allSystemsOperational": "Alle Systemen Operationeel",

@@ -841,7 +841,10 @@
         "default": "Default",
         "uptime": "Highest Uptime",
         "down": "Currently Down",
-        "highestDowntime": "Highest Downtime"
+        "highestDowntime": "Highest Downtime",
+        "highestResponseTime": "Highest Response Time",
+        "lowestResponseTime": "Lowest Response Time",
+        "recentlyDown": "Recently Down"
       },
       "status": {
         "allSystemsOperational": "All Systems Operational",

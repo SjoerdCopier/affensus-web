@@ -26,7 +26,6 @@ interface CacheEntry {
 
 // In-memory cache with 2-minute TTL (shorter for notifications)
 const notificationsCache = new Map<string, CacheEntry>()
-const CACHE_TTL = 2 * 60 * 1000 // 2 minutes
 
 // Track ongoing requests to prevent duplicates
 const ongoingRequests = new Map<string, Promise<ProjectNotifications>>()
@@ -36,13 +35,6 @@ export function useProjectNotifications(projectId: string | null) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const fetchNotifications = useCallback(async (projectId: string): Promise<ProjectNotifications> => {
-    // Notifications are now provided via props, no API calls needed
-    return {
-      notifications: [],
-      total_notifications: 0
-    }
-  }, [])
 
   const loadNotifications = useCallback(async () => {
     // Notifications are now provided via props, no need to fetch

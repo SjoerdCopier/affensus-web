@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { useState, useCallback } from 'react'
 import DashboardSidebar from './sidebar'
 import DashboardHeader from './header'
 import './dashboard.css'
@@ -19,6 +19,32 @@ export default function DashboardLayout({
   selectedProject, 
   onProjectSelect 
 }: DashboardLayoutProps) {
+  // Local state for notifications to handle real-time updates
+  const [localNotifications, setLocalNotifications] = useState(selectedProject?.notifications || [])
+
+  // Update local notifications when selectedProject changes
+  React.useEffect(() => {
+    setLocalNotifications(selectedProject?.notifications || [])
+  }, [selectedProject])
+
+  // Handle single notification read
+  const handleNotificationRead = useCallback((notificationId: number) => {
+    setLocalNotifications(prev => 
+      prev.map(notification => 
+        notification.id === notificationId 
+          ? { ...notification, is_read: true }
+          : notification
+      )
+    )
+  }, [])
+
+  // Handle all notifications read
+  const handleAllNotificationsRead = useCallback(() => {
+    setLocalNotifications(prev => 
+      prev.map(notification => ({ ...notification, is_read: true }))
+    )
+  }, [])
+
   return (
     <div className="flex flex-col min-h-screen dashboard">
       <main className="flex flex-grow bg-[#f5f7f4] max-w-full">
@@ -33,9 +59,11 @@ export default function DashboardLayout({
           <DashboardHeader 
             selectedProject={selectedProject} 
             notifications={selectedProject ? {
-              notifications: selectedProject.notifications || [],
-              total_notifications: selectedProject.notifications?.length || 0
+              notifications: localNotifications,
+              total_notifications: localNotifications.length
             } : null}
+            onNotificationRead={handleNotificationRead}
+            onAllNotificationsRead={handleAllNotificationsRead}
           />
           
           {/* Content */}
