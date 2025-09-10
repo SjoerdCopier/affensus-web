@@ -232,14 +232,8 @@ function AffiliateNetworkUptimeContent() {
           console.warn('No data returned from API');
         }
         
-        // Sort the data by name initially (backend should already do this, but ensure it's sorted)
-        const sortedData = [...data].sort((a, b) => {
-          const nameA = (a.displayName || a.domain).toLowerCase();
-          const nameB = (b.displayName || b.domain).toLowerCase();
-          return nameA.localeCompare(nameB);
-        });
-        
-        setDomains(sortedData);
+        // Set the raw data first, then apply the current sort option
+        setDomains(data);
       } catch (err: unknown) {
         console.error('Error in fetchDomainData:', err);
         setError(err instanceof Error ? err.message : 'An error occurred');
@@ -336,8 +330,10 @@ function AffiliateNetworkUptimeContent() {
   }, []);
 
   useEffect(() => {
-    sortDomains(sortOption);
-  }, [sortOption, sortDomains]);
+    if (domains.length > 0) {
+      sortDomains(sortOption);
+    }
+  }, [sortOption, domains, sortDomains]);
 
   const filteredDomains = domains.filter(domain =>
     domain.domain.toLowerCase().includes(searchTerm.toLowerCase()) ||
