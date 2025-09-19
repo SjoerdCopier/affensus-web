@@ -17,12 +17,15 @@ interface LinkRotItem {
   network: string;
   slug: string;
   your_id: string;
+  type: 'broken_link' | 'invalid_item';
+  url?: string; // For invalid items
 }
 
 export default function DashboardLinkRot({ selectedProject }: LinkRotProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [networkFilter, setNetworkFilter] = useState('');
+  const [typeFilter, setTypeFilter] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState<number>(50);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
@@ -32,29 +35,47 @@ export default function DashboardLinkRot({ selectedProject }: LinkRotProps) {
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, statusFilter, networkFilter, rowsPerPage]);
+  }, [searchTerm, statusFilter, networkFilter, typeFilter, rowsPerPage]);
 
   // Get link rot items from the API response and transform the data
-  const linkRotItems: LinkRotItem[] = linkRotData?.broken_links?.map((item) => ({
+  const brokenLinkItems: LinkRotItem[] = linkRotData?.broken_links?.map((item) => ({
     id: item.external_id || item.program_id || '',
     merchant_name: item.clean_name || 'Unknown',
     status: item.status || 'Unknown',
     network: item.network_name || 'Unknown',
     slug: item.slug || '',
-    your_id: item.external_id || ''
+    your_id: item.external_id || '',
+    type: 'broken_link' as const
   })) || [];
+
+  // Get invalid items from the API response and transform the data
+  const invalidItems: LinkRotItem[] = linkRotData?.invalid_items?.map((item) => ({
+    id: item.externalId || item.slug || '',
+    merchant_name: item.slug || 'Unknown',
+    status: 'Unknown Item',
+    network: item.network || 'Unknown',
+    slug: item.slug || '',
+    your_id: item.externalId || '',
+    type: 'invalid_item' as const,
+    url: item.url
+  })) || [];
+
+  // Combine both broken links and invalid items
+  const linkRotItems: LinkRotItem[] = [...brokenLinkItems, ...invalidItems];
 
   // Filter data based on search and filters
   const filteredData = linkRotItems.filter(item => {
     const matchesSearch = item.merchant_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.network.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.slug.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.your_id.toLowerCase().includes(searchTerm.toLowerCase());
+      item.your_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (item.url && item.url.toLowerCase().includes(searchTerm.toLowerCase()));
     
     const matchesStatus = !statusFilter || item.status === statusFilter;
     const matchesNetwork = !networkFilter || item.network === networkFilter;
+    const matchesType = !typeFilter || item.type === typeFilter;
     
-    return matchesSearch && matchesStatus && matchesNetwork;
+    return matchesSearch && matchesStatus && matchesNetwork && matchesType;
   });
 
   // Apply pagination
@@ -135,7 +156,7 @@ export default function DashboardLinkRot({ selectedProject }: LinkRotProps) {
           <div className="flex gap-2">
             <input
               type="text"
-              placeholder="Search merchants, networks, slugs..."
+              placeholder="Search merchants, networks, slugs, URLs..."
               className="px-2 py-1 text-xs border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent max-w-xs"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -160,11 +181,21 @@ export default function DashboardLinkRot({ selectedProject }: LinkRotProps) {
                 <option key={network} value={network}>{network}</option>
               ))}
             </select>
+            <select
+              className="px-2 py-1 text-xs border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+            >
+              <option value="">All Types</option>
+              <option value="broken_link">Broken Links</option>
+              <option value="invalid_item">Unknown Items</option>
+            </select>
             <button
               onClick={() => {
                 setSearchTerm('');
                 setStatusFilter('');
                 setNetworkFilter('');
+                setTypeFilter('');
               }}
               className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-gray-200 bg-white hover:bg-gray-50 text-gray-600 hover:text-gray-700 px-2 py-1"
             >
@@ -184,11 +215,13 @@ export default function DashboardLinkRot({ selectedProject }: LinkRotProps) {
               <thead>
                 <tr>
                   <th className="px-2 py-1 text-left text-xs font-medium text-gray-500"></th>
-                  <th className="px-2 py-1 text-left text-xs font-medium text-gray-500">Merchant Name</th>
+                  <th className="px-2 py-1 text-left text-xs font-medium text-gray-500">Type</th>
+                  <th className="px-2 py-1 text-left text-xs font-medium text-gray-500">Merchant/Item</th>
                   <th className="px-2 py-1 text-left text-xs font-medium text-gray-500">Status</th>
                   <th className="px-2 py-1 text-left text-xs font-medium text-gray-500">Network</th>
                   <th className="px-2 py-1 text-left text-xs font-medium text-gray-500">Slug</th>
                   <th className="px-2 py-1 text-left text-xs font-medium text-gray-500">Your ID</th>
+                  <th className="px-2 py-1 text-left text-xs font-medium text-gray-500">URL</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -200,6 +233,15 @@ export default function DashboardLinkRot({ selectedProject }: LinkRotProps) {
                           type="checkbox"
                           className="border border-gray-200 rounded text-xs"
                         />
+                      </td>
+                      <td className="px-2 py-1 whitespace-nowrap">
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                          item.type === 'broken_link' 
+                            ? 'bg-red-100 text-red-800' 
+                            : 'bg-orange-100 text-orange-800'
+                        }`}>
+                          {item.type === 'broken_link' ? 'Broken Link' : 'Unknown Item'}
+                        </span>
                       </td>
                       <td className="px-2 py-1">
                         <div className="text-xs font-medium text-gray-900">{item.merchant_name}</div>
@@ -218,11 +260,25 @@ export default function DashboardLinkRot({ selectedProject }: LinkRotProps) {
                       <td className="px-2 py-1 whitespace-nowrap text-xs text-gray-900">
                         {item.your_id}
                       </td>
+                      <td className="px-2 py-1 text-xs text-gray-900">
+                        {item.url ? (
+                          <a 
+                            href={item.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:text-blue-800 underline break-all"
+                          >
+                            {item.url.length > 50 ? `${item.url.substring(0, 50)}...` : item.url}
+                          </a>
+                        ) : (
+                          '-'
+                        )}
+                      </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={6} className="px-2 py-8 text-center text-xs text-gray-500">
+                    <td colSpan={8} className="px-2 py-8 text-center text-xs text-gray-500">
                       No link rot data available
                     </td>
                   </tr>

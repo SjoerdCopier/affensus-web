@@ -13,9 +13,20 @@ interface BrokenLinkItem {
   status: string;
 }
 
+interface InvalidItem {
+  url: string;
+  slug: string;
+  network: string;
+  externalId: string;
+}
+
 interface ProjectLinkRot {
+  project_id: string;
   broken_links: BrokenLinkItem[];
-  total_items?: number;
+  invalid_items: InvalidItem[];
+  total_broken_links: number;
+  total_invalid_items: number;
+  total_items?: number; // Legacy field, keep for backwards compatibility
   [key: string]: unknown; // API response structure may have additional fields
 }
 

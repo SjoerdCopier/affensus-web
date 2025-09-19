@@ -65,6 +65,11 @@ export async function onRequestGet(context: { request: Request; env: any; params
 
     const data = await response.json();
     
+    // Log entire API response to terminal (not console)
+    console.log('=== LINK ROT API RESPONSE ===');
+    console.log(JSON.stringify(data, null, 2));
+    console.log('=== END API RESPONSE ===');
+    
     return new Response(JSON.stringify({
       success: true,
       data: data
