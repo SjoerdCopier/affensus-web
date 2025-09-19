@@ -1,5 +1,4 @@
 import { Metadata } from 'next';
-import { getTranslations } from 'next-intl/server';
 import { DashboardWrapper } from '@/components/dashboard';
 import AddNetworkContent from '@/components/dashboard/add-network';
 
@@ -7,9 +6,7 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale } = await params;
-  
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: 'Add Network - Affensus',
     description: 'Add a new network to your project',

@@ -1,84 +1,70 @@
-// API endpoint for marking a single notification as read
 export async function onRequestOptions() {
   return new Response(null, {
     status: 200,
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'PUT, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-    }
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
   });
 }
 
-export async function onRequestPut(context: { 
-  request: Request; 
-  env: { AFFENSUS_CREDENTIALS_PASSWORD: string };
-  params: { project_id: string; notification_id: string }
-}) {
+export async function onRequestPut(context: { request: Request; env: any; params: any }) {
   try {
-    const { request, env, params } = context;
-    const { project_id, notification_id } = params;
+    const { env, params } = context;
+    const projectId = params.project_id;
+    const notificationId = params.notification_id;
 
-    if (!project_id || !notification_id) {
-      return new Response(JSON.stringify({ 
-        success: false, 
-        error: 'Project ID and notification ID are required' 
+    if (!projectId || !notificationId) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: 'Project ID and Notification ID are required'
       }), {
         status: 400,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' }
       });
     }
 
-    // Use external API
     const bearerToken = env.AFFENSUS_CREDENTIALS_PASSWORD;
     if (!bearerToken) {
       throw new Error('AFFENSUS_CREDENTIALS_PASSWORD not configured');
     }
 
-    console.log('Making API request to:', `https://apiv2.affensus.com/api/notifications/${project_id}/${notification_id}/read`);
+    const apiUrl = `https://apiv2.affensus.com/api/notifications/${projectId}/${notificationId}/read`;
 
-    let response;
-    try {
-      response = await fetch(`https://apiv2.affensus.com/api/notifications/${project_id}/${notification_id}/read`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${bearerToken}`,
-        },
-      });
-    } catch (fetchError) {
-      console.error('Fetch error:', fetchError);
-      const errorMessage = fetchError instanceof Error ? fetchError.message : 'Unknown fetch error';
-      throw new Error(`Network error: ${errorMessage}`);
-    }
+    const response = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${bearerToken}`,
+      },
+    });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('API Response Error:', {
-        status: response.status,
-        statusText: response.statusText,
-        body: errorText
-      });
       throw new Error(`External API error: ${response.status} ${response.statusText} - ${errorText}`);
     }
 
     const data = await response.json();
-    
-    return new Response(JSON.stringify(data), {
+
+    return new Response(JSON.stringify({
+      success: true,
+      data: data
+    }), {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
-        'Cache-Control': 'no-store, max-age=0',
-      },
+        'Cache-Control': 'private, max-age=0, s-maxage=0'
+      }
     });
   } catch (error) {
-    console.error('Mark notification as read error:', error);
-    return new Response(JSON.stringify({ 
-      success: false, 
-      error: error instanceof Error ? error.message : 'Internal server error' 
+    console.error('Error marking notification as read:', error);
+    return new Response(JSON.stringify({
+      success: false,
+      error: 'Failed to mark notification as read'
     }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' }
     });
   }
 }

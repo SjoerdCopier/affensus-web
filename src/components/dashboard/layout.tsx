@@ -27,16 +27,6 @@ export default function DashboardLayout({
     setLocalNotifications(selectedProject?.notifications || [])
   }, [selectedProject])
 
-  // Handle single notification read
-  const handleNotificationRead = useCallback((notificationId: number) => {
-    setLocalNotifications(prev => 
-      prev.map(notification => 
-        notification.id === notificationId 
-          ? { ...notification, is_read: true }
-          : notification
-      )
-    )
-  }, [])
 
   // Handle all notifications read
   const handleAllNotificationsRead = useCallback(() => {
@@ -44,6 +34,43 @@ export default function DashboardLayout({
       prev.map(notification => ({ ...notification, is_read: true }))
     )
   }, [])
+
+  // Handle single notification read
+  const handleNotificationRead = useCallback(async (notificationId: number) => {
+    if (!selectedProject?.id) return
+
+    // Update local state immediately for better UX
+    setLocalNotifications(prev => 
+      prev.map(notification => 
+        notification.id === notificationId 
+          ? { ...notification, is_read: true }
+          : notification
+      )
+    )
+
+    // Send API request to mark as read on server
+    try {
+      const response = await fetch(`/api/notifications/${selectedProject.id}/${notificationId}/read`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      if (!response.ok) {
+        throw new Error(`Failed to mark notification as read: ${response.status}`)
+      }
+    } catch (err) {
+      console.error('Failed to mark notification as read:', err)
+      // Revert local state on error
+      setLocalNotifications(prev => 
+        prev.map(notification => 
+          notification.id === notificationId 
+            ? { ...notification, is_read: false }
+            : notification
+        )
+      )
+    }
+  }, [selectedProject?.id])
 
   return (
     <div className="flex flex-col min-h-screen dashboard">
@@ -62,13 +89,20 @@ export default function DashboardLayout({
               notifications: localNotifications,
               total_notifications: localNotifications.length
             } : null}
-            onNotificationRead={handleNotificationRead}
             onAllNotificationsRead={handleAllNotificationsRead}
+            onNotificationRead={handleNotificationRead}
           />
           
           {/* Content */}
           <div className="flex-grow min-h-screen">
-            {children}
+            {React.Children.map(children, child => {
+              if (React.isValidElement(child)) {
+                return React.cloneElement(child as React.ReactElement<{ onNotificationRead?: (notificationId: number) => void }>, { 
+                  onNotificationRead: handleNotificationRead 
+                });
+              }
+              return child;
+            })}
           </div>
         </div>
       </main>

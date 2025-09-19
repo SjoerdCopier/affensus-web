@@ -50,6 +50,14 @@
         "networks": {
           "title": "Netwerken Dashboard | Beheer Affiliate Netwerken | Affensus",
           "description": "Beheer en monitor je affiliate netwerken vanuit je dashboard. Configureer netwerkinstellingen, notificaties en tracking voorkeuren."
+        },
+        "linkRot": {
+          "title": "Link Rot Analyse | Monitor Kapotte Affiliate Links | Affensus",
+          "description": "Analyseer en monitor link rot in je affiliate marketing campagnes. Volg kapotte links, identificeer problemen en behoud gezonde affiliate relaties."
+        },
+        "notifications": {
+          "title": "Notificaties | Volg Merchant Wijzigingen | Affensus",
+          "description": "Blijf op de hoogte van merchant wijzigingen, status updates en nieuwe kansen in je affiliate marketing campagnes. Monitor alle belangrijke wijzigingen in real-time."
         }
       }
     },

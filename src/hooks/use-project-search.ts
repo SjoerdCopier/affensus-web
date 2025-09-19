@@ -12,12 +12,21 @@ interface SearchMerchant {
   published_slug: string
   published_coupons: unknown
   countries: string[]
-  commission: { rate: string }
+  commission: {
+    payouts: {
+      CPS: Array<{ currency: string; item: string; value: string; }>;
+      CPA?: Array<{ currency: string; item: string; value: string; }>;
+      CPL?: Array<{ currency: string; item: string; value: string; }>;
+    };
+  }
   description: string
   timestamp: string
   created_at: string
   updated_at: string
   network_name: string
+  deeplink: string
+  credential_id: string
+  identifier_id: string
 }
 
 interface SearchResponse {

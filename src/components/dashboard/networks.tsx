@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Project } from '../../hooks/use-project-selection';
 import { useProjectCredentials } from '../../hooks/use-project-credentials';
 import { useProjectNetworks } from '../../hooks/use-project-networks';
 import { useProjectMerchants, clearMerchantsCache } from '../../hooks/use-project-merchants';
-import { useJobMonitor } from '../../hooks/use-job-monitor';
+import { useJobMonitor } from '../../hooks/use-global-job-monitor';
 import { getStatusBadgeStylesWithFontSize } from '../../lib/status-utils';
 import { SlidePanel } from '../ui/slide-panel';
 import { MerchantDetailsPanel } from './merchant-details-panel';
@@ -221,8 +221,8 @@ export default function DashboardNetworks({ selectedProject }: NetworksProps) {
 
   // Import network functionality
   const handleImportNetwork = async () => {
-    if (!selectedNetworkData?.credential_id || currentJobId) {
-      return; // Prevent importing if already importing
+    if (!selectedNetworkData?.credential_id) {
+      return; // Prevent importing if no network selected
     }
 
     // Track when the import started
@@ -258,10 +258,12 @@ export default function DashboardNetworks({ selectedProject }: NetworksProps) {
   // Handle job completion
   useEffect(() => {
     if (jobStatus && (jobStatus.status === 'completed' || jobStatus.status === 'failed')) {
-      // Optionally refresh merchants data here
-      // You could call a refresh function or show a success/error message
+      // Refresh merchants data when job completes
+      if (refreshMerchants) {
+        refreshMerchants();
+      }
     }
-  }, [jobStatus]);
+  }, [jobStatus, refreshMerchants]);
 
   // Handle clearing completed/failed jobs
   const handleClearJob = async () => {
@@ -302,6 +304,7 @@ export default function DashboardNetworks({ selectedProject }: NetworksProps) {
       }
     }
     
+    // Only clear local state, let global job monitor handle the job removal
     setCurrentJobId(null);
     resetMonitor();
     setImportStartTime(null);
@@ -704,6 +707,11 @@ export default function DashboardNetworks({ selectedProject }: NetworksProps) {
                       </svg>
                       {currentJobId ? 'Importing...' : 'Import Merchants'}
                     </button>
+                    {currentJobId && (
+                      <div className="text-xs text-blue-600 mt-1">
+                        You can navigate away - import will continue in background
+                      </div>
+                    )}
                   </div>
                 )}
                 {currentJobId ? (

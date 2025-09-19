@@ -358,13 +358,30 @@ function EditNetworkContent({ locale, selectedProject }: EditNetworkProps) {
     setError(null);
 
     try {
-      // Mock delete operation - replace with actual API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      if (!credentialId) {
+        throw new Error('Credential ID is required');
+      }
+
+      const response = await fetch('/api/credentials/delete', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          credential_id: credentialId
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Failed to delete credential: ${response.status}`);
+      }
+
       alert('Network credential deleted successfully!');
       handleCancel();
-    } catch {
-      setError('Failed to delete credential. Please try again.');
+    } catch (error) {
+      console.error('Delete error:', error);
+      setError(error instanceof Error ? error.message : 'Failed to delete credential. Please try again.');
       setSaving(false);
     }
   };

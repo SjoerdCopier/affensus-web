@@ -50,6 +50,14 @@
       "networks": {
         "title": "Networks Dashboard | Manage Affiliate Networks | Affensus",
         "description": "Manage and monitor your affiliate networks from your dashboard. Configure network settings, notifications, and tracking preferences."
+      },
+      "linkRot": {
+        "title": "Link Rot Analysis | Monitor Broken Affiliate Links | Affensus",
+        "description": "Analyze and monitor link rot in your affiliate marketing campaigns. Track broken links, identify issues, and maintain healthy affiliate relationships."
+      },
+      "notifications": {
+        "title": "Notifications | Track Merchant Changes | Affensus",
+        "description": "Stay updated with merchant changes, status updates, and new opportunities in your affiliate marketing campaigns. Monitor all important changes in real-time."
       }
     }
   },
@@ -85,8 +93,8 @@
         "description": "Estimate your potential affiliate earnings"
       },
       "affiliateNetworkUptime": {
-        "title": "Affiliate Network Uptime",
-        "description": "Monitor affiliate network uptime and availability in real-time"
+        "title": "Affiliate Network Downtime",
+        "description": "Monitor affiliate network downtime and availability in real-time"
       }
     }
   },
@@ -832,7 +840,7 @@
       }
     },
     "affiliateNetworkUptime": {
-      "title": "Network Uptime Reporting",
+      "title": "Network Downtime Reporting",
       "description": "We monitor affiliate networks every 1 minute, ensuring the key tracking links are operational.",
       "emailNotifications": "Get notified of any outages via email.",
       "learnMore": "Learn more about this tool",

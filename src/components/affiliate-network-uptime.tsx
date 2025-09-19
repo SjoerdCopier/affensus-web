@@ -6,8 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 // import { ChevronDown, ChevronUp } from 'lucide-react'; // Commented out - used for expand/collapse functionality
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import Header from '@/components/header';
-import Footer from '@/components/footer';
+import PageWrapper from '@/components/page-wrapper';
 import { useLocaleTranslations } from '@/hooks/use-locale-translations';
 import Head from 'next/head';
 import { Bell, Clock, Zap } from 'lucide-react';
@@ -178,7 +177,7 @@ const HeartbeatBar = ({ heartbeats, showTimeRange = false }: { heartbeats: Statu
 };
 
 const SkeletonCard = () => (
-  <Card>
+  <Card className="border-gray-300">
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
       <Skeleton className="h-4 w-[140px]" />
       <Skeleton className="h-4 w-[100px]" />
@@ -292,27 +291,32 @@ function AffiliateNetworkUptimeContent() {
           break;
         case 'recently-down':
           sortedDomains.sort((a, b) => {
-            // Get the most recent heartbeat for each domain
-            const getMostRecentHeartbeat = (domain: Domain) => {
+            // Get the most recent downtime event (status === 0) for each domain
+            const getMostRecentDowntime = (domain: Domain) => {
               const heartbeats = domain.urls.find(url => url.heartbeats)?.heartbeats || [];
               if (heartbeats.length === 0) return null;
-              return heartbeats.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())[0];
+              
+              // Find the most recent heartbeat with status === 0 (down)
+              const sortedHeartbeats = heartbeats.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
+              return sortedHeartbeats.find(heartbeat => heartbeat.status === 0) || null;
             };
             
-            const heartbeatA = getMostRecentHeartbeat(a);
-            const heartbeatB = getMostRecentHeartbeat(b);
+            const downtimeA = getMostRecentDowntime(a);
+            const downtimeB = getMostRecentDowntime(b);
             
-            // If no heartbeats, put at the end
-            if (!heartbeatA && !heartbeatB) return 0;
-            if (!heartbeatA) return 1;
-            if (!heartbeatB) return -1;
+            // Networks with recent downtime come first
+            if (downtimeA && !downtimeB) return -1;
+            if (!downtimeA && downtimeB) return 1;
             
-            // Sort by most recent down status first, then by most recent time
-            if (heartbeatA.status === 0 && heartbeatB.status === 1) return -1;
-            if (heartbeatA.status === 1 && heartbeatB.status === 0) return 1;
+            // If both have downtime, sort by most recent downtime first
+            if (downtimeA && downtimeB) {
+              return new Date(downtimeB.time).getTime() - new Date(downtimeA.time).getTime();
+            }
             
-            // If both have same status, sort by most recent time
-            return new Date(heartbeatB.time).getTime() - new Date(heartbeatA.time).getTime();
+            // If neither has downtime, sort by name as fallback
+            const nameA = (a.displayName || a.domain).toLowerCase();
+            const nameB = (b.displayName || b.domain).toLowerCase();
+            return nameA.localeCompare(nameB);
           });
           break;
         default:
@@ -375,17 +379,14 @@ function AffiliateNetworkUptimeContent() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <>
       <Head>
         <title>{t('metadata.tools.affiliateNetworkUptime.title')}</title>
         <meta name="description" content={t('metadata.tools.affiliateNetworkUptime.description')} />
       </Head>
       
-      <div className="container mx-auto px-4 py-8">
-        <Header />
-      </div>
-      
-      <main className="container mx-auto px-4 pt-4 pb-16 space-y-12">
+      <PageWrapper>
+        <div className="container mx-auto px-4 pt-4 pb-16 space-y-12">
         {/* Breadcrumbs */}
         <div>
           <Breadcrumbs
@@ -450,18 +451,18 @@ function AffiliateNetworkUptimeContent() {
 
             
             
-            <div className="mb-6 flex justify-between items-center">
+            <div className="mb-6 flex gap-2 items-center">
               <Input
                 type="text"
                 placeholder={t('tools.affiliateNetworkUptime.searchPlaceholder')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-64"
+                className="flex-1 min-w-0 border-gray-300 px-3 py-2 text-sm h-auto"
               />
               <select 
                 value={sortOption} 
                 onChange={(e) => setSortOption(e.target.value)}
-                className="w-[220px] px-3 py-2 border border-gray-300 rounded-md bg-white"
+                className="flex-shrink-0 px-3 py-2 text-sm border border-gray-300 rounded-md bg-white"
               >
                 <option value="default">{t('tools.affiliateNetworkUptime.sortOptions.default')}</option>
                 <option value="uptime">{t('tools.affiliateNetworkUptime.sortOptions.uptime')}</option>
@@ -488,116 +489,31 @@ function AffiliateNetworkUptimeContent() {
                   <p className="text-sm mt-2">{t('tools.affiliateNetworkUptime.messages.configuring')}</p>
                 </div>
               ) : (
-                <>
-                  <div className="space-y-8">
-                    {filteredDomains.filter((_, index) => index % 2 === 0).map((domain) => (
-                      <Card key={domain.domain}>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                          <CardTitle className="text-sm font-medium">
-                            {getUptimeValue(domain.uptimeList) > 0.999 ? t('tools.affiliateNetworkUptime.status.allSystemsOperational') : t('tools.affiliateNetworkUptime.status.someSystemsDegraded')}
-                          </CardTitle>
-                          <div className="text-sm text-muted-foreground">
-                            {getUptimeDisplay(domain.uptimeList)} {t('tools.affiliateNetworkUptime.status.uptime')}
-                          </div>
-                          {/* <button onClick={() => toggleDomain(domain.domain)}>
-                            {expandedDomain === domain.domain ? <ChevronUp /> : <ChevronDown />}
-                          </button> */}
-                        </CardHeader>
-                        <CardContent>
-                          <div className="text-2xl font-bold mb-4 text-left">
-                            {domain.displayName || capitalizeNetworkName(domain.domain)}
-                          </div>
-                          <div className="mb-4">
-                            {domain.hasStatusPage && domain.urls.some(url => url.heartbeats) ? (
-                              <HeartbeatBar heartbeats={domain.urls.find(url => url.heartbeats)?.heartbeats || []} showTimeRange={true} />
-                            ) : (
-                              <UptimeBar uptimeList={domain.uptimeList} />
-                            )}
-                            <p className="text-left pt-3">{t('tools.affiliateNetworkUptime.status.averageResponseTime')}: {calculateAverageResponseTime(domain.urls).toFixed(2)} ms</p>
-                          </div>
-                          {/* {expandedDomain === domain.domain && (
-                            domain.urls.map((urlData) => (
-                              <div key={urlData.type} className="mb-4 text-left">
-                                <h3 className="text-lg font-semibold">{urlData.type}</h3>
-                                {urlData.hasStatusPage && urlData.heartbeats ? (
-                                  <>
-                                    <div className="mb-2">
-                                      <h4 className="text-sm font-medium text-gray-600 text-left">{t('tools.affiliateNetworkUptime.status.realTimeHeartbeats')}</h4>
-
-                                      <HeartbeatBar heartbeats={urlData.heartbeats} />
-                                    </div>
-                                    <p className="text-sm text-gray-600">{t('tools.affiliateNetworkUptime.status.uptimeLabel')}: {getUptimeDisplay(urlData.uptimeList)}</p>
-                                    <p className="text-sm text-gray-600">{t('tools.affiliateNetworkUptime.status.avgResponseTime')}: {urlData.avg_response_time.toFixed(2)} ms</p>
-                                  </>
-                                ) : (
-                                  <>
-                                    <UptimeBar uptimeList={urlData.uptimeList} />
-                                    <p>{t('tools.affiliateNetworkUptime.status.uptimeLabel')}: {getUptimeDisplay(urlData.uptimeList)}</p>
-                                    <p>{t('tools.affiliateNetworkUptime.status.avgResponseTime')}: {urlData.avg_response_time.toFixed(2)} ms</p>
-                                  </>
-                                )}
-                              </div>
-                            ))
-                          )} */}
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                  <div className="space-y-8">
-                    {filteredDomains.filter((_, index) => index % 2 !== 0).map((domain) => (
-                      <Card key={domain.domain}>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                          <CardTitle className="text-sm font-medium">
-                            {getUptimeValue(domain.uptimeList) > 0.999 ? t('tools.affiliateNetworkUptime.status.allSystemsOperational') : t('tools.affiliateNetworkUptime.status.someSystemsDegraded')}
-                          </CardTitle>
-                          <div className="text-sm text-muted-foreground">
-                            {getUptimeDisplay(domain.uptimeList)} {t('tools.affiliateNetworkUptime.status.uptime')}
-                          </div>
-                          {/* <button onClick={() => toggleDomain(domain.domain)}>
-                            {expandedDomain === domain.domain ? <ChevronUp /> : <ChevronDown />}
-                          </button> */}
-                        </CardHeader>
-                        <CardContent>
-                          <div className="text-2xl font-bold mb-4 text-left">
-                            {domain.displayName || capitalizeNetworkName(domain.domain)}
-                          </div>
-                          <div className="mb-4">
-                            {domain.hasStatusPage && domain.urls.some(url => url.heartbeats) ? (
-                              <HeartbeatBar heartbeats={domain.urls.find(url => url.heartbeats)?.heartbeats || []} showTimeRange={true} />
-                            ) : (
-                              <UptimeBar uptimeList={domain.uptimeList} />
-                            )}
-                            <p className="text-left pt-3">{t('tools.affiliateNetworkUptime.status.averageResponseTime')}: {calculateAverageResponseTime(domain.urls).toFixed(2)} ms</p>
-                          </div>
-                          {/* {expandedDomain === domain.domain && (
-                            domain.urls.map((urlData) => (
-                              <div key={urlData.type} className="mb-4 text-left">
-                                <h3 className="text-lg font-semibold">{urlData.type}</h3>
-                                {urlData.hasStatusPage && urlData.heartbeats ? (
-                                  <>
-                                    <div className="mb-2">
-                                      <h4 className="text-sm font-medium text-gray-600">{t('tools.affiliateNetworkUptime.status.realTimeHeartbeats')}</h4>
-
-                                      <HeartbeatBar heartbeats={urlData.heartbeats} />
-                                    </div>
-                                    <p className="text-sm text-gray-600">{t('tools.affiliateNetworkUptime.status.uptimeLabel')}: {getUptimeDisplay(urlData.uptimeList)}</p>
-                                    <p className="text-sm text-gray-600">{t('tools.affiliateNetworkUptime.status.avgResponseTime')}: {urlData.avg_response_time.toFixed(2)} ms</p>
-                                  </>
-                                ) : (
-                                  <>
-                                    <UptimeBar uptimeList={urlData.uptimeList} />
-                                    <p>{t('tools.affiliateNetworkUptime.status.uptimeLabel')}: {getUptimeDisplay(urlData.uptimeList)}</p>
-                                    <p>{t('tools.affiliateNetworkUptime.status.avgResponseTime')}: {urlData.avg_response_time.toFixed(2)} ms</p>
-                                  </>
-                                )}
-                              </div>
-                            ))
-                          )} */}
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </>
+                filteredDomains.map((domain) => (
+                  <Card key={domain.domain} className="border-gray-300">
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                      <CardTitle className="text-sm font-medium">
+                        {getUptimeValue(domain.uptimeList) > 0.999 ? t('tools.affiliateNetworkUptime.status.allSystemsOperational') : t('tools.affiliateNetworkUptime.status.someSystemsDegraded')}
+                      </CardTitle>
+                      <div className="text-sm text-muted-foreground">
+                        {getUptimeDisplay(domain.uptimeList)} {t('tools.affiliateNetworkUptime.status.uptime')}
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold mb-4 text-left">
+                        {domain.displayName || capitalizeNetworkName(domain.domain)}
+                      </div>
+                      <div className="mb-4">
+                        {domain.hasStatusPage && domain.urls.some(url => url.heartbeats) ? (
+                          <HeartbeatBar heartbeats={domain.urls.find(url => url.heartbeats)?.heartbeats || []} showTimeRange={true} />
+                        ) : (
+                          <UptimeBar uptimeList={domain.uptimeList} />
+                        )}
+                        <p className="text-left pt-3">{t('tools.affiliateNetworkUptime.status.averageResponseTime')}: {calculateAverageResponseTime(domain.urls).toFixed(2)} ms</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
               )}
             </div>
           </div>
@@ -647,10 +563,9 @@ function AffiliateNetworkUptimeContent() {
             </p>
           </div>
         </div>
-      </main>
-      
-      <Footer />
-    </div>
+        </div>
+      </PageWrapper>
+    </>
   );
 }
 

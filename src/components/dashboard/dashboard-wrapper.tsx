@@ -128,7 +128,7 @@ export default function DashboardWrapper({ locale = 'en', children }: DashboardW
       onProjectSelect={setSelectedProject}
     >
       {children && React.isValidElement(children) 
-        ? React.cloneElement(children as React.ReactElement<{ selectedProject?: Project | null }>, { selectedProject })
+        ? React.cloneElement(children as React.ReactElement<{ selectedProject?: Project | null; onNotificationRead?: (notificationId: number) => void }>, { selectedProject })
         : children || (
           <Dashboard 
             locale={locale} 
