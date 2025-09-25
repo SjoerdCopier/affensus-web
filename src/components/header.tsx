@@ -3,9 +3,11 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useLocaleTranslations } from '../hooks/use-locale-translations';
+import { useUser } from '../hooks/use-user';
 
 export default function Header() {
   const { t, currentLocale } = useLocaleTranslations();
+  const { user, isLoading } = useUser();
 
   const getLocalizedPath = (path: string) => {
     return currentLocale === 'en' ? path : `/${currentLocale}${path}`;
@@ -61,9 +63,30 @@ export default function Header() {
               </div>
             </div>
           </div>
+
+          <div className="relative group">
+            <button className="group font-medium text-sm leading-none text-gray-700 flex items-center gap-2.5 3xl:h-6 h-8 px-3 rounded-lg bg-transparent hover:bg-gray-100 hover:text-gray-900 transition-all duration-300 ease-in-out relative before:content-[''] before:absolute before:left-[12px] before:top-1/2 before:-translate-y-1/2 before:w-1 before:h-1 before:bg-gray-900 before:rounded-full before:opacity-0 before:scale-0 hover:before:opacity-100 hover:before:scale-100 before:transition-all before:duration-300 pl-[24px]">
+              {t('header.services.title')}
+              <svg className="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            
+            <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50" style={{ border: '1px solid #6ca979' }}>
+              <div className="p-3">
+                <Link href={getLocalizedPath('/services/fraud-protection')} className="block mb-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                  <h3 className="font-semibold text-gray-900 mb-1 text-sm">{t('header.services.fraudProtection.title')}</h3>
+                  <p className="text-xs text-gray-600">{t('header.services.fraudProtection.description')}</p>
+                </Link>
+              </div>
+            </div>
+          </div>
           
-          <Link href={getLocalizedPath('/auth')} className="group font-medium text-sm leading-none text-gray-700 flex items-center gap-2.5 3xl:h-6 h-8 px-3 rounded-lg bg-transparent hover:bg-gray-100 hover:text-gray-900 transition-all duration-300 ease-in-out relative before:content-[''] before:absolute before:left-[12px] before:top-1/2 before:-translate-y-1/2 before:w-1 before:h-1 before:bg-gray-900 before:rounded-full before:opacity-0 before:scale-0 hover:before:opacity-100 hover:before:scale-100 before:transition-all before:duration-300 pl-[24px]">{t('header.signIn')}</Link>
-          <Link href={getLocalizedPath('/auth')} className="group font-medium text-sm leading-none text-gray-700 flex items-center gap-2.5 3xl:h-6 h-8 px-3 rounded-lg bg-transparent hover:bg-gray-100 hover:text-gray-900 transition-all duration-300 ease-in-out relative before:content-[''] before:absolute before:left-[12px] before:top-1/2 before:-translate-y-1/2 before:w-1 before:h-1 before:bg-gray-900 before:rounded-full before:opacity-0 before:scale-0 hover:before:opacity-100 hover:before:scale-100 before:transition-all before:duration-300 pl-[24px]">{t('header.register')}</Link>
+          {!isLoading && user ? (
+            <Link href={getLocalizedPath('/dashboard')} className="group font-medium text-sm leading-none text-gray-700 flex items-center gap-2.5 3xl:h-6 h-8 px-3 rounded-lg bg-transparent hover:bg-gray-100 hover:text-gray-900 transition-all duration-300 ease-in-out relative before:content-[''] before:absolute before:left-[12px] before:top-1/2 before:-translate-y-1/2 before:w-1 before:h-1 before:bg-gray-900 before:rounded-full before:opacity-0 before:scale-0 hover:before:opacity-100 hover:before:scale-100 before:transition-all before:duration-300 pl-[24px]">{t('header.dashboard')}</Link>
+          ) : (
+            <Link href={getLocalizedPath('/auth')} className="group font-medium text-sm leading-none text-gray-700 flex items-center gap-2.5 3xl:h-6 h-8 px-3 rounded-lg bg-transparent hover:bg-gray-100 hover:text-gray-900 transition-all duration-300 ease-in-out relative before:content-[''] before:absolute before:left-[12px] before:top-1/2 before:-translate-y-1/2 before:w-1 before:h-1 before:bg-gray-900 before:rounded-full before:opacity-0 before:scale-0 hover:before:opacity-100 hover:before:scale-100 before:transition-all before:duration-300 pl-[24px]">{t('header.signIn')}</Link>
+          )}
         </nav>
       </div>
 
@@ -135,20 +158,34 @@ export default function Header() {
                   </Link>
                 </div>
               </div>
+
+              <div className="space-y-2">
+                <div className="font-medium text-lg text-gray-700">{t('header.services.title')}</div>
+                <div className="pl-4 space-y-2">
+                  <Link 
+                    href={getLocalizedPath('/services/fraud-protection')} 
+                    className="block text-gray-600 hover:text-gray-900 transition-colors"
+                  >
+                    {t('header.services.fraudProtection.title')}
+                  </Link>
+                </div>
+              </div>
               
-              <Link 
-                href={getLocalizedPath('/auth')} 
-                className="block font-medium text-lg text-gray-700 hover:text-gray-900 transition-colors"
-              >
-                {t('header.signIn')}
-              </Link>
-              
-              <Link 
-                href={getLocalizedPath('/auth')} 
-                className="block font-medium text-lg text-gray-700 hover:text-gray-900 transition-colors"
-              >
-                {t('header.register')}
-              </Link>
+              {!isLoading && user ? (
+                <Link 
+                  href={getLocalizedPath('/dashboard')} 
+                  className="block font-medium text-lg text-gray-700 hover:text-gray-900 transition-colors"
+                >
+                  {t('header.dashboard')}
+                </Link>
+              ) : (
+                <Link 
+                  href={getLocalizedPath('/auth')} 
+                  className="block font-medium text-lg text-gray-700 hover:text-gray-900 transition-colors"
+                >
+                  {t('header.signIn')}
+                </Link>
+              )}
             </nav>
           </div>
         </div>

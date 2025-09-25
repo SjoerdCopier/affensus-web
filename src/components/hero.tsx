@@ -22,14 +22,14 @@ export default function Hero() {
             {t('homepage.hero.description')}
           </p>
           
-          <ul className="flex items-center gap-3">
-            <li>
-              <Link href="/auth" className="flex items-center justify-center text-white font-medium leading-none text-base rounded-xl bg-green-600 hover:bg-green-700 h-[51px] px-7 transition-all duration-500 ease-in-out">
+          <ul className="flex items-center gap-3 md:gap-3 md:justify-start justify-between w-full">
+            <li className="md:flex-none flex-1">
+              <Link href="/auth" className="flex items-center justify-center text-white font-medium leading-none text-base rounded-xl bg-green-600 hover:bg-green-700 h-[51px] px-7 transition-all duration-500 ease-in-out w-full">
                 {t('homepage.hero.getAffensus')}
               </Link>
             </li>
-            <li>
-              <Link href="/book-demo" className="flex items-center justify-center text-black font-medium leading-none text-base rounded-xl bg-gray-100 hover:bg-gray-200 h-[51px] px-7 transition-all duration-500 ease-in-out">
+            <li className="md:flex-none flex-1">
+              <Link href="/book-demo" className="flex items-center justify-center text-black font-medium leading-none text-base rounded-xl bg-gray-100 hover:bg-gray-200 h-[51px] px-7 transition-all duration-500 ease-in-out w-full">
                 {t('homepage.hero.bookDemo')}
               </Link>
             </li>
@@ -48,7 +48,7 @@ export default function Hero() {
         />
         
         {/* Chart Overlay */}
-        <div className="absolute 3xl:left-[-66px] xl:left-5 left-[33px] xl:top-[172px] top-[184px] max-w-[246px] w-full border border-solid border-gray-300 bg-white rounded-2xl shadow-2xl px-3.5 py-4">
+        <div className="absolute 3xl:left-[-66px] xl:left-5 left-[33px] xl:top-[182px] md:top-[194px] top-[229px] max-w-[246px] w-full border border-solid border-gray-300 bg-white rounded-2xl shadow-2xl px-3.5 py-4">
           <div className="flex items-start justify-between mb-2">
             <div>
               <p className="text-[11.88px] font-medium mb-2.5 tracking-[-0.1188px] leading-none text-gray-700">{t('homepage.hero.affiliateRevenue')}</p>

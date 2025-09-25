@@ -50,6 +50,7 @@ export default function Footer() {
             <h4 className="text-lg font-semibold mb-4">{t('footer.quickLinks')}</h4>
             <ul className="space-y-2">
               <li><Link href={getLocalizedPath('/contact')} className="text-white inline-flex items-center text-sm font-medium leading-none border-b border-dotted border-white/[0.5] pb-1 hover:text-gray-300 transition-colors">{t('footer.contact')}</Link></li>
+              <li><Link href={getLocalizedPath('/affiliate-networks')} className="text-white inline-flex items-center text-sm font-medium leading-none border-b border-dotted border-white/[0.5] pb-1 hover:text-gray-300 transition-colors">Affiliate Networks</Link></li>
             </ul>
           </div>
 

@@ -4,19 +4,30 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Breadcrumbs from "@/components/breadcrumbs";
 import { useLocaleTranslations } from "@/hooks/use-locale-translations";
+import { useUser } from "@/hooks/use-user";
 import { Shield, Search, Clock } from 'lucide-react';
+import { CountrySelect } from "@/components/ui/country-select";
 
 interface Redirect {
     url: string;
-    status: number | string;
+    status_code: number;
+    redirect_type: string;
+    latency_ms: number;
+    step: number;
     type: string;
-    name?: string;
-    error?: string;
+    affiliate_network?: {
+        name: string;
+        networkId: number;
+        userId?: string;
+    };
 }
+
+// ApiRedirectStep interface removed - using main Redirect interface
 
 function AffiliateLinkCheckerContent() {
     const { t } = useLocaleTranslations();
     const router = useRouter();
+    const { user } = useUser();
     const [affiliateUrl, setAffiliateUrl] = useState("");
     const [loading, setLoading] = useState(false);
     const [redirects, setRedirects] = useState<Redirect[]>([]);
@@ -27,6 +38,7 @@ function AffiliateLinkCheckerContent() {
     const [showAdvanced, setShowAdvanced] = useState(false);
     const [bulkUrls, setBulkUrls] = useState("");
     const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+    const [proxyCountry, setProxyCountry] = useState("");
 
     const extractUrlsFromText = (text: string): string[] => {
         // Extract URLs from plain text
@@ -111,6 +123,13 @@ function AffiliateLinkCheckerContent() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        
+        // Check if user is trying to use proxy without being logged in
+        if (proxyCountry && !user) {
+            router.push('/auth');
+            return;
+        }
+        
         setLoading(true);
         setRedirects([]);
         setResultMessage("");
@@ -131,24 +150,62 @@ function AffiliateLinkCheckerContent() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ url: affiliateUrl }),
+                body: JSON.stringify({ 
+                    url: affiliateUrl,
+                    ...(proxyCountry && {
+                        proxy: true,
+                        country: proxyCountry
+                    })
+                }),
             });
 
             if (response.ok) {
-                const data = await response.json();
-                setRedirects(data.redirects); // Store all redirects
+                const responseData = await response.json();
+                let redirects: Redirect[] = [];
+                let has404 = false;
+                let hasRedirectError = false;
+                let uniqueNetworks: string[] = [];
+                
+                // Handle the new API response format
+                if (responseData.success) {
+                    // The actual data is in responseData.data
+                    const data = responseData.data;
+                    redirects = data.redirect_chain || [];
+                    
+                    setRedirects(redirects); // Store all redirects
 
-                // Check for 404 status code
-                const has404 = data.redirects.some((redirect: Redirect) => redirect.status === 404);
-                setHas404(has404);
+                    // Check for 404 status code
+                    has404 = redirects.some((redirect: Redirect) => redirect.status_code === 404);
+                    setHas404(has404);
 
-                // Check for redirect errors
-                const hasRedirectError = data.redirects.some((redirect: Redirect) => redirect.status === 'error');
-                setHasRedirectError(hasRedirectError);
+                    // Check for redirect errors (4xx or 5xx status codes)
+                    hasRedirectError = redirects.some((redirect: Redirect) => redirect.status_code >= 400);
+                    setHasRedirectError(hasRedirectError);
 
-                // Check for multiple different network names
-                const uniqueNetworks = [...new Set(data.redirects.map((redirect: Redirect) => redirect.name).filter(Boolean))];
-                setMultipleNetworks(uniqueNetworks.length > 1);
+                    // Check for multiple different network names
+                    uniqueNetworks = [...new Set(redirects.map((redirect: Redirect) => redirect.affiliate_network?.name).filter((name): name is string => Boolean(name)))];
+                    setMultipleNetworks(uniqueNetworks.length > 1);
+                } else {
+                    // Handle API error response
+                    console.error('API returned error:', responseData.error);
+                    setResultMessage(
+                        <>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="w-20 h-20 mt-1"
+                            >
+                                <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
+                            </svg>
+                            <div className="ml-4">
+                                {t('tools.affiliateLinkChecker.messages.error')}
+                            </div>
+                        </>
+                    );
+                }
 
                 if (hasRedirectError) {
                     setResultMessage(
@@ -323,6 +380,23 @@ function AffiliateLinkCheckerContent() {
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
                     </div>
+                    
+                    {/* Proxy */}
+                    <div className="mb-4">
+                        <label htmlFor="proxy-country" className="block text-sm font-medium text-gray-700 mb-1">
+                            Proxy
+                        </label>
+                        <CountrySelect
+                            value={proxyCountry}
+                            onValueChange={setProxyCountry}
+                            placeholder="Select proxy country..."
+                        />
+                        {!user && (
+                            <p className="text-xs text-red-500 mt-1">
+                                (Login to use proxy function for better results)
+                            </p>
+                        )}
+                    </div>
                     <div className="flex gap-4">
                         <button 
                             type="submit"
@@ -412,21 +486,163 @@ function AffiliateLinkCheckerContent() {
                         <ul className="mt-4 space-y-2">
                             {redirects.map((redirect: Redirect, index: number) => (
                                 <li key={index} className="p-4 border border-gray-200 rounded-md">
-                                    <div className="text-sm text-gray-500">{t('tools.affiliateLinkChecker.results.redirectNumber').replace('{number}', String(index + 1))}</div>
+                                    <div className="text-sm text-gray-500">
+                                        Step {redirect.step} - {redirect.type === 'original' ? 'Original URL' : redirect.type === 'final' ? 'Final Destination' : 'Redirect'}
+                                    </div>
                                     <div className="text-lg text-gray-900 truncate" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                         {redirect.url.length > 55 ? `${redirect.url.substring(0, 55)}...` : redirect.url}
                                     </div>
-                                    {redirect.name && (
+                                    {redirect.affiliate_network && (
                                         <div className="text-sm font-medium text-blue-500">
-                                            {t('tools.affiliateLinkChecker.results.network')} {redirect.name}
+                                            {t('tools.affiliateLinkChecker.results.network')} {redirect.affiliate_network.name}
+                                            {redirect.affiliate_network.userId && (
+                                                <div className="text-xs text-gray-500 mt-1">
+                                                    User ID: {redirect.affiliate_network.userId}
+                                                </div>
+                                            )}
                                         </div>
                                     )}
-                                    <div className={`text-sm font-medium ${typeof redirect.status === 'number' && redirect.status < 300 ? 'text-green-500' : 'text-red-500'}`}>
-                                        {t('tools.affiliateLinkChecker.results.status')} {redirect.status} ({redirect.type})
+                                    <div className={`text-sm font-medium ${redirect.status_code < 300 ? 'text-green-500' : 'text-red-500'}`}>
+                                        {t('tools.affiliateLinkChecker.results.status')} {redirect.status_code} ({redirect.redirect_type})
+                                        {redirect.latency_ms && (
+                                            <span className="text-gray-500 ml-2">- {redirect.latency_ms.toFixed(1)}ms</span>
+                                        )}
                                     </div>
                                 </li>
                             ))}
                         </ul>
+                        
+                        {/* URL Check Results Summary */}
+                        <div className="mt-8 p-6 bg-gray-50 border border-gray-200 rounded-lg">
+                            <h3 className="text-lg font-semibold text-gray-900 mb-4">URL Check Results</h3>
+                            <div className="space-y-2 text-sm">
+                                <div className="flex justify-between">
+                                    <span className="font-medium text-gray-700">Check ID:</span>
+                                    <span className="text-gray-600">{crypto.randomUUID()}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="font-medium text-gray-700">Checked on:</span>
+                                    <span className="text-gray-600">{new Date().toLocaleString('en-GB', { 
+                                        day: '2-digit', 
+                                        month: '2-digit', 
+                                        year: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        second: '2-digit',
+                                        hour12: false
+                                    })}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="font-medium text-gray-700">Total Steps:</span>
+                                    <span className="text-gray-600">{redirects.length}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="font-medium text-gray-700">Final Status:</span>
+                                    <span className={`font-medium ${
+                                        hasRedirectError ? 'text-red-500' : 
+                                        has404 ? 'text-red-500' : 
+                                        multipleNetworks ? 'text-yellow-500' : 
+                                        'text-green-500'
+                                    }`}>
+                                        {hasRedirectError ? 'Error' : 
+                                         has404 ? '404 Not Found' : 
+                                         multipleNetworks ? 'Multiple Networks' : 
+                                         'Success'}
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="mt-4 pt-4 border-t border-gray-200 flex flex-wrap gap-4 items-center">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setAffiliateUrl('');
+                                        setProxyCountry('');
+                                        setRedirects([]);
+                                        setResultMessage('');
+                                        setHas404(false);
+                                        setMultipleNetworks(false);
+                                        setHasRedirectError(false);
+                                    }}
+                                    className="bg-[#6ca979] hover:bg-[#5a8a66] text-white px-4 py-2 rounded text-sm font-medium transition-colors"
+                                >
+                                    Check another URL
+                                </button>
+                                
+                                <button
+                                    type="button"
+                                    onClick={(e) => {
+                                        // Remove networkId from the data
+                                        const cleanedRedirects = redirects.map(redirect => {
+                                            const { affiliate_network, ...rest } = redirect;
+                                            if (affiliate_network) {
+                                                const { networkId, ...cleanNetwork } = affiliate_network;
+                                                return { ...rest, affiliate_network: cleanNetwork };
+                                            }
+                                            return rest;
+                                        });
+                                        
+                                        const jsonData = JSON.stringify(cleanedRedirects, null, 2);
+                                        navigator.clipboard.writeText(jsonData).then(() => {
+                                            // Visual feedback
+                                            const button = e.target as HTMLButtonElement;
+                                            const originalText = button.textContent;
+                                            button.textContent = 'Copied!';
+                                            button.classList.add('bg-green-600');
+                                            button.classList.remove('bg-gray-600');
+                                            setTimeout(() => {
+                                                button.textContent = originalText;
+                                                button.classList.remove('bg-green-600');
+                                                button.classList.add('bg-gray-600');
+                                            }, 1500);
+                                        }).catch(err => {
+                                            console.error('Failed to copy JSON:', err);
+                                        });
+                                    }}
+                                    className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm font-medium transition-colors"
+                                >
+                                    Copy as JSON
+                                </button>
+                                
+                                <button
+                                    type="button"
+                                    onClick={(e) => {
+                                        const xmlData = `<?xml version="1.0" encoding="UTF-8"?>
+<redirects>
+${redirects.map(redirect => `  <redirect>
+    <step>${redirect.step}</step>
+    <url>${redirect.url}</url>
+    <status_code>${redirect.status_code}</status_code>
+    <redirect_type>${redirect.redirect_type}</redirect_type>
+    <type>${redirect.type}</type>
+    ${redirect.latency_ms ? `<latency_ms>${redirect.latency_ms}</latency_ms>` : ''}
+    ${redirect.affiliate_network ? `<affiliate_network>
+      <name>${redirect.affiliate_network.name}</name>
+      ${redirect.affiliate_network.userId ? `<userId>${redirect.affiliate_network.userId}</userId>` : ''}
+    </affiliate_network>` : ''}
+  </redirect>`).join('\n')}
+</redirects>`;
+                                        navigator.clipboard.writeText(xmlData).then(() => {
+                                            // Visual feedback
+                                            const button = e.target as HTMLButtonElement;
+                                            const originalText = button.textContent;
+                                            button.textContent = 'Copied!';
+                                            button.classList.add('bg-green-600');
+                                            button.classList.remove('bg-gray-600');
+                                            setTimeout(() => {
+                                                button.textContent = originalText;
+                                                button.classList.remove('bg-green-600');
+                                                button.classList.add('bg-gray-600');
+                                            }, 1500);
+                                        }).catch(err => {
+                                            console.error('Failed to copy XML:', err);
+                                        });
+                                    }}
+                                    className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm font-medium transition-colors"
+                                >
+                                    Copy as XML
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 )}
             </div>

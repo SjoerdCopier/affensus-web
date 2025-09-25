@@ -55,6 +55,10 @@
           "title": "Link Rot Analyse | Monitor Kapotte Affiliate Links | Affensus",
           "description": "Analyseer en monitor link rot in je affiliate marketing campagnes. Volg kapotte links, identificeer problemen en behoud gezonde affiliate relaties."
         },
+        "linkValidator": {
+          "title": "Link Validator | Valideer Affiliate Links | Affensus",
+          "description": "Valideer en test je affiliate links in real-time. Controleer redirectketens, detecteer kapotte links en identificeer netwerkproblemen."
+        },
         "notifications": {
           "title": "Notificaties | Volg Merchant Wijzigingen | Affensus",
           "description": "Blijf op de hoogte van merchant wijzigingen, status updates en nieuwe kansen in je affiliate marketing campagnes. Monitor alle belangrijke wijzigingen in real-time."
@@ -65,7 +69,6 @@
       "navigation": {
         "home": "Home",
         "about": "About",
-        "services": "Services",
         "contact": "Contact"
       },
       "actions": {
@@ -79,6 +82,7 @@
       "freeTools": "Gratis Tools",
       "signIn": "Aanmelden",
       "register": "Registreren",
+      "dashboard": "Dashboard",
       "tools": {
         "affiliateLinkChecker": {
           "title": "Affiliate Link Checker",
@@ -95,6 +99,13 @@
         "affiliateNetworkUptime": {
           "title": "Affiliate Netwerk Uptime",
           "description": "Monitor affiliate netwerk uptime en beschikbaarheid in real-time"
+        }
+      },
+      "services": {
+        "title": "Diensten",
+        "fraudProtection": {
+          "title": "Fraudebescherming",
+          "description": "Geavanceerde fraudedetectie en -preventie voor affiliate marketing"
         }
       }
     },
@@ -860,6 +871,55 @@
           "title": "Kan ik een aangepast netwerk toevoegen als ik mijn netwerk niet kan vinden?",
           "description": "Ja, we kunnen aangepaste netwerken voor je toevoegen. Stuur ons gewoon een e-mail naar info@affensus.com en we zullen elk netwerk toevoegen dat je wilt."
         }
+      }
+    }
+  },
+  "dashboard": {
+    "linkValidator": {
+      "title": "Link Validator",
+      "description": "Valideer en test je affiliate links in real-time",
+      "singleMode": "Enkele Link Validatie",
+      "bulkMode": "Bulk Link Validatie",
+      "switchToSingle": "Schakel naar Enkele Modus",
+      "switchToBulk": "Schakel naar Bulk Modus",
+      "validate": "Valideer Link",
+      "validateAll": "Valideer Alle Links",
+      "validating": "Valideren...",
+      "analyzing": "Links analyseren...",
+      "issueDetected": "Probleem Gedetecteerd",
+      "linkValid": "Link Geldig",
+      "originalUrl": "Originele URL",
+      "finalUrl": "Definitieve URL",
+      "redirectChain": "Redirectketen",
+      "history": "Validatie Geschiedenis",
+      "stats": {
+        "total": "Totaal Gecontroleerd",
+        "valid": "Geldige Links",
+        "dead": "Dode Links",
+        "loops": "Redirect Loops",
+        "multiNetwork": "Multi-Netwerk"
+      },
+      "form": {
+        "urlLabel": "Affiliate Link URL",
+        "urlPlaceholder": "https://voorbeeld.com/affiliate-link",
+        "bulkLabel": "Plak URLs (één per regel)",
+        "bulkPlaceholder": "https://voorbeeld.com/affiliate-link-1\nhttps://voorbeeld.com/affiliate-link-2\nhttps://voorbeeld.com/affiliate-link-3"
+      },
+      "errors": {
+        "deadLink": "Deze link geeft een 404 fout en lijkt kapot te zijn.",
+        "redirectLoop": "Deze link zit vast in een redirect loop.",
+        "multipleNetworks": "Deze link leidt door meerdere affiliate netwerken, wat tracking problemen kan veroorzaken.",
+        "general": "Er is een fout opgetreden bij het valideren van deze link."
+      },
+      "table": {
+        "status": "Status",
+        "url": "URL",
+        "network": "Netwerk",
+        "redirects": "Redirects",
+        "time": "Tijd",
+        "actions": "Acties",
+        "details": "Details",
+        "hide": "Verbergen"
       }
     }
   }

@@ -76,6 +76,7 @@ export default function DashboardHeader({ selectedProject, notifications, onAllN
     identifier_id: string;
   } | null>(null)
   const [isPanelOpen, setIsPanelOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
   const { user, userProfile, isLoading } = useUser()
   const { searchResults, isLoading: isSearchLoading, error, updateSearchQuery } = useProjectSearch(selectedProject?.id || null)
   const { activeJobs, runningJobsCount, hasActiveJobs } = useGlobalJobMonitor()
@@ -195,6 +196,22 @@ export default function DashboardHeader({ selectedProject, notifications, onAllN
     }
   }, [])
 
+  // Handle scroll to make search results sticky
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop
+      setIsScrolled(scrollTop > 100) // Make sticky after scrolling 100px
+    }
+
+    // Only add scroll listener when search results are visible
+    if (showResults && searchValue.length >= 2) {
+      window.addEventListener('scroll', handleScroll)
+      return () => {
+        window.removeEventListener('scroll', handleScroll)
+      }
+    }
+  }, [showResults, searchValue])
+
   return (
     <div className="flex items-center justify-between bg-white border-b border-gray-300 p-2">
       <div className="relative w-full max-w-lg ml-2" ref={searchRef}>
@@ -215,7 +232,11 @@ export default function DashboardHeader({ selectedProject, notifications, onAllN
         
         {/* Search Results Overlay */}
         {showResults && searchValue.length >= 2 && (
-          <div className="absolute z-10 w-[800px] bg-white border border-gray-300 mt-1 rounded-md shadow-lg overflow-hidden">
+          <div className={`z-50 w-[800px] max-w-[90vw] bg-white border border-gray-300 rounded-md shadow-lg overflow-hidden transition-all duration-200 ${
+            isScrolled 
+              ? 'fixed top-4 left-[200px] shadow-2xl max-h-[80vh] border-blue-200' 
+              : 'absolute mt-1 max-h-96'
+          }`}>
             {isSearchLoading ? (
               <div className="p-4 text-center text-gray-500">
                 <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-gray-600 mx-auto mb-2"></div>
@@ -226,7 +247,7 @@ export default function DashboardHeader({ selectedProject, notifications, onAllN
                 Error: {error}
               </div>
             ) : searchResults && searchResults.merchants.length > 0 ? (
-              <div className="max-h-96 overflow-y-auto">
+              <div className={`overflow-y-auto ${isScrolled ? 'max-h-[calc(80vh-2rem)]' : 'max-h-96'}`}>
                 {/* Filter Controls */}
                 <div className="p-3 border-b border-gray-100 bg-gray-50">
                   <div className="flex gap-2 items-center">

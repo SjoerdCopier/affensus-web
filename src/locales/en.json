@@ -55,6 +55,10 @@
         "title": "Link Rot Analysis | Monitor Broken Affiliate Links | Affensus",
         "description": "Analyze and monitor link rot in your affiliate marketing campaigns. Track broken links, identify issues, and maintain healthy affiliate relationships."
       },
+      "linkValidator": {
+        "title": "Link Validator | Validate Affiliate Links | Affensus",
+        "description": "Validate and test your affiliate links in real-time. Check redirect chains, detect broken links, and identify network issues."
+      },
       "notifications": {
         "title": "Notifications | Track Merchant Changes | Affensus",
         "description": "Stay updated with merchant changes, status updates, and new opportunities in your affiliate marketing campaigns. Monitor all important changes in real-time."
@@ -65,7 +69,6 @@
     "navigation": {
       "home": "Home",
       "about": "About",
-      "services": "Services",
       "contact": "Contact"
     },
     "actions": {
@@ -79,6 +82,7 @@
     "freeTools": "Free Tools",
     "signIn": "Sign in",
     "register": "Register",
+    "dashboard": "Dashboard",
     "tools": {
       "affiliateLinkChecker": {
         "title": "Affiliate Link Checker",
@@ -95,6 +99,13 @@
       "affiliateNetworkUptime": {
         "title": "Affiliate Network Downtime",
         "description": "Monitor affiliate network downtime and availability in real-time"
+      }
+    },
+    "services": {
+      "title": "Services",
+      "fraudProtection": {
+        "title": "Fraud Protection",
+        "description": "Advanced fraud detection and prevention for affiliate marketing"
       }
     }
   },
@@ -894,6 +905,55 @@
           "title": "Can I add a custom network if I can't find my network?",
           "description": "Yes we can add custom networks for you. Just drop us an email at info@affensus.com and we will add any network you like."
         }
+      }
+    }
+  },
+  "dashboard": {
+    "linkValidator": {
+      "title": "Link Validator",
+      "description": "Validate and test your affiliate links in real-time",
+      "singleMode": "Single Link Validation",
+      "bulkMode": "Bulk Link Validation",
+      "switchToSingle": "Switch to Single Mode",
+      "switchToBulk": "Switch to Bulk Mode",
+      "validate": "Validate Link",
+      "validateAll": "Validate All Links",
+      "validating": "Validating...",
+      "analyzing": "Analyzing links...",
+      "issueDetected": "Issue Detected",
+      "linkValid": "Link Valid",
+      "originalUrl": "Original URL",
+      "finalUrl": "Final URL",
+      "redirectChain": "Redirect Chain",
+      "history": "Validation History",
+      "stats": {
+        "total": "Total Checked",
+        "valid": "Valid Links",
+        "dead": "Dead Links",
+        "loops": "Redirect Loops",
+        "multiNetwork": "Multi-Network"
+      },
+      "form": {
+        "urlLabel": "Affiliate Link URL",
+        "urlPlaceholder": "https://example.com/affiliate-link",
+        "bulkLabel": "Paste URLs (one per line)",
+        "bulkPlaceholder": "https://example.com/affiliate-link-1\nhttps://example.com/affiliate-link-2\nhttps://example.com/affiliate-link-3"
+      },
+      "errors": {
+        "deadLink": "This link returns a 404 error and appears to be broken.",
+        "redirectLoop": "This link is caught in a redirect loop.",
+        "multipleNetworks": "This link redirects through multiple affiliate networks, which may cause tracking issues.",
+        "general": "An error occurred while validating this link."
+      },
+      "table": {
+        "status": "Status",
+        "url": "URL",
+        "network": "Network",
+        "redirects": "Redirects",
+        "time": "Time",
+        "actions": "Actions",
+        "details": "Details",
+        "hide": "Hide"
       }
     }
   }
