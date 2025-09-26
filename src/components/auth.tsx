@@ -166,11 +166,11 @@ export default function AuthComponent() {
               {/* Customer Info */}
               <div className="flex items-center justify-center space-x-3">
                 <div className="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center">
-                  <span className="text-white font-semibold text-lg">SK</span>
+                  <span className="text-white font-semibold text-lg">JT</span>
                 </div>
                 <div className="text-left">
-                  <div className="text-white font-semibold">Sarah Kim</div>
-                  <div className="text-gray-400 text-sm">Customer Experience Manager – TechWave Inc.</div>
+                  <div className="text-white font-semibold">Jacob Trummer</div>
+                  <div className="text-gray-400 text-sm">COO – Saleduck Asia</div>
                 </div>
               </div>
 
