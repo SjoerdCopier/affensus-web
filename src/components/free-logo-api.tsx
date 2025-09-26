@@ -147,7 +147,6 @@ export default function FreeLogoApi() {
   };
 
   const getCodeExample = (language: 'python' | 'curl' | 'php') => {
-    const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://affensus.com';
     const apiEndpoint = 'https://apiv2.affensus.com/api/get-logos';
     
     switch (language) {

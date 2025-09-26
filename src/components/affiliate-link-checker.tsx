@@ -5,8 +5,15 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Breadcrumbs from "@/components/breadcrumbs";
 import { useLocaleTranslations } from "@/hooks/use-locale-translations";
 import { useUser } from "@/hooks/use-user";
-import { Shield, Search, Clock } from 'lucide-react';
+import { Shield, Search, Clock, Globe, ChevronDown, ChevronUp, Copy, Check, Flag, AlertTriangle } from 'lucide-react';
 import { CountrySelect } from "@/components/ui/country-select";
+
+interface Flag {
+    name: string;
+    flag_type: string;
+    description: string;
+    severity: string;
+}
 
 interface Redirect {
     url: string;
@@ -15,6 +22,7 @@ interface Redirect {
     latency_ms: number;
     step: number;
     type: string;
+    flags?: Flag[];
     affiliate_network?: {
         name: string;
     networkId: number;
@@ -24,6 +32,64 @@ interface Redirect {
 }
 
 // ApiRedirectStep interface removed - using main Redirect interface
+
+// Helper function to extract domain from URL
+const extractDomain = (url: string): string => {
+    try {
+        const urlObj = new URL(url);
+        return urlObj.hostname;
+    } catch {
+        return url;
+    }
+};
+
+// Helper function to truncate URL for display
+const truncateUrl = (url: string, maxLength: number = 60): string => {
+    if (url.length <= maxLength) return url;
+    return url.substring(0, maxLength) + '...';
+};
+
+// Helper function to truncate URL in the middle
+const truncateUrlMiddle = (url: string, maxLength: number = 80): string => {
+    if (url.length <= maxLength) return url;
+    const start = Math.floor((maxLength - 3) / 2);
+    const end = Math.ceil((maxLength - 3) / 2);
+    return url.substring(0, start) + '...' + url.substring(url.length - end);
+};
+
+// Helper function to get flag styling based on severity
+const getFlagStyling = (severity: string) => {
+    switch (severity.toLowerCase()) {
+        case 'high':
+            return {
+                bgColor: 'bg-red-100',
+                textColor: 'text-red-800',
+                borderColor: 'border-red-200',
+                iconColor: 'text-red-600'
+            };
+        case 'medium':
+            return {
+                bgColor: 'bg-yellow-100',
+                textColor: 'text-yellow-800',
+                borderColor: 'border-yellow-200',
+                iconColor: 'text-yellow-600'
+            };
+        case 'low':
+            return {
+                bgColor: 'bg-blue-100',
+                textColor: 'text-blue-800',
+                borderColor: 'border-blue-200',
+                iconColor: 'text-blue-600'
+            };
+        default:
+            return {
+                bgColor: 'bg-gray-100',
+                textColor: 'text-gray-800',
+                borderColor: 'border-gray-200',
+                iconColor: 'text-gray-600'
+            };
+    }
+};
 
 function AffiliateLinkCheckerContent() {
     const { t } = useLocaleTranslations();
@@ -43,6 +109,39 @@ function AffiliateLinkCheckerContent() {
     const [proxyCountry, setProxyCountry] = useState("");
     const [checkUuid, setCheckUuid] = useState("");
     const [isSharedResult, setIsSharedResult] = useState(false);
+    const [expandedUrls, setExpandedUrls] = useState<Set<number>>(new Set());
+    const [copiedUrls, setCopiedUrls] = useState<Set<number>>(new Set());
+
+    // Function to toggle URL expansion
+    const toggleUrlExpansion = (index: number) => {
+        setExpandedUrls(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(index)) {
+                newSet.delete(index);
+            } else {
+                newSet.add(index);
+            }
+            return newSet;
+        });
+    };
+
+    // Function to copy URL to clipboard
+    const copyUrl = async (url: string, index: number) => {
+        try {
+            await navigator.clipboard.writeText(url);
+            setCopiedUrls(prev => new Set(prev).add(index));
+            // Reset the copied state after 2 seconds
+            setTimeout(() => {
+                setCopiedUrls(prev => {
+                    const newSet = new Set(prev);
+                    newSet.delete(index);
+                    return newSet;
+                });
+            }, 2000);
+        } catch (err) {
+            console.error('Failed to copy URL:', err);
+        }
+    };
 
     // Function to load shared results
     const loadSharedResult = useCallback(async (uuid: string) => {
@@ -94,83 +193,90 @@ function AffiliateLinkCheckerContent() {
                     // Check for multiple different network names
                     uniqueNetworks = [...new Set(redirects.map((redirect: Redirect) => redirect.affiliate_network?.name).filter((name): name is string => Boolean(name)))];
                     setMultipleNetworks(uniqueNetworks.length > 1);
-
-                    // Set appropriate result message
-                    if (hasRedirectError) {
-                        setResultMessage(
-                            <>
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth={1.5}
-                                    stroke="currentColor"
-                                    className="w-20 h-20 mt-1"
-                                >
-                                    <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
-                                </svg>
-                                <div className="ml-4">
-                                    {t('tools.affiliateLinkChecker.messages.deadEnd')}
-                                </div>
-                            </>
-                        );
-                    } else if (has404) {
-                        setResultMessage(
-                            <>
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth={1.5}
-                                    stroke="currentColor"
-                                    className="w-20 h-20 mt-1"
-                                >
-                                    <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
-                                </svg>
-                                <div className="ml-4">
-                                    {t('tools.affiliateLinkChecker.messages.deadLink')}
-                                </div>
-                            </>
-                        );
-                    } else if (uniqueNetworks.length > 1) {
-                        const firstNetwork = uniqueNetworks[0] as string;
-                        setResultMessage(
-                            <>
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth={1.5}
-                                    stroke="currentColor"
-                                    className="w-20 h-20 mt-1"
-                                >
-                                    <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
-                                </svg>
-                                <div className="ml-4">
-                                    {t('tools.affiliateLinkChecker.messages.multipleNetworks').replace('{network}', firstNetwork)}
-                                </div>
-                            </>
-                        );
-                    } else {
-                        setResultMessage(
-                            <>
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth={1.5}
-                                    stroke="currentColor"
-                                    className="w-20 h-20 mt-1"
-                                >
-                                    <path d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"></path>
-                                </svg>
-                                <div className="ml-4">
-                                    {t('tools.affiliateLinkChecker.messages.success')}
-                                </div>
-                            </>
-                        );
-                    }
                 } else {
+                    // Handle API error response - but still try to extract redirect chain if available
+                    console.error('API returned error for shared result:', responseData.error);
+                    
+                    // Even on error, try to extract redirect chain if it exists
+                    if (responseData.redirect_chain && responseData.redirect_chain.length > 0) {
+                        redirects = responseData.redirect_chain;
+                        setRedirects(redirects);
+                        setCheckUuid(responseData.uuid || uuid);
+                        setAffiliateUrl(responseData.original_url || ""); // Set the original URL if available
+                        setIsSharedResult(true); // Mark this as a shared result
+                        
+                        // Check for 404 status code
+                        has404 = redirects.some((redirect: Redirect) => redirect.status_code === 404);
+                        setHas404(has404);
+
+                        // Check for redirect errors (4xx or 5xx status codes)
+                        hasRedirectError = redirects.some((redirect: Redirect) => redirect.status_code >= 400);
+                        setHasRedirectError(hasRedirectError);
+
+                        // Check for multiple different network names
+                        uniqueNetworks = [...new Set(redirects.map((redirect: Redirect) => redirect.affiliate_network?.name).filter((name): name is string => Boolean(name)))];
+                        setMultipleNetworks(uniqueNetworks.length > 1);
+                    }
+                }
+
+                // Set appropriate result message based on the analysis
+                if (hasRedirectError) {
+                    setResultMessage(
+                        <>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="w-20 h-20 mt-1"
+                            >
+                                <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
+                            </svg>
+                            <div className="ml-4">
+                                {t('tools.affiliateLinkChecker.messages.deadEnd')}
+                            </div>
+                        </>
+                    );
+                } else if (has404) {
+                    setResultMessage(
+                        <>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="w-20 h-20 mt-1"
+                            >
+                                <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
+                            </svg>
+                            <div className="ml-4">
+                                {t('tools.affiliateLinkChecker.messages.deadLink')}
+                            </div>
+                        </>
+                    );
+                } else if (uniqueNetworks.length > 1) {
+                    const firstNetwork = uniqueNetworks[0] as string;
+                    setResultMessage(
+                        <>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="w-20 h-20 mt-1"
+                            >
+                                <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
+                            </svg>
+                            <div className="ml-4">
+                                {t('tools.affiliateLinkChecker.messages.multipleNetworks').replace('{network}', firstNetwork)}
+                            </div>
+                        </>
+                    );
+                } else if (!responseData.success) {
+                    // Set error message for API error
                     setResultMessage(
                         <>
                             <svg
@@ -185,6 +291,24 @@ function AffiliateLinkCheckerContent() {
                             </svg>
                             <div className="ml-4">
                                 {t('tools.affiliateLinkChecker.messages.error')}
+                            </div>
+                        </>
+                    );
+                } else {
+                    setResultMessage(
+                        <>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="w-20 h-20 mt-1"
+                            >
+                                <path d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"></path>
+                            </svg>
+                            <div className="ml-4">
+                                {t('tools.affiliateLinkChecker.messages.success')}
                             </div>
                         </>
                     );
@@ -362,22 +486,50 @@ function AffiliateLinkCheckerContent() {
                 }),
             });
 
-            if (response.ok) {
-                const responseData = await response.json();
-                let redirects: Redirect[] = [];
-                let has404 = false;
-                let hasRedirectError = false;
-                let uniqueNetworks: string[] = [];
-                
-                // Handle the new API response format
-                if (responseData.success) {
-                    // The actual data is in responseData (or responseData.data if nested)
-                    const data = responseData.data || responseData;
-                    redirects = data.redirect_chain || [];
-                    
-                    setRedirects(redirects); // Store all redirects
-                    setCheckUuid(data.uuid || ""); // Store the UUID from API
+            // Try to parse response regardless of status code
+            let responseData;
+            try {
+                responseData = await response.json();
+            } catch (parseError) {
+                console.error('Failed to parse response:', parseError);
+                throw new Error('Invalid response format');
+            }
 
+            let redirects: Redirect[] = [];
+            let has404 = false;
+            let hasRedirectError = false;
+            let uniqueNetworks: string[] = [];
+            
+            // Handle the response data regardless of success status
+            if (responseData.success) {
+                // The actual data is in responseData (or responseData.data if nested)
+                const data = responseData.data || responseData;
+                redirects = data.redirect_chain || [];
+                
+                setRedirects(redirects); // Store all redirects
+                setCheckUuid(data.uuid || ""); // Store the UUID from API
+
+                // Check for 404 status code
+                has404 = redirects.some((redirect: Redirect) => redirect.status_code === 404);
+                setHas404(has404);
+
+                // Check for redirect errors (4xx or 5xx status codes)
+                hasRedirectError = redirects.some((redirect: Redirect) => redirect.status_code >= 400);
+                setHasRedirectError(hasRedirectError);
+
+                // Check for multiple different network names
+                uniqueNetworks = [...new Set(redirects.map((redirect: Redirect) => redirect.affiliate_network?.name).filter((name): name is string => Boolean(name)))];
+                setMultipleNetworks(uniqueNetworks.length > 1);
+            } else {
+                // Handle API error response - but still try to extract redirect chain if available
+                console.error('API returned error:', responseData.error);
+                
+                // Even on error, try to extract redirect chain if it exists
+                if (responseData.redirect_chain && responseData.redirect_chain.length > 0) {
+                    redirects = responseData.redirect_chain;
+                    setRedirects(redirects);
+                    setCheckUuid(responseData.uuid || "");
+                    
                     // Check for 404 status code
                     has404 = redirects.some((redirect: Redirect) => redirect.status_code === 404);
                     setHas404(has404);
@@ -389,105 +541,102 @@ function AffiliateLinkCheckerContent() {
                     // Check for multiple different network names
                     uniqueNetworks = [...new Set(redirects.map((redirect: Redirect) => redirect.affiliate_network?.name).filter((name): name is string => Boolean(name)))];
                     setMultipleNetworks(uniqueNetworks.length > 1);
-                } else {
-                    // Handle API error response
-                    console.error('API returned error:', responseData.error);
-                    setResultMessage(
-                        <>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
-                                className="w-20 h-20 mt-1"
-                            >
-                                <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
-                            </svg>
-                            <div className="ml-4">
-                                {t('tools.affiliateLinkChecker.messages.error')}
-                            </div>
-                        </>
-                    );
                 }
+            }
 
-                if (hasRedirectError) {
-                    setResultMessage(
-                        <>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
-                                className="w-20 h-20 mt-1"
-                            >
-                                <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
-                            </svg>
-                            <div className="ml-4">
-                                {t('tools.affiliateLinkChecker.messages.deadEnd')}
-                            </div>
-                        </>
-                    );
-                } else if (has404) {
-                    setResultMessage(
-                        <>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
-                                className="w-20 h-20 mt-1"
-                            >
-                                <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
-                            </svg>
-                            <div className="ml-4">
-                                {t('tools.affiliateLinkChecker.messages.deadLink')}
-                            </div>
-                        </>
-                    );
-                } else if (uniqueNetworks.length > 1) {
-                    const firstNetwork = uniqueNetworks[0] as string;
-                    setResultMessage(
-                        <>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
-                                className="w-20 h-20 mt-1"
-                            >
-                                <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
-                            </svg>
-                            <div className="ml-4">
-                                {t('tools.affiliateLinkChecker.messages.multipleNetworks').replace('{network}', firstNetwork)}
-                            </div>
-                        </>
-                    );
-                } else {
-                    setResultMessage(
-                        <>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
-                                className="w-20 h-20 mt-1"
-                            >
-                                <path d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"></path>
-                            </svg>
-                            <div className="ml-4">
-                                {t('tools.affiliateLinkChecker.messages.success')}
-                            </div>
-                        </>
-                    );
-                }
-
+            // Set appropriate result message based on the analysis
+            if (hasRedirectError) {
+                setResultMessage(
+                    <>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="w-20 h-20 mt-1"
+                        >
+                            <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
+                        </svg>
+                        <div className="ml-4">
+                            {t('tools.affiliateLinkChecker.messages.deadEnd')}
+                        </div>
+                    </>
+                );
+            } else if (has404) {
+                setResultMessage(
+                    <>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="w-20 h-20 mt-1"
+                        >
+                            <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
+                        </svg>
+                        <div className="ml-4">
+                            {t('tools.affiliateLinkChecker.messages.deadLink')}
+                        </div>
+                    </>
+                );
+            } else if (uniqueNetworks.length > 1) {
+                const firstNetwork = uniqueNetworks[0] as string;
+                setResultMessage(
+                    <>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="w-20 h-20 mt-1"
+                        >
+                            <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
+                        </svg>
+                        <div className="ml-4">
+                            {t('tools.affiliateLinkChecker.messages.multipleNetworks').replace('{network}', firstNetwork)}
+                        </div>
+                    </>
+                );
+            } else if (!responseData.success) {
+                // Set error message for API error
+                setResultMessage(
+                    <>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="w-20 h-20 mt-1"
+                        >
+                            <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
+                        </svg>
+                        <div className="ml-4">
+                            {t('tools.affiliateLinkChecker.messages.error')}
+                        </div>
+                    </>
+                );
             } else {
-                console.error('Error fetching the URL redirects');
+                setResultMessage(
+                    <>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="w-20 h-20 mt-1"
+                        >
+                            <path d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"></path>
+                        </svg>
+                        <div className="ml-4">
+                            {t('tools.affiliateLinkChecker.messages.success')}
+                        </div>
+                    </>
+                );
             }
         } catch (error) {
             console.error('Error:', error);
@@ -686,40 +835,170 @@ function AffiliateLinkCheckerContent() {
                 
                 {redirects.length > 0 && (
                     <div className="mt-6">
-                        <h2 className="text-xl font-semibold">{t('tools.affiliateLinkChecker.results.redirects')}</h2>
+                        {/* Redirect Chain Analysis Header */}
+                        <div className="mb-4">
+                            <h2 className="text-xl font-semibold text-gray-900 mb-2">Redirect Chain Analysis</h2>
+                            <div className="text-gray-600">
+                                {redirects.length} steps • Total time: {redirects.reduce((total, redirect) => total + (redirect.latency_ms || 0), 0).toFixed(2)}ms
+                            </div>
+                            <div className="text-sm text-gray-500 mt-1">
+                                Final destination: {redirects.length > 0 ? truncateUrl(redirects[redirects.length - 1].url, 60) : 'N/A'}
+                            </div>
+                        </div>
+                        
+                        <h3 className="text-lg font-semibold text-gray-700">{t('tools.affiliateLinkChecker.results.redirects')}</h3>
                         <ul className="mt-4 space-y-2">
-                            {redirects.map((redirect: Redirect, index: number) => (
-                                <li key={index} className="p-4 border border-gray-200 rounded-md">
-                                    <div className="text-sm text-gray-500">
+                            {redirects.map((redirect: Redirect, index: number) => {
+                                const hasFlags = redirect.flags && redirect.flags.length > 0;
+                                const hasHighSeverityFlags = hasFlags && redirect.flags!.some(flag => flag.severity.toLowerCase() === 'high');
+                                
+                                return (
+                                <li key={index} className={`p-4 border rounded-md ${hasHighSeverityFlags ? 'border-red-300 bg-red-50' : 'border-gray-200'}`}>
+                                    <div className="text-sm text-gray-500 mb-2">
                                         Step {redirect.step} - {redirect.type === 'original' ? 'Original URL' : redirect.type === 'final' ? 'Final Destination' : 'Redirect'}
                                     </div>
-                                    <div className="text-lg text-gray-900 truncate" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                        {redirect.url.length > 55 ? `${redirect.url.substring(0, 55)}...` : redirect.url}
+                                    
+                                    {/* URL with expand/collapse and copy */}
+                                    <div className="flex items-start gap-2 mb-3">
+                                        <button
+                                            onClick={() => toggleUrlExpansion(index)}
+                                            className="flex items-center justify-center w-5 h-5 text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0 mt-0.5"
+                                            title={expandedUrls.has(index) ? "Collapse URL" : "Expand URL"}
+                                        >
+                                            {expandedUrls.has(index) ? (
+                                                <ChevronUp className="w-4 h-4" />
+                                            ) : (
+                                                <ChevronDown className="w-4 h-4" />
+                                            )}
+                                        </button>
+                                        <div className="flex-1 min-w-0">
+                                            <a 
+                                                href={redirect.url} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer"
+                                                className="text-blue-600 hover:text-blue-800 hover:underline text-sm font-mono break-all"
+                                                title={redirect.url}
+                                            >
+                                                {expandedUrls.has(index) ? redirect.url : truncateUrlMiddle(redirect.url, 80)}
+                                            </a>
+                                        </div>
+                                        <button
+                                            onClick={() => copyUrl(redirect.url, index)}
+                                            className="flex items-center justify-center w-5 h-5 text-gray-400 hover:text-gray-600 transition-colors flex-shrink-0 mt-0.5"
+                                            title="Copy URL"
+                                        >
+                                            {copiedUrls.has(index) ? (
+                                                <Check className="w-4 h-4 text-green-600" />
+                                            ) : (
+                                                <Copy className="w-4 h-4" />
+                                            )}
+                                        </button>
                                     </div>
-                                    {redirect.affiliate_network && (
-                                        <div className="text-sm font-medium text-blue-500">
-                                            {t('tools.affiliateLinkChecker.results.network')} {redirect.affiliate_network.name}
+                                    
+                                    {/* Flags display */}
+                                    {hasFlags && (
+                                        <div className="mb-3">
+                                            <div className="flex items-center gap-2 flex-wrap">
+                                                {redirect.flags!.map((flag, flagIndex) => {
+                                                    const styling = getFlagStyling(flag.severity);
+                                                    return (
+                                                        <div
+                                                            key={flagIndex}
+                                                            className={`inline-flex items-center gap-1 px-2 py-1 rounded-md border text-xs font-medium ${styling.bgColor} ${styling.textColor} ${styling.borderColor}`}
+                                                            title={`${flag.name}: ${flag.description}`}
+                                                        >
+                                                            <Flag className={`w-3 h-3 ${styling.iconColor}`} />
+                                                            <span>{flag.name}</span>
+                                                            {flag.severity.toLowerCase() === 'high' && (
+                                                                <AlertTriangle className="w-3 h-3 text-red-600" />
+                                                            )}
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    )}
+                                    
+                                    {/* Badges below URL */}
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                        {/* Network badge */}
+                                        <span className="inline-flex items-center justify-center rounded-md border border-gray-300 px-2 py-0.5 font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground text-xs">
+                                            <Globe className="w-3 h-3 mr-1" aria-hidden="true" />
+                                            {redirect.affiliate_network?.name || 'Unknown'}
+                                        </span>
+                                        
+                                        {/* Status code badge */}
+                                        <span className={`inline-flex items-center justify-center rounded-md border px-2 py-0.5 font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden border-transparent text-xs ${
+                                            redirect.status_code < 300 
+                                                ? 'bg-green-100 text-green-800 border-green-200' 
+                                                : redirect.status_code < 400 
+                                                    ? 'bg-yellow-100 text-yellow-800 border-yellow-200'
+                                                    : 'bg-red-100 text-red-800 border-red-200'
+                                        }`}>
+                                            {redirect.status_code} {redirect.redirect_type}
+                                        </span>
+                                        
+                                        {/* Latency badge */}
+                                        {redirect.latency_ms && (
+                                            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                                <Clock className="w-3 h-3" aria-hidden="true" />
+                                                {redirect.latency_ms.toFixed(1)}ms
+                                            </div>
+                                        )}
+                                    </div>
+                                    
+                                    {redirect.affiliate_network && (redirect.affiliate_network.userId || redirect.affiliate_network.programId) && (
+                                        <div className="text-sm text-gray-600 mt-2">
                                             {redirect.affiliate_network.userId && (
-                                                <div className="text-xs text-gray-500 mt-1">
+                                                <div className="text-xs text-gray-500">
                                                     User ID: {redirect.affiliate_network.userId}
                                                 </div>
                                             )}
                                             {redirect.affiliate_network.programId && (
-                                                <div className="text-xs text-gray-500 mt-1">
-                                                    Program ID: {redirect.affiliate_network.programId}
+                                                <div className="text-xs text-gray-500">
+                                                    Program ID: {(() => {
+                                                        try {
+                                                            return decodeURIComponent(redirect.affiliate_network.programId);
+                                                        } catch {
+                                                            return redirect.affiliate_network.programId;
+                                                        }
+                                                    })()}
                                                 </div>
                                             )}
                                         </div>
                                     )}
-                                    <div className={`text-sm font-medium ${redirect.status_code < 300 ? 'text-green-500' : 'text-red-500'}`}>
-                                        {t('tools.affiliateLinkChecker.results.status')} {redirect.status_code} ({redirect.redirect_type})
-                                        {redirect.latency_ms && (
-                                            <span className="text-gray-500 ml-2">- {redirect.latency_ms.toFixed(1)}ms</span>
-                                        )}
-                                    </div>
                                 </li>
-                            ))}
+                                );
+                            })}
                         </ul>
+                        
+                        {/* Redirect Statistics */}
+                        <div className="mt-6">
+                            <h3 className="text-lg font-semibold text-black mb-4">Redirect Statistics</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div className="text-center">
+                                    <div className="text-2xl font-bold text-black">
+                                        {redirects.length}
+                                    </div>
+                                    <div className="text-sm text-black">Total Redirects</div>
+                                </div>
+                                <div className="text-center">
+                                    <div className="text-2xl font-bold text-black">
+                                        {redirects.reduce((total, redirect) => total + (redirect.latency_ms || 0), 0).toFixed(1)}ms
+                                    </div>
+                                    <div className="text-sm text-black">Total Time</div>
+                                </div>
+                                <div className="text-center">
+                                    <div className="text-2xl font-bold text-black">
+                                        {redirects.length > 0 
+                                            ? (redirects.reduce((total, redirect) => total + (redirect.latency_ms || 0), 0) / redirects.length).toFixed(0) + 'ms'
+                                            : '0ms'
+                                        }
+                                    </div>
+                                    <div className="text-sm text-black">Avg per Step</div>
+                                </div>
+                            </div>
+                        </div>
                         
                         {/* URL Check Results Summary */}
                         <div className="mt-8 p-6 bg-gray-50 border border-gray-200 rounded-lg">
