@@ -160,22 +160,22 @@ export default function AffiliateNetworksPage() {
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
                 {filteredNetworks.map((network) => (
                   <div
                     key={network.id}
-                    className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 p-6 flex flex-col items-center text-center group border border-gray-100"
+                    className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 p-3 sm:p-4 md:p-6 flex flex-col items-center text-center group border border-gray-100"
                   >
-                    <div className="w-16 h-16 mb-4 relative flex items-center justify-center">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-32 md:h-32 lg:w-36 lg:h-36 mb-2 sm:mb-3 md:mb-4 relative flex items-center justify-center">
                       <Image
                         src={network.logo}
                         alt={`${network.name} logo`}
-                        width={64}
-                        height={64}
+                        width={144}
+                        height={144}
                         className="object-contain max-w-full max-h-full group-hover:scale-110 transition-transform duration-200"
                       />
                     </div>
-                    <h3 className="font-semibold text-gray-900 text-sm leading-tight">
+                    <h3 className="font-semibold text-gray-900 text-xs sm:text-sm leading-tight">
                       {network.name}
                     </h3>
                   </div>

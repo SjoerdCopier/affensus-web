@@ -1,7 +1,7 @@
 "use client"; // This marks the file as a client component
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect, useCallback, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Breadcrumbs from "@/components/breadcrumbs";
 import { useLocaleTranslations } from "@/hooks/use-locale-translations";
 import { useUser } from "@/hooks/use-user";
@@ -17,8 +17,9 @@ interface Redirect {
     type: string;
     affiliate_network?: {
         name: string;
-        networkId: number;
-        userId?: string;
+    networkId: number;
+    userId?: string;
+    programId?: string;
     };
 }
 
@@ -28,6 +29,7 @@ function AffiliateLinkCheckerContent() {
     const { t } = useLocaleTranslations();
     const router = useRouter();
     const { user } = useUser();
+    const searchParams = useSearchParams();
     const [affiliateUrl, setAffiliateUrl] = useState("");
     const [loading, setLoading] = useState(false);
     const [redirects, setRedirects] = useState<Redirect[]>([]);
@@ -39,6 +41,205 @@ function AffiliateLinkCheckerContent() {
     const [bulkUrls, setBulkUrls] = useState("");
     const [uploadedFile, setUploadedFile] = useState<File | null>(null);
     const [proxyCountry, setProxyCountry] = useState("");
+    const [checkUuid, setCheckUuid] = useState("");
+    const [isSharedResult, setIsSharedResult] = useState(false);
+
+    // Function to load shared results
+    const loadSharedResult = useCallback(async (uuid: string) => {
+        setLoading(true);
+        setRedirects([]);
+        setResultMessage("");
+        setHas404(false);
+        setMultipleNetworks(false);
+        setHasRedirectError(false);
+
+        try {
+            const apiEndpoint = process.env.NODE_ENV === 'development' 
+                ? `http://localhost:8788/api/tools/affiliate-link-checker?uuid=${uuid}`
+                : `/api/tools/affiliate-link-checker?uuid=${uuid}`;
+
+            const response = await fetch(apiEndpoint, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (response.ok) {
+                const responseData = await response.json();
+                let redirects: Redirect[] = [];
+                let has404 = false;
+                let hasRedirectError = false;
+                let uniqueNetworks: string[] = [];
+
+                if (responseData.success) {
+                    const data = responseData.data || responseData;
+                    redirects = data.redirect_chain || [];
+                    
+                    setRedirects(redirects);
+                    setCheckUuid(data.uuid || uuid);
+                    setAffiliateUrl(data.original_url || ""); // Set the original URL if available
+                    setIsSharedResult(true); // Mark this as a shared result
+                    
+                    // Don't make any additional API calls - just use the existing data
+
+                    // Check for 404 status code
+                    has404 = redirects.some((redirect: Redirect) => redirect.status_code === 404);
+                    setHas404(has404);
+
+                    // Check for redirect errors (4xx or 5xx status codes)
+                    hasRedirectError = redirects.some((redirect: Redirect) => redirect.status_code >= 400);
+                    setHasRedirectError(hasRedirectError);
+
+                    // Check for multiple different network names
+                    uniqueNetworks = [...new Set(redirects.map((redirect: Redirect) => redirect.affiliate_network?.name).filter((name): name is string => Boolean(name)))];
+                    setMultipleNetworks(uniqueNetworks.length > 1);
+
+                    // Set appropriate result message
+                    if (hasRedirectError) {
+                        setResultMessage(
+                            <>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                    className="w-20 h-20 mt-1"
+                                >
+                                    <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
+                                </svg>
+                                <div className="ml-4">
+                                    {t('tools.affiliateLinkChecker.messages.deadEnd')}
+                                </div>
+                            </>
+                        );
+                    } else if (has404) {
+                        setResultMessage(
+                            <>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                    className="w-20 h-20 mt-1"
+                                >
+                                    <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
+                                </svg>
+                                <div className="ml-4">
+                                    {t('tools.affiliateLinkChecker.messages.deadLink')}
+                                </div>
+                            </>
+                        );
+                    } else if (uniqueNetworks.length > 1) {
+                        const firstNetwork = uniqueNetworks[0] as string;
+                        setResultMessage(
+                            <>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                    className="w-20 h-20 mt-1"
+                                >
+                                    <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
+                                </svg>
+                                <div className="ml-4">
+                                    {t('tools.affiliateLinkChecker.messages.multipleNetworks').replace('{network}', firstNetwork)}
+                                </div>
+                            </>
+                        );
+                    } else {
+                        setResultMessage(
+                            <>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                    className="w-20 h-20 mt-1"
+                                >
+                                    <path d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"></path>
+                                </svg>
+                                <div className="ml-4">
+                                    {t('tools.affiliateLinkChecker.messages.success')}
+                                </div>
+                            </>
+                        );
+                    }
+                } else {
+                    setResultMessage(
+                        <>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="w-20 h-20 mt-1"
+                            >
+                                <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
+                            </svg>
+                            <div className="ml-4">
+                                {t('tools.affiliateLinkChecker.messages.error')}
+                            </div>
+                        </>
+                    );
+                }
+            } else {
+                console.error('Error fetching shared result');
+                setResultMessage(
+                    <>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="w-20 h-20 mt-1"
+                        >
+                            <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
+                        </svg>
+                        <div className="ml-4">
+                            {t('tools.affiliateLinkChecker.messages.error')}
+                        </div>
+                    </>
+                );
+            }
+        } catch (error) {
+            console.error('Error loading shared result:', error);
+            setResultMessage(
+                <>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-20 h-20 mt-1"
+                    >
+                        <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
+                    </svg>
+                    <div className="ml-4">
+                        {t('tools.affiliateLinkChecker.messages.error')}
+                    </div>
+                </>
+            );
+        } finally {
+            setLoading(false);
+        }
+    }, [t]);
+
+    // Check for share parameter on component mount
+    useEffect(() => {
+        const shareUuid = searchParams.get('share');
+        if (shareUuid && !isSharedResult && redirects.length === 0) {
+            loadSharedResult(shareUuid);
+        }
+    }, [searchParams, loadSharedResult, isSharedResult, redirects.length]);
 
     const extractUrlsFromText = (text: string): string[] => {
         // Extract URLs from plain text
@@ -136,6 +337,8 @@ function AffiliateLinkCheckerContent() {
         setHas404(false);
         setMultipleNetworks(false);
         setHasRedirectError(false); // Reset the error state
+        setCheckUuid(""); // Reset the UUID
+        setIsSharedResult(false); // Reset shared result flag
 
         try {
             // Use the Cloudflare Pages function endpoint
@@ -168,11 +371,12 @@ function AffiliateLinkCheckerContent() {
                 
                 // Handle the new API response format
                 if (responseData.success) {
-                    // The actual data is in responseData.data
-                    const data = responseData.data;
+                    // The actual data is in responseData (or responseData.data if nested)
+                    const data = responseData.data || responseData;
                     redirects = data.redirect_chain || [];
                     
                     setRedirects(redirects); // Store all redirects
+                    setCheckUuid(data.uuid || ""); // Store the UUID from API
 
                     // Check for 404 status code
                     has404 = redirects.some((redirect: Redirect) => redirect.status_code === 404);
@@ -500,6 +704,11 @@ function AffiliateLinkCheckerContent() {
                                                     User ID: {redirect.affiliate_network.userId}
                                                 </div>
                                             )}
+                                            {redirect.affiliate_network.programId && (
+                                                <div className="text-xs text-gray-500 mt-1">
+                                                    Program ID: {redirect.affiliate_network.programId}
+                                                </div>
+                                            )}
                                         </div>
                                     )}
                                     <div className={`text-sm font-medium ${redirect.status_code < 300 ? 'text-green-500' : 'text-red-500'}`}>
@@ -518,7 +727,7 @@ function AffiliateLinkCheckerContent() {
                             <div className="space-y-2 text-sm">
                                 <div className="flex justify-between">
                                     <span className="font-medium text-gray-700">Check ID:</span>
-                                    <span className="text-gray-600">{crypto.randomUUID()}</span>
+                                    <span className="text-gray-600">{checkUuid || "N/A"}</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span className="font-medium text-gray-700">Checked on:</span>
@@ -562,6 +771,8 @@ function AffiliateLinkCheckerContent() {
                                         setHas404(false);
                                         setMultipleNetworks(false);
                                         setHasRedirectError(false);
+                                        setCheckUuid("");
+                                        setIsSharedResult(false);
                                     }}
                                     className="bg-[#6ca979] hover:bg-[#5a8a66] text-white px-4 py-2 rounded text-sm font-medium transition-colors"
                                 >
@@ -575,7 +786,7 @@ function AffiliateLinkCheckerContent() {
                                         const cleanedRedirects = redirects.map(redirect => {
                                             const { affiliate_network, ...rest } = redirect;
                                             if (affiliate_network) {
-                                                const { networkId, ...cleanNetwork } = affiliate_network;
+                                                const { networkId: _, ...cleanNetwork } = affiliate_network;
                                                 return { ...rest, affiliate_network: cleanNetwork };
                                             }
                                             return rest;
@@ -598,7 +809,7 @@ function AffiliateLinkCheckerContent() {
                                             console.error('Failed to copy JSON:', err);
                                         });
                                     }}
-                                    className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm font-medium transition-colors"
+                                    className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded text-sm font-medium transition-colors"
                                 >
                                     Copy as JSON
                                 </button>
@@ -618,6 +829,7 @@ ${redirects.map(redirect => `  <redirect>
     ${redirect.affiliate_network ? `<affiliate_network>
       <name>${redirect.affiliate_network.name}</name>
       ${redirect.affiliate_network.userId ? `<userId>${redirect.affiliate_network.userId}</userId>` : ''}
+      ${redirect.affiliate_network.programId ? `<programId>${redirect.affiliate_network.programId}</programId>` : ''}
     </affiliate_network>` : ''}
   </redirect>`).join('\n')}
 </redirects>`;
@@ -637,9 +849,37 @@ ${redirects.map(redirect => `  <redirect>
                                             console.error('Failed to copy XML:', err);
                                         });
                                     }}
-                                    className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm font-medium transition-colors"
+                                    className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded text-sm font-medium transition-colors"
                                 >
                                     Copy as XML
+                                </button>
+                                
+                                <button
+                                    type="button"
+                                    onClick={(e) => {
+                                        if (!checkUuid) return;
+                                        
+                                        const shareUrl = `${window.location.origin}/tools/affiliate-link-checker?share=${checkUuid}`;
+                                        navigator.clipboard.writeText(shareUrl).then(() => {
+                                            // Visual feedback
+                                            const button = e.target as HTMLButtonElement;
+                                            const originalText = button.textContent;
+                                            button.textContent = 'Link Copied!';
+                                            button.classList.add('bg-green-600');
+                                            button.classList.remove('bg-blue-600');
+                                            setTimeout(() => {
+                                                button.textContent = originalText;
+                                                button.classList.remove('bg-green-600');
+                                                button.classList.add('bg-blue-600');
+                                            }, 1500);
+                                        }).catch(err => {
+                                            console.error('Failed to copy share URL:', err);
+                                        });
+                                    }}
+                                    disabled={!checkUuid}
+                                    className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white px-4 py-2 rounded text-sm font-medium transition-colors"
+                                >
+                                    Share
                                 </button>
                             </div>
                         </div>
@@ -694,5 +934,11 @@ ${redirects.map(redirect => `  <redirect>
 }
 
 export default function AffiliateLinkChecker() {
-    return <AffiliateLinkCheckerContent />;
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#6ca979]"></div>
+        </div>}>
+            <AffiliateLinkCheckerContent />
+        </Suspense>
+    );
 }

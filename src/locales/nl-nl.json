@@ -62,6 +62,10 @@
         "notifications": {
           "title": "Notificaties | Volg Merchant Wijzigingen | Affensus",
           "description": "Blijf op de hoogte van merchant wijzigingen, status updates en nieuwe kansen in je affiliate marketing campagnes. Monitor alle belangrijke wijzigingen in real-time."
+        },
+        "logos": {
+          "title": "Logo Ophaler | Extracteer Website Logo's | Affensus",
+          "description": "Extracteer en download logo's van elke website URL. Perfect voor affiliate marketeers om merchant logo's voor hun campagnes te krijgen."
         }
       }
     },

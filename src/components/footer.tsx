@@ -4,13 +4,30 @@ import { useLocaleTranslations } from '@/hooks/use-locale-translations';
 import Image from 'next/image';
 import Link from 'next/link';
 import { locales } from '@/locales/settings';
+import { useState, useRef, useEffect } from 'react';
 
 export default function Footer() {
   const { currentLocale, t } = useLocaleTranslations();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const getLocalizedPath = (path: string) => {
     return currentLocale === 'en' ? path : `/${currentLocale}${path}`;
   };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <footer className="bg-[#274539] text-white py-12 mt-20 mx-4 mb-4 rounded-3xl">
@@ -73,20 +90,24 @@ export default function Footer() {
           </p>
           
           {/* Language Selector */}
-          <div className="relative mt-2 md:mt-0 group">
-            <button className="bg-white text-[#6ca979] px-3 py-2 rounded-md text-sm border border-white focus:outline-none focus:ring-2 focus:ring-[#6ca979] flex items-center space-x-2 hover:bg-[#6ca979] hover:text-white transition-colors duration-200">
+          <div className="relative mt-2 md:mt-0" ref={dropdownRef}>
+            <button 
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="bg-white text-[#6ca979] px-3 py-2 rounded-md text-sm border border-white focus:outline-none focus:ring-2 focus:ring-[#6ca979] flex items-center space-x-2 hover:bg-[#6ca979] hover:text-white transition-colors duration-200"
+            >
               <span>{locales[currentLocale as keyof typeof locales]?.flag}</span>
               <span>{locales[currentLocale as keyof typeof locales]?.label}</span>
-              <svg className="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className={`w-4 h-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </button>
             
-            <div className="absolute bottom-full right-0 mb-2 w-48 bg-white rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10" style={{ border: '1px solid #6ca979' }}>
+            <div className={`absolute bottom-full right-0 mb-2 w-48 bg-white rounded-md shadow-lg transition-all duration-200 z-10 ${isDropdownOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`} style={{ border: '1px solid #6ca979' }}>
               {Object.entries(locales).map(([key, locale]) => (
                 <Link 
                   key={key} 
                   href={key === 'en' ? '/' : `/${key}`}
+                  onClick={() => setIsDropdownOpen(false)}
                   className={`block px-4 py-2 text-sm transition-colors ${
                     currentLocale === key ? 'text-white bg-[#6ca979] font-medium' : 'text-[#6ca979] hover:bg-[#6ca979] hover:text-white'
                   }`}

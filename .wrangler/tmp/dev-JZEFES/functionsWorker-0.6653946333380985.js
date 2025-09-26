@@ -7,7 +7,7 @@ var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require
   throw Error('Dynamic require of "' + x + '" is not supported');
 });
 
-// .wrangler/tmp/bundle-5WqQnR/checked-fetch.js
+// .wrangler/tmp/bundle-ONK6vG/checked-fetch.js
 var urls = /* @__PURE__ */ new Set();
 function checkURL(request, init) {
   const url = request instanceof URL ? request : new URL(
@@ -33,7 +33,7 @@ globalThis.fetch = new Proxy(globalThis.fetch, {
   }
 });
 
-// .wrangler/tmp/pages-zQG0ca/functionsWorker-0.791299394488392.mjs
+// .wrangler/tmp/pages-61TTHZ/functionsWorker-0.6653946333380985.mjs
 var __create = Object.create;
 var __defProp2 = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -91,7 +91,7 @@ function checkURL2(request, init) {
 __name(checkURL2, "checkURL");
 var urls2;
 var init_checked_fetch = __esm({
-  "../.wrangler/tmp/bundle-gXo4EV/checked-fetch.js"() {
+  "../.wrangler/tmp/bundle-7ssmxi/checked-fetch.js"() {
     "use strict";
     urls2 = /* @__PURE__ */ new Set();
     __name2(checkURL2, "checkURL");
@@ -171,7 +171,7 @@ __name(onRequestPut, "onRequestPut");
 var init_read = __esm({
   "api/notifications/[project_id]/[notification_id]/read.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(onRequestOptions, "onRequestOptions");
     __name2(onRequestPut, "onRequestPut");
@@ -244,7 +244,7 @@ __name(sendNewUserNotification, "sendNewUserNotification");
 var init_email_notifications = __esm({
   "api/auth/shared/email-notifications.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(sendNewUserNotification, "sendNewUserNotification");
   }
@@ -476,7 +476,7 @@ __name(onRequestGet, "onRequestGet");
 var init_callback = __esm({
   "api/auth/facebook/callback.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(parseCookies, "parseCookies");
     __name2(signJwt, "signJwt");
@@ -814,7 +814,7 @@ __name(onRequestGet2, "onRequestGet2");
 var init_callback2 = __esm({
   "api/auth/github/callback.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(parseCookies2, "parseCookies");
     __name2(signJwt2, "signJwt");
@@ -1209,7 +1209,7 @@ __name(onRequestGet3, "onRequestGet3");
 var init_callback3 = __esm({
   "api/auth/google/callback.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(parseCookies3, "parseCookies");
     __name2(signJwt3, "signJwt");
@@ -1394,7 +1394,7 @@ __name(onRequestPost, "onRequestPost");
 var init_courseId = __esm({
   "api/user/progress/[courseId]/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(onRequestGet4, "onRequestGet");
     __name2(onRequestPost, "onRequestPost");
@@ -1506,7 +1506,7 @@ __name(onRequestGet5, "onRequestGet5");
 var init_monitor = __esm({
   "api/job/[job_id]/monitor.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(onRequestOptions2, "onRequestOptions");
     __name2(onRequestGet5, "onRequestGet");
@@ -1613,7 +1613,7 @@ __name(onRequestGet6, "onRequestGet6");
 var init_status = __esm({
   "api/job/[job_id]/status.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(onRequestOptions3, "onRequestOptions");
     __name2(onRequestGet6, "onRequestGet");
@@ -1694,7 +1694,7 @@ __name(onRequestPut2, "onRequestPut2");
 var init_read_all = __esm({
   "api/notifications/[project_id]/read-all.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(onRequestOptions4, "onRequestOptions");
     __name2(onRequestPut2, "onRequestPut");
@@ -1783,7 +1783,7 @@ __name(onRequestGet7, "onRequestGet7");
 var init_credentials_summary = __esm({
   "api/projects/[project_id]/credentials-summary.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(onRequestOptions5, "onRequestOptions");
     __name2(onRequestGet7, "onRequestGet");
@@ -1875,7 +1875,7 @@ __name(onRequestGet8, "onRequestGet8");
 var init_link_rot = __esm({
   "api/projects/[project_id]/link-rot.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(onRequestOptions6, "onRequestOptions");
     __name2(onRequestGet8, "onRequestGet");
@@ -1978,7 +1978,7 @@ __name(onRequestGet9, "onRequestGet9");
 var init_merchants = __esm({
   "api/projects/[project_id]/merchants.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(onRequestOptions7, "onRequestOptions");
     __name2(onRequestGet9, "onRequestGet");
@@ -2067,7 +2067,7 @@ __name(onRequestGet10, "onRequestGet10");
 var init_networks = __esm({
   "api/projects/[project_id]/networks.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(onRequestOptions8, "onRequestOptions");
     __name2(onRequestGet10, "onRequestGet");
@@ -2156,7 +2156,7 @@ __name(onRequestGet11, "onRequestGet11");
 var init_notifications = __esm({
   "api/projects/[project_id]/notifications.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(onRequestOptions9, "onRequestOptions");
     __name2(onRequestGet11, "onRequestGet");
@@ -2247,7 +2247,7 @@ var ongoingRequests;
 var init_search = __esm({
   "api/projects/[project_id]/search.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     cache = /* @__PURE__ */ new Map();
     CACHE_TTL = 5 * 60 * 1e3;
@@ -2373,7 +2373,7 @@ __name(onRequestGet13, "onRequestGet13");
 var init_notification_id = __esm({
   "api/notifications/[project_id]/[notification_id].ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(onRequestOptions11, "onRequestOptions");
     __name2(onRequestGet13, "onRequestGet");
@@ -2413,7 +2413,7 @@ __name(onRequestGet14, "onRequestGet14");
 var init_facebook = __esm({
   "api/auth/facebook/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(onRequestGet14, "onRequestGet");
   }
@@ -2456,7 +2456,7 @@ __name(onRequestGet15, "onRequestGet15");
 var init_github = __esm({
   "api/auth/github/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(generateState, "generateState");
     __name2(onRequestGet15, "onRequestGet");
@@ -2496,7 +2496,7 @@ __name(onRequestGet16, "onRequestGet16");
 var init_google = __esm({
   "api/auth/google/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(onRequestGet16, "onRequestGet");
   }
@@ -2592,7 +2592,7 @@ __name(onRequestPost2, "onRequestPost2");
 var init_register = __esm({
   "api/auth/register/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(onRequestOptions12, "onRequestOptions");
     __name2(onRequestPost2, "onRequestPost");
@@ -2600,13 +2600,13 @@ var init_register = __esm({
 });
 var require_crypto = __commonJS({
   "(disabled):crypto"() {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
   }
 });
 var require_core = __commonJS({
   "../node_modules/crypto-js/core.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory) {
       if (typeof exports === "object") {
@@ -3216,7 +3216,7 @@ var require_core = __commonJS({
 });
 var require_x64_core = __commonJS({
   "../node_modules/crypto-js/x64-core.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory) {
       if (typeof exports === "object") {
@@ -3473,7 +3473,7 @@ var require_x64_core = __commonJS({
 });
 var require_lib_typedarrays = __commonJS({
   "../node_modules/crypto-js/lib-typedarrays.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory) {
       if (typeof exports === "object") {
@@ -3518,7 +3518,7 @@ var require_lib_typedarrays = __commonJS({
 });
 var require_enc_utf16 = __commonJS({
   "../node_modules/crypto-js/enc-utf16.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory) {
       if (typeof exports === "object") {
@@ -3638,7 +3638,7 @@ var require_enc_utf16 = __commonJS({
 });
 var require_enc_base64 = __commonJS({
   "../node_modules/crypto-js/enc-base64.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory) {
       if (typeof exports === "object") {
@@ -3748,7 +3748,7 @@ var require_enc_base64 = __commonJS({
 });
 var require_enc_base64url = __commonJS({
   "../node_modules/crypto-js/enc-base64url.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory) {
       if (typeof exports === "object") {
@@ -3869,7 +3869,7 @@ var require_enc_base64url = __commonJS({
 });
 var require_md5 = __commonJS({
   "../node_modules/crypto-js/md5.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory) {
       if (typeof exports === "object") {
@@ -4056,7 +4056,7 @@ var require_md5 = __commonJS({
 });
 var require_sha1 = __commonJS({
   "../node_modules/crypto-js/sha1.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory) {
       if (typeof exports === "object") {
@@ -4147,7 +4147,7 @@ var require_sha1 = __commonJS({
 });
 var require_sha256 = __commonJS({
   "../node_modules/crypto-js/sha256.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory) {
       if (typeof exports === "object") {
@@ -4272,7 +4272,7 @@ var require_sha256 = __commonJS({
 });
 var require_sha224 = __commonJS({
   "../node_modules/crypto-js/sha224.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -4317,7 +4317,7 @@ var require_sha224 = __commonJS({
 });
 var require_sha512 = __commonJS({
   "../node_modules/crypto-js/sha512.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -4601,7 +4601,7 @@ var require_sha512 = __commonJS({
 });
 var require_sha384 = __commonJS({
   "../node_modules/crypto-js/sha384.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -4647,7 +4647,7 @@ var require_sha384 = __commonJS({
 });
 var require_sha3 = __commonJS({
   "../node_modules/crypto-js/sha3.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -4849,7 +4849,7 @@ var require_sha3 = __commonJS({
 });
 var require_ripemd160 = __commonJS({
   "../node_modules/crypto-js/ripemd160.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory) {
       if (typeof exports === "object") {
@@ -5332,7 +5332,7 @@ var require_ripemd160 = __commonJS({
 });
 var require_hmac = __commonJS({
   "../node_modules/crypto-js/hmac.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory) {
       if (typeof exports === "object") {
@@ -5439,7 +5439,7 @@ var require_hmac = __commonJS({
 });
 var require_pbkdf2 = __commonJS({
   "../node_modules/crypto-js/pbkdf2.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -5537,7 +5537,7 @@ var require_pbkdf2 = __commonJS({
 });
 var require_evpkdf = __commonJS({
   "../node_modules/crypto-js/evpkdf.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -5628,7 +5628,7 @@ var require_evpkdf = __commonJS({
 });
 var require_cipher_core = __commonJS({
   "../node_modules/crypto-js/cipher-core.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -6276,7 +6276,7 @@ var require_cipher_core = __commonJS({
 });
 var require_mode_cfb = __commonJS({
   "../node_modules/crypto-js/mode-cfb.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -6330,7 +6330,7 @@ var require_mode_cfb = __commonJS({
 });
 var require_mode_ctr = __commonJS({
   "../node_modules/crypto-js/mode-ctr.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -6370,7 +6370,7 @@ var require_mode_ctr = __commonJS({
 });
 var require_mode_ctr_gladman = __commonJS({
   "../node_modules/crypto-js/mode-ctr-gladman.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -6449,7 +6449,7 @@ var require_mode_ctr_gladman = __commonJS({
 });
 var require_mode_ofb = __commonJS({
   "../node_modules/crypto-js/mode-ofb.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -6487,7 +6487,7 @@ var require_mode_ofb = __commonJS({
 });
 var require_mode_ecb = __commonJS({
   "../node_modules/crypto-js/mode-ecb.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -6518,7 +6518,7 @@ var require_mode_ecb = __commonJS({
 });
 var require_pad_ansix923 = __commonJS({
   "../node_modules/crypto-js/pad-ansix923.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -6550,7 +6550,7 @@ var require_pad_ansix923 = __commonJS({
 });
 var require_pad_iso10126 = __commonJS({
   "../node_modules/crypto-js/pad-iso10126.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -6578,7 +6578,7 @@ var require_pad_iso10126 = __commonJS({
 });
 var require_pad_iso97971 = __commonJS({
   "../node_modules/crypto-js/pad-iso97971.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -6605,7 +6605,7 @@ var require_pad_iso97971 = __commonJS({
 });
 var require_pad_zeropadding = __commonJS({
   "../node_modules/crypto-js/pad-zeropadding.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -6639,7 +6639,7 @@ var require_pad_zeropadding = __commonJS({
 });
 var require_pad_nopadding = __commonJS({
   "../node_modules/crypto-js/pad-nopadding.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -6662,7 +6662,7 @@ var require_pad_nopadding = __commonJS({
 });
 var require_format_hex = __commonJS({
   "../node_modules/crypto-js/format-hex.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -6722,7 +6722,7 @@ var require_format_hex = __commonJS({
 });
 var require_aes = __commonJS({
   "../node_modules/crypto-js/aes.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -6876,7 +6876,7 @@ var require_aes = __commonJS({
 });
 var require_tripledes = __commonJS({
   "../node_modules/crypto-js/tripledes.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -7661,7 +7661,7 @@ var require_tripledes = __commonJS({
 });
 var require_rc4 = __commonJS({
   "../node_modules/crypto-js/rc4.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -7746,7 +7746,7 @@ var require_rc4 = __commonJS({
 });
 var require_rabbit = __commonJS({
   "../node_modules/crypto-js/rabbit.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -7877,7 +7877,7 @@ var require_rabbit = __commonJS({
 });
 var require_rabbit_legacy = __commonJS({
   "../node_modules/crypto-js/rabbit-legacy.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -8005,7 +8005,7 @@ var require_rabbit_legacy = __commonJS({
 });
 var require_blowfish = __commonJS({
   "../node_modules/crypto-js/blowfish.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -9202,7 +9202,7 @@ var require_blowfish = __commonJS({
 });
 var require_crypto_js = __commonJS({
   "../node_modules/crypto-js/index.js"(exports, module) {
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -9339,7 +9339,7 @@ var import_crypto_js;
 var init_create = __esm({
   "api/credentials/create.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     import_crypto_js = __toESM(require_crypto_js());
     __name2(onRequestOptions13, "onRequestOptions");
@@ -9427,7 +9427,7 @@ __name(onRequestDelete, "onRequestDelete");
 var init_delete = __esm({
   "api/credentials/delete.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(onRequestOptions14, "onRequestOptions");
     __name2(onRequestDelete, "onRequestDelete");
@@ -9547,7 +9547,7 @@ var import_crypto_js2;
 var init_update = __esm({
   "api/credentials/update.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     import_crypto_js2 = __toESM(require_crypto_js());
     __name2(onRequestOptions15, "onRequestOptions");
@@ -9662,7 +9662,7 @@ __name(onRequestPost4, "onRequestPost4");
 var init_hide = __esm({
   "api/merchants/hide.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(onRequestOptions16, "onRequestOptions");
     __name2(onRequestPost4, "onRequestPost");
@@ -9728,7 +9728,7 @@ var JWT_HEADER;
 var init_jwt = __esm({
   "../src/lib/jwt.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     JWT_ALGORITHM = "HS256";
     JWT_HEADER = { alg: JWT_ALGORITHM, typ: "JWT" };
@@ -9893,7 +9893,7 @@ __name(onRequestPut4, "onRequestPut4");
 var init_billing_address = __esm({
   "api/profile/billing-address.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     init_jwt();
     __name2(parseCookies4, "parseCookies");
@@ -10003,7 +10003,7 @@ __name(onRequestGet18, "onRequestGet18");
 var init_completion_status = __esm({
   "api/profile/completion-status.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     init_jwt();
     __name2(parseCookies5, "parseCookies");
@@ -10106,7 +10106,7 @@ __name(onRequestGet19, "onRequestGet19");
 var init_invoices = __esm({
   "api/profile/invoices.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     init_jwt();
     __name2(getUserInvoices, "getUserInvoices");
@@ -10205,7 +10205,7 @@ __name(onRequestGet20, "onRequestGet20");
 var init_preferences = __esm({
   "api/profile/preferences.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     init_jwt();
     __name2(getUserPreferences, "getUserPreferences");
@@ -10409,7 +10409,7 @@ __name(processPendingInvoices, "processPendingInvoices");
 var init_invoice_generator = __esm({
   "../src/lib/invoice-generator.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(generateInvoiceNumber, "generateInvoiceNumber");
     __name2(calculateTax, "calculateTax");
@@ -10505,7 +10505,7 @@ __name(onRequestPost5, "onRequestPost5");
 var init_process_pending_invoices = __esm({
   "api/profile/process-pending-invoices.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     init_jwt();
     __name2(onRequestOptions17, "onRequestOptions");
@@ -10577,7 +10577,7 @@ __name(onRequestGet21, "onRequestGet21");
 var init_status2 = __esm({
   "api/queue/status.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(onRequestOptions18, "onRequestOptions");
     __name2(onRequestGet21, "onRequestGet");
@@ -10594,6 +10594,73 @@ async function onRequestOptions19() {
   });
 }
 __name(onRequestOptions19, "onRequestOptions19");
+async function onRequestGet22(context) {
+  const { request, env } = context;
+  try {
+    const password = env.AFFENSUS_CREDENTIALS_PASSWORD;
+    if (!password) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: "AFFENSUS_CREDENTIALS_PASSWORD not configured"
+      }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    const url = new URL(request.url);
+    const uuid = url.searchParams.get("uuid");
+    if (!uuid) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: "UUID is required"
+      }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    const apiUrl = `https://apiv2.affensus.com/api/redirect-checker/${uuid}`;
+    console.log("Fetching from apiv2:", apiUrl);
+    const apiv2Response = await fetch(apiUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${password}`
+      }
+    });
+    if (!apiv2Response.ok) {
+      const errorText = await apiv2Response.text();
+      console.error("apiv2 error response:", errorText);
+      console.error("apiv2 status:", apiv2Response.status, apiv2Response.statusText);
+      return new Response(JSON.stringify({
+        success: false,
+        error: `External API error: ${apiv2Response.status} ${apiv2Response.statusText}`,
+        details: errorText
+      }), {
+        status: apiv2Response.status,
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+    const responseData = await apiv2Response.json();
+    console.log("Response data:", responseData);
+    return new Response(JSON.stringify({
+      success: true,
+      data: responseData
+    }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" }
+    });
+  } catch (error) {
+    console.error("Error fetching shared result:", error);
+    return new Response(JSON.stringify({
+      success: false,
+      error: "Internal server error"
+    }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
+}
+__name(onRequestGet22, "onRequestGet22");
 async function onRequestPost6(context) {
   const { request, env } = context;
   try {
@@ -10608,7 +10675,7 @@ async function onRequestPost6(context) {
       });
     }
     const body = await request.json();
-    const { url } = body;
+    const { url, proxy, country } = body;
     if (!url) {
       return new Response(JSON.stringify({
         success: false,
@@ -10622,6 +10689,10 @@ async function onRequestPost6(context) {
     const requestPayload = {
       url
     };
+    if (proxy && country) {
+      requestPayload.proxy = proxy;
+      requestPayload.country = country;
+    }
     console.log("Sending to apiv2:", JSON.stringify(requestPayload, null, 2));
     const apiv2Response = await fetch(apiUrl, {
       method: "POST",
@@ -10668,13 +10739,14 @@ __name(onRequestPost6, "onRequestPost6");
 var init_affiliate_link_checker = __esm({
   "api/tools/affiliate-link-checker.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(onRequestOptions19, "onRequestOptions");
+    __name2(onRequestGet22, "onRequestGet");
     __name2(onRequestPost6, "onRequestPost");
   }
 });
-async function onRequestGet22(context) {
+async function onRequestGet23(context) {
   try {
     const { env, request } = context;
     const url = new URL(request.url);
@@ -10809,7 +10881,7 @@ async function onRequestGet22(context) {
     });
   }
 }
-__name(onRequestGet22, "onRequestGet22");
+__name(onRequestGet23, "onRequestGet23");
 async function onRequestOptions20() {
   return new Response(null, {
     status: 200,
@@ -10975,9 +11047,9 @@ __name(processPrometheusMetrics, "processPrometheusMetrics");
 var init_affiliate_network_uptime = __esm({
   "api/tools/affiliate-network-uptime.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
-    __name2(onRequestGet22, "onRequestGet");
+    __name2(onRequestGet23, "onRequestGet");
     __name2(onRequestOptions20, "onRequestOptions");
     __name2(formatNetworkDisplayName, "formatNetworkDisplayName");
     __name2(fetchStatusPageData, "fetchStatusPageData");
@@ -11162,7 +11234,7 @@ var locales;
 var init_settings = __esm({
   "../src/locales/settings.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     locales = {
       "en": {
@@ -11204,7 +11276,7 @@ var onRequest;
 var init_create_checkout_session = __esm({
   "api/stripe/create-checkout-session.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     init_pricing_plans();
     init_settings();
@@ -11407,7 +11479,7 @@ var onRequest2;
 var init_create_portal_session = __esm({
   "api/stripe/create-portal-session.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(verifyJwt2, "verifyJwt");
     __name2(parseCookies7, "parseCookies");
@@ -11511,7 +11583,7 @@ var onRequest3;
 var init_create_user_account = __esm({
   "api/stripe/create-user-account.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     init_jwt();
     __name2(createUserAccount, "createUserAccount");
@@ -11824,7 +11896,7 @@ var onRequest4;
 var init_webhook = __esm({
   "api/stripe/webhook.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(handlePaymentWithoutCustomer, "handlePaymentWithoutCustomer");
     __name2(sendPaymentConfirmationEmail, "sendPaymentConfirmationEmail");
@@ -11932,7 +12004,7 @@ async function onRequestOptions21() {
   });
 }
 __name(onRequestOptions21, "onRequestOptions21");
-async function onRequestGet23(context) {
+async function onRequestGet24(context) {
   try {
     const { request, env, params } = context;
     const invoiceNumber = params.invoiceNumber;
@@ -12046,7 +12118,7 @@ async function onRequestGet23(context) {
     });
   }
 }
-__name(onRequestGet23, "onRequestGet23");
+__name(onRequestGet24, "onRequestGet24");
 function generateInvoiceHTML(invoice) {
   const isCredit = invoice.invoice_type === "credit_note";
   const amountPrefix = isCredit ? "-" : "";
@@ -12614,11 +12686,11 @@ __name(generateInvoiceHTML, "generateInvoiceHTML");
 var init_invoiceNumber = __esm({
   "api/invoice/[invoiceNumber].ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     init_jwt();
     __name2(onRequestOptions21, "onRequestOptions");
-    __name2(onRequestGet23, "onRequestGet");
+    __name2(onRequestGet24, "onRequestGet");
     __name2(generateInvoiceHTML, "generateInvoiceHTML");
   }
 });
@@ -12633,7 +12705,7 @@ async function onRequestOptions22() {
   });
 }
 __name(onRequestOptions22, "onRequestOptions22");
-async function onRequestGet24(context) {
+async function onRequestGet25(context) {
   try {
     const { request, env, params } = context;
     const userId = params.userId;
@@ -12701,14 +12773,14 @@ async function onRequestGet24(context) {
     });
   }
 }
-__name(onRequestGet24, "onRequestGet24");
+__name(onRequestGet25, "onRequestGet25");
 var init_userId = __esm({
   "api/users/[userId]/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(onRequestOptions22, "onRequestOptions");
-    __name2(onRequestGet24, "onRequestGet");
+    __name2(onRequestGet25, "onRequestGet");
   }
 });
 async function onRequestPost7(context) {
@@ -12757,7 +12829,7 @@ __name(onRequestPost7, "onRequestPost7");
 var init_contact = __esm({
   "api/contact/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(onRequestPost7, "onRequestPost");
   }
@@ -12773,7 +12845,7 @@ async function onRequestOptions23() {
   });
 }
 __name(onRequestOptions23, "onRequestOptions23");
-async function onRequestGet25(context) {
+async function onRequestGet26(context) {
   try {
     const { request, env } = context;
     const bearerToken = env.AFFENSUS_CREDENTIALS_PASSWORD;
@@ -12822,14 +12894,14 @@ async function onRequestGet25(context) {
     });
   }
 }
-__name(onRequestGet25, "onRequestGet25");
+__name(onRequestGet26, "onRequestGet26");
 var init_credential_schemas = __esm({
   "api/credential-schemas.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(onRequestOptions23, "onRequestOptions");
-    __name2(onRequestGet25, "onRequestGet");
+    __name2(onRequestGet26, "onRequestGet");
   }
 });
 async function onRequestOptions24() {
@@ -12926,7 +12998,7 @@ __name(onRequestPost8, "onRequestPost8");
 var init_decrypt_credentials = __esm({
   "api/decrypt-credentials.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(onRequestOptions24, "onRequestOptions");
     __name2(onRequestPost8, "onRequestPost");
@@ -12995,7 +13067,7 @@ __name(onRequestPost9, "onRequestPost9");
 var init_import_network = __esm({
   "api/import-network.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(onRequestOptions25, "onRequestOptions");
     __name2(onRequestPost9, "onRequestPost");
@@ -13018,7 +13090,7 @@ __name(onRequestPost10, "onRequestPost10");
 var init_logout = __esm({
   "api/logout/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(onRequestPost10, "onRequestPost");
   }
@@ -13145,7 +13217,7 @@ async function processPendingPayments3(email, userId, stripeSecretKey) {
   }
 }
 __name(processPendingPayments3, "processPendingPayments3");
-async function onRequestGet26(context) {
+async function onRequestGet27(context) {
   try {
     const { request, env } = context;
     const url = new URL(request.url);
@@ -13248,11 +13320,11 @@ async function onRequestGet26(context) {
     });
   }
 }
-__name(onRequestGet26, "onRequestGet26");
+__name(onRequestGet27, "onRequestGet27");
 var init_magic_login = __esm({
   "api/magic-login/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(signJwt5, "signJwt");
     __name2(getMagicLinkByToken, "getMagicLinkByToken");
@@ -13260,7 +13332,7 @@ var init_magic_login = __esm({
     __name2(getUserByEmail2, "getUserByEmail");
     __name2(updatePreferredLoginMethod, "updatePreferredLoginMethod");
     __name2(processPendingPayments3, "processPendingPayments");
-    __name2(onRequestGet26, "onRequestGet");
+    __name2(onRequestGet27, "onRequestGet");
   }
 });
 async function onRequestPost11(context) {
@@ -13358,7 +13430,7 @@ __name(onRequestPost11, "onRequestPost11");
 var init_mistake_report = __esm({
   "api/mistake-report/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(onRequestPost11, "onRequestPost");
   }
@@ -13374,7 +13446,7 @@ async function onRequestOptions26() {
   });
 }
 __name(onRequestOptions26, "onRequestOptions26");
-async function onRequestGet27(context) {
+async function onRequestGet28(context) {
   try {
     const { request, env } = context;
     const url = new URL(request.url);
@@ -13437,7 +13509,7 @@ async function onRequestGet27(context) {
     });
   }
 }
-__name(onRequestGet27, "onRequestGet27");
+__name(onRequestGet28, "onRequestGet28");
 async function onRequestPost12(context) {
   try {
     const { request, env } = context;
@@ -13633,10 +13705,10 @@ __name(onRequestDelete2, "onRequestDelete2");
 var init_network_monitors = __esm({
   "api/network-monitors/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(onRequestOptions26, "onRequestOptions");
-    __name2(onRequestGet27, "onRequestGet");
+    __name2(onRequestGet28, "onRequestGet");
     __name2(onRequestPost12, "onRequestPost");
     __name2(onRequestPut5, "onRequestPut");
     __name2(onRequestDelete2, "onRequestDelete");
@@ -13670,7 +13742,7 @@ async function updateUser(db, userId, data) {
   return await getUserById2(db, userId);
 }
 __name(updateUser, "updateUser");
-async function onRequestGet28(context) {
+async function onRequestGet29(context) {
   try {
     const { request, env } = context;
     const cookies = parseCookies8(request.headers.get("Cookie"));
@@ -13743,7 +13815,7 @@ async function onRequestGet28(context) {
     });
   }
 }
-__name(onRequestGet28, "onRequestGet28");
+__name(onRequestGet29, "onRequestGet29");
 async function onRequestPut6(context) {
   try {
     const { request, env } = context;
@@ -13822,13 +13894,13 @@ __name(onRequestPut6, "onRequestPut6");
 var init_profile = __esm({
   "api/profile/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     init_jwt();
     __name2(parseCookies8, "parseCookies");
     __name2(getUserById2, "getUserById");
     __name2(updateUser, "updateUser");
-    __name2(onRequestGet28, "onRequestGet");
+    __name2(onRequestGet29, "onRequestGet");
     __name2(onRequestPut6, "onRequestPut");
   }
 });
@@ -13927,7 +13999,7 @@ __name(onRequestPost13, "onRequestPost13");
 var init_refresh_published = __esm({
   "api/refresh-published/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(onRequestOptions27, "onRequestOptions");
     __name2(onRequestPost13, "onRequestPost");
@@ -14101,7 +14173,7 @@ __name(onRequestPost14, "onRequestPost14");
 var init_refresh_wishlist = __esm({
   "api/refresh-wishlist/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(onRequestOptions28, "onRequestOptions");
     __name2(verifyJwt3, "verifyJwt");
@@ -14382,7 +14454,7 @@ __name(onRequestPost15, "onRequestPost15");
 var init_refund_request = __esm({
   "api/refund-request/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     init_jwt();
     __name2(onRequestOptions29, "onRequestOptions");
@@ -14605,7 +14677,7 @@ __name(onRequestPost16, "onRequestPost16");
 var init_request_magic_link = __esm({
   "api/request-magic-link/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(generateToken, "generateToken");
     __name2(createUser, "createUser");
@@ -14626,7 +14698,7 @@ async function onRequestOptions30() {
   });
 }
 __name(onRequestOptions30, "onRequestOptions30");
-async function onRequestGet29(context) {
+async function onRequestGet30(context) {
   try {
     const { request, env } = context;
     const cookieHeader = request.headers.get("Cookie");
@@ -14699,15 +14771,15 @@ async function onRequestGet29(context) {
     });
   }
 }
-__name(onRequestGet29, "onRequestGet29");
+__name(onRequestGet30, "onRequestGet30");
 var init_user = __esm({
   "api/user/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     init_jwt();
     __name2(onRequestOptions30, "onRequestOptions");
-    __name2(onRequestGet29, "onRequestGet");
+    __name2(onRequestGet30, "onRequestGet");
   }
 });
 async function verifyJwt4(token, secret) {
@@ -14753,7 +14825,7 @@ async function getUserByEmail3(db, email) {
   return await db.prepare("SELECT * FROM users WHERE email = ?").bind(email).first();
 }
 __name(getUserByEmail3, "getUserByEmail3");
-async function onRequestGet30(context) {
+async function onRequestGet31(context) {
   try {
     const { request, env } = context;
     const cookies = parseCookies9(request.headers.get("Cookie"));
@@ -14815,16 +14887,16 @@ async function onRequestGet30(context) {
     });
   }
 }
-__name(onRequestGet30, "onRequestGet30");
+__name(onRequestGet31, "onRequestGet31");
 var init_user_preferences = __esm({
   "api/user-preferences.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     __name2(verifyJwt4, "verifyJwt");
     __name2(parseCookies9, "parseCookies");
     __name2(getUserByEmail3, "getUserByEmail");
-    __name2(onRequestGet30, "onRequestGet");
+    __name2(onRequestGet31, "onRequestGet");
   }
 });
 async function onRequestOptions31() {
@@ -14963,7 +15035,7 @@ __name(onRequestPost17, "onRequestPost17");
 var init_wishlist_info = __esm({
   "api/wishlist-info/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     init_jwt();
     __name2(onRequestOptions31, "onRequestOptions");
@@ -14974,7 +15046,7 @@ var onRequest5;
 var init_currency_rates = __esm({
   "api/currency-rates.ts"() {
     "use strict";
-    init_functionsRoutes_0_9777658130499308();
+    init_functionsRoutes_0_0641907454989773();
     init_checked_fetch();
     init_settings();
     onRequest5 = /* @__PURE__ */ __name2(async (context) => {
@@ -15050,8 +15122,8 @@ var init_currency_rates = __esm({
   }
 });
 var routes;
-var init_functionsRoutes_0_9777658130499308 = __esm({
-  "../.wrangler/tmp/pages-zQG0ca/functionsRoutes-0.9777658130499308.mjs"() {
+var init_functionsRoutes_0_0641907454989773 = __esm({
+  "../.wrangler/tmp/pages-61TTHZ/functionsRoutes-0.0641907454989773.mjs"() {
     "use strict";
     init_read();
     init_read();
@@ -15102,6 +15174,7 @@ var init_functionsRoutes_0_9777658130499308 = __esm({
     init_process_pending_invoices();
     init_status2();
     init_status2();
+    init_affiliate_link_checker();
     init_affiliate_link_checker();
     init_affiliate_link_checker();
     init_affiliate_network_uptime();
@@ -15491,6 +15564,13 @@ var init_functionsRoutes_0_9777658130499308 = __esm({
       {
         routePath: "/api/tools/affiliate-link-checker",
         mountPath: "/api/tools",
+        method: "GET",
+        middlewares: [],
+        modules: [onRequestGet22]
+      },
+      {
+        routePath: "/api/tools/affiliate-link-checker",
+        mountPath: "/api/tools",
         method: "OPTIONS",
         middlewares: [],
         modules: [onRequestOptions19]
@@ -15507,7 +15587,7 @@ var init_functionsRoutes_0_9777658130499308 = __esm({
         mountPath: "/api/tools",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet22]
+        modules: [onRequestGet23]
       },
       {
         routePath: "/api/tools/affiliate-network-uptime",
@@ -15549,7 +15629,7 @@ var init_functionsRoutes_0_9777658130499308 = __esm({
         mountPath: "/api/invoice",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet23]
+        modules: [onRequestGet24]
       },
       {
         routePath: "/api/invoice/:invoiceNumber",
@@ -15563,7 +15643,7 @@ var init_functionsRoutes_0_9777658130499308 = __esm({
         mountPath: "/api/users/:userId",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet24]
+        modules: [onRequestGet25]
       },
       {
         routePath: "/api/users/:userId",
@@ -15584,7 +15664,7 @@ var init_functionsRoutes_0_9777658130499308 = __esm({
         mountPath: "/api",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet25]
+        modules: [onRequestGet26]
       },
       {
         routePath: "/api/credential-schemas",
@@ -15633,7 +15713,7 @@ var init_functionsRoutes_0_9777658130499308 = __esm({
         mountPath: "/api/magic-login",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet26]
+        modules: [onRequestGet27]
       },
       {
         routePath: "/api/mistake-report",
@@ -15654,7 +15734,7 @@ var init_functionsRoutes_0_9777658130499308 = __esm({
         mountPath: "/api/network-monitors",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet27]
+        modules: [onRequestGet28]
       },
       {
         routePath: "/api/network-monitors",
@@ -15682,7 +15762,7 @@ var init_functionsRoutes_0_9777658130499308 = __esm({
         mountPath: "/api/profile",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet28]
+        modules: [onRequestGet29]
       },
       {
         routePath: "/api/profile",
@@ -15745,7 +15825,7 @@ var init_functionsRoutes_0_9777658130499308 = __esm({
         mountPath: "/api/user",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet29]
+        modules: [onRequestGet30]
       },
       {
         routePath: "/api/user",
@@ -15759,7 +15839,7 @@ var init_functionsRoutes_0_9777658130499308 = __esm({
         mountPath: "/api",
         method: "GET",
         middlewares: [],
-        modules: [onRequestGet30]
+        modules: [onRequestGet31]
       },
       {
         routePath: "/api/wishlist-info",
@@ -15785,13 +15865,13 @@ var init_functionsRoutes_0_9777658130499308 = __esm({
     ];
   }
 });
-init_functionsRoutes_0_9777658130499308();
+init_functionsRoutes_0_0641907454989773();
 init_checked_fetch();
-init_functionsRoutes_0_9777658130499308();
+init_functionsRoutes_0_0641907454989773();
 init_checked_fetch();
-init_functionsRoutes_0_9777658130499308();
+init_functionsRoutes_0_0641907454989773();
 init_checked_fetch();
-init_functionsRoutes_0_9777658130499308();
+init_functionsRoutes_0_0641907454989773();
 init_checked_fetch();
 function lexer(str) {
   var tokens = [];
@@ -16247,7 +16327,7 @@ var cloneResponse = /* @__PURE__ */ __name2((response) => (
     response
   )
 ), "cloneResponse");
-init_functionsRoutes_0_9777658130499308();
+init_functionsRoutes_0_0641907454989773();
 init_checked_fetch();
 var drainBody = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx) => {
   try {
@@ -16265,7 +16345,7 @@ var drainBody = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx
   }
 }, "drainBody");
 var middleware_ensure_req_body_drained_default = drainBody;
-init_functionsRoutes_0_9777658130499308();
+init_functionsRoutes_0_0641907454989773();
 init_checked_fetch();
 function reduceError(e) {
   return {
@@ -16294,7 +16374,7 @@ var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_miniflare3_json_error_default
 ];
 var middleware_insertion_facade_default = pages_template_worker_default;
-init_functionsRoutes_0_9777658130499308();
+init_functionsRoutes_0_0641907454989773();
 init_checked_fetch();
 var __facade_middleware__ = [];
 function __facade_register__(...args) {
@@ -16464,7 +16544,7 @@ var jsonError2 = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx
 }, "jsonError");
 var middleware_miniflare3_json_error_default2 = jsonError2;
 
-// .wrangler/tmp/bundle-5WqQnR/middleware-insertion-facade.js
+// .wrangler/tmp/bundle-ONK6vG/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__2 = [
   middleware_ensure_req_body_drained_default2,
   middleware_miniflare3_json_error_default2
@@ -16496,7 +16576,7 @@ function __facade_invoke__2(request, env, ctx, dispatch, finalMiddleware) {
 }
 __name(__facade_invoke__2, "__facade_invoke__");
 
-// .wrangler/tmp/bundle-5WqQnR/middleware-loader.entry.ts
+// .wrangler/tmp/bundle-ONK6vG/middleware-loader.entry.ts
 var __Facade_ScheduledController__2 = class ___Facade_ScheduledController__2 {
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;
@@ -16617,4 +16697,4 @@ crypto-js/mode-ctr-gladman.js:
    * Jan Hruby jhruby.web@gmail.com
    *)
 */
-//# sourceMappingURL=functionsWorker-0.791299394488392.js.map
+//# sourceMappingURL=functionsWorker-0.6653946333380985.js.map

@@ -47,6 +47,7 @@ import { onRequestOptions as __api_profile_process_pending_invoices_ts_onRequest
 import { onRequestPost as __api_profile_process_pending_invoices_ts_onRequestPost } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/profile/process-pending-invoices.ts"
 import { onRequestGet as __api_queue_status_ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/queue/status.ts"
 import { onRequestOptions as __api_queue_status_ts_onRequestOptions } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/queue/status.ts"
+import { onRequestGet as __api_tools_affiliate_link_checker_ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/tools/affiliate-link-checker.ts"
 import { onRequestOptions as __api_tools_affiliate_link_checker_ts_onRequestOptions } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/tools/affiliate-link-checker.ts"
 import { onRequestPost as __api_tools_affiliate_link_checker_ts_onRequestPost } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/tools/affiliate-link-checker.ts"
 import { onRequestGet as __api_tools_affiliate_network_uptime_ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/tools/affiliate-network-uptime.ts"
@@ -433,6 +434,13 @@ export const routes = [
       method: "OPTIONS",
       middlewares: [],
       modules: [__api_queue_status_ts_onRequestOptions],
+    },
+  {
+      routePath: "/api/tools/affiliate-link-checker",
+      mountPath: "/api/tools",
+      method: "GET",
+      middlewares: [],
+      modules: [__api_tools_affiliate_link_checker_ts_onRequestGet],
     },
   {
       routePath: "/api/tools/affiliate-link-checker",

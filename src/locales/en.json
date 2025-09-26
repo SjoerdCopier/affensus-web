@@ -62,6 +62,10 @@
       "notifications": {
         "title": "Notifications | Track Merchant Changes | Affensus",
         "description": "Stay updated with merchant changes, status updates, and new opportunities in your affiliate marketing campaigns. Monitor all important changes in real-time."
+      },
+      "logos": {
+        "title": "Logo Fetcher | Extract Website Logos | Affensus",
+        "description": "Extract and download logos from any website URL. Perfect for affiliate marketers to get merchant logos for their campaigns."
       }
     }
   },

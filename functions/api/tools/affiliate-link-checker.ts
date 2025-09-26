@@ -9,6 +9,84 @@ export async function onRequestOptions() {
   });
 }
 
+export async function onRequestGet(context: any) {
+  const { request, env } = context;
+  
+  try {
+    // Use the same environment variable for API auth
+    const password = env.AFFENSUS_CREDENTIALS_PASSWORD;
+    if (!password) {
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: 'AFFENSUS_CREDENTIALS_PASSWORD not configured' 
+      }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    const url = new URL(request.url);
+    const uuid = url.searchParams.get('uuid');
+
+    if (!uuid) {
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: 'UUID is required' 
+      }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    const apiUrl = `https://apiv2.affensus.com/api/redirect-checker/${uuid}`;
+
+    console.log('Fetching from apiv2:', apiUrl);
+
+    const apiv2Response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${password}`,
+      }
+    });
+
+    if (!apiv2Response.ok) {
+      const errorText = await apiv2Response.text();
+      console.error('apiv2 error response:', errorText);
+      console.error('apiv2 status:', apiv2Response.status, apiv2Response.statusText);
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: `External API error: ${apiv2Response.status} ${apiv2Response.statusText}`,
+        details: errorText
+      }), {
+        status: apiv2Response.status,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    const responseData = await apiv2Response.json();
+    console.log('Response data:', responseData);
+    
+    return new Response(JSON.stringify({
+      success: true, 
+      data: responseData 
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+  } catch (error) {
+    console.error('Error fetching shared result:', error);
+    return new Response(JSON.stringify({ 
+      success: false, 
+      error: 'Internal server error' 
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+}
+
 export async function onRequestPost(context: any) {
   const { request, env } = context;
 
@@ -26,7 +104,7 @@ export async function onRequestPost(context: any) {
     }
 
     const body = await request.json();
-    const { url } = body;
+    const { url, proxy, country } = body;
 
     if (!url) {
       return new Response(JSON.stringify({ 
@@ -40,9 +118,15 @@ export async function onRequestPost(context: any) {
 
     const apiUrl = 'https://apiv2.affensus.com/api/redirect-checker';
 
-    const requestPayload = { 
+    const requestPayload: any = { 
       url: url
     };
+
+    // Add proxy settings if provided
+    if (proxy && country) {
+      requestPayload.proxy = proxy;
+      requestPayload.country = country;
+    }
 
     console.log('Sending to apiv2:', JSON.stringify(requestPayload, null, 2));
 
