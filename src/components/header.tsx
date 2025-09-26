@@ -60,6 +60,11 @@ export default function Header() {
                   <h3 className="font-semibold text-gray-900 mb-1 text-sm">{t('header.tools.affiliateNetworkUptime.title')}</h3>
                   <p className="text-xs text-gray-600">{t('header.tools.affiliateNetworkUptime.description')}</p>
                 </Link>
+                
+                <Link href={getLocalizedPath('/tools/free-logo-api')} className="block mb-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                  <h3 className="font-semibold text-gray-900 mb-1 text-sm">{t('header.tools.freeLogoApi.title')}</h3>
+                  <p className="text-xs text-gray-600">{t('header.tools.freeLogoApi.description')}</p>
+                </Link>
               </div>
             </div>
           </div>
@@ -155,6 +160,12 @@ export default function Header() {
                     className="block text-gray-600 hover:text-gray-900 transition-colors"
                   >
                     {t('header.tools.affiliateNetworkUptime.title')}
+                  </Link>
+                  <Link 
+                    href={getLocalizedPath('/tools/free-logo-api')} 
+                    className="block text-gray-600 hover:text-gray-900 transition-colors"
+                  >
+                    {t('header.tools.freeLogoApi.title')}
                   </Link>
                 </div>
               </div>

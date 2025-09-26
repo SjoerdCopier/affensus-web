@@ -36,6 +36,10 @@
         "affiliateNetworkUptime": {
           "title": "Affiliate Netwerk Uptime Monitor | Real-time Status Tracking | Affensus",
           "description": "Monitor affiliate netwerk uptime in real-time. Volg homepage, API en tracking URL status van belangrijke affiliate netwerken. Ontvang directe meldingen bij downtime."
+        },
+        "freeLogoApi": {
+          "title": "Gratis Logo API Tool | Website Logo's Extraheren | Affensus",
+          "description": "Gratis logo extractie tool om hoogwaardige logo's van elke website te verkrijgen. Extracteer logo's in meerdere formaten (PNG, JPG, WebP) met aanpasbare afmetingen."
         }
       },
       "auth": {
@@ -103,6 +107,10 @@
         "affiliateNetworkUptime": {
           "title": "Affiliate Netwerk Uptime",
           "description": "Monitor affiliate netwerk uptime en beschikbaarheid in real-time"
+        },
+        "freeLogoApi": {
+          "title": "Gratis Logo API",
+          "description": "Extracteer hoogwaardige logo's van elke website direct"
         }
       },
       "services": {
@@ -687,6 +695,62 @@
         "programLeasing": {
           "title": "Hoe kan programma-leasing leiden tot potentiële problemen in affiliate marketing?",
           "description": "Veelvoorkomende problemen geassocieerd met subnetwerken zijn link tracking problemen, verloren verkopen en vertragingen in betalingen. Daarnaast, omdat subnetwerken hun eigen inkomsten moeten genereren, kunnen de mechanismen van een programma vaak verschillen van het origineel. Dit kan resulteren in kortere cookie-periodes, lagere commissietarieven en andere wijzigingen die je totale verdiensten kunnen verminderen. Het is belangrijk om je bewust te zijn van deze potentiële valkuilen om ervoor te zorgen dat je je affiliate marketing inspanningen maximaliseert en geen potentiële inkomsten mist."
+        }
+      }
+    },
+    "freeLogoApi": {
+      "title": "Gratis Logo API Tool",
+      "description": "Extracteer hoogwaardige logo's van elke website direct. Krijg logo's in meerdere formaten met aanpasbare afmetingen.",
+      "form": {
+        "label": "Website URL:",
+        "placeholder": "https://example.com",
+        "button": "Logo Extraheren"
+      },
+      "loading": "Logo extraheren van website...",
+      "results": {
+        "success": "Logo succesvol geëxtraheerd!",
+        "successDescription": "Logo gevonden en klaar voor download"
+      },
+      "messages": {
+        "error": "Er is een fout opgetreden bij het extraheren van het logo. Probeer het later opnieuw of neem contact op met support als het probleem aanhoudt.",
+        "invalidUrl": "Voer een geldige URL in",
+        "logoNotFound": "Er kon geen logo worden gevonden voor deze website. De site heeft mogelijk geen geschikt logo of het is beveiligd."
+      },
+      "sections": {
+        "whatIs": {
+          "title": "Wat is de Gratis Logo API Tool?",
+          "description": "Onze Gratis Logo API Tool stelt je in staat om direct hoogwaardige logo's van elke website te extraheren. Voer simpelweg een website URL in en onze tool vindt en extraheert automatisch het beste beschikbare logo, en biedt het aan in meerdere formaten voor download."
+        },
+        "howItWorks": {
+          "title": "Hoe werkt het?",
+          "description": "De tool analyseert de HTML-structuur van de website, favicon-links en meta-tags om het hoogste kwaliteit logo te vinden. Het verwerkt vervolgens de afbeelding en biedt deze aan in je gewenste formaat en afmetingen, zodat je het best mogelijke resultaat krijgt."
+        },
+        "supportedFormats": {
+          "title": "Ondersteunde formaten",
+          "description": "Je kunt geëxtraheerde logo's downloaden in PNG (met transparantie), JPG (met witte achtergrond), of WebP formaat. Alle formaten ondersteunen aangepaste afmetingen van 16px tot 512px, zodat je de perfecte grootte voor je behoeften kunt krijgen."
+        },
+        "useCases": {
+          "title": "Gebruiksscenario's",
+          "description": "Perfect voor ontwerpers, ontwikkelaars, marketeers en iedereen die snel logo's moet extraheren voor presentaties, websites, marketingmateriaal of concurrentieanalyse. Bespaar tijd door handmatige logo-extractie te vermijden en krijg consistente, hoogwaardige resultaten."
+        },
+        "apiPlayground": {
+          "title": "API Playground",
+          "subtitle": "Integreer logo-extractie in je applicaties",
+          "endpoint": "API Eindpunt:",
+          "apiKeyRequired": "API Sleutel Vereist",
+          "apiKeyDescription": "Meld je aan voor een gratis account om je API-sleutel te krijgen en de Logo API in je applicaties te gebruiken.",
+          "getApiKey": "API Sleutel Verkrijgen",
+          "expectedResponse": "Verwachte Respons:",
+          "rateLimits": "Tarieflimieten & Gebruik",
+          "rateLimitsList": {
+            "freeTier": "Gratis tier: 100 verzoeken per dag",
+            "premium": "Premium: Tot 10.000 verzoeken per dag",
+            "responseFormat": "Responsformaat: Base64 gecodeerde afbeeldingsdata",
+            "supportedFormats": "Ondersteunde formaten: PNG, JPG, SVG, WebP"
+          },
+          "copy": "Kopiëren",
+          "copied": "Gekopieerd!",
+          "example": "Voorbeeld"
         }
       }
     },

@@ -36,6 +36,10 @@
       "affiliateNetworkUptime": {
         "title": "Affiliate Network Uptime Monitor | Real-time Status Tracking | Affensus",
         "description": "Monitor affiliate network uptime in real-time. Track homepage, API, and tracking URL status across major affiliate networks. Get instant alerts for downtime."
+      },
+      "freeLogoApi": {
+        "title": "Free Logo API Tool | Extract Website Logos | Affensus",
+        "description": "Free logo extraction tool to get high-quality logos from any website. Extract logos in multiple formats (PNG, JPG, WebP) with customizable dimensions."
       }
     },
     "auth": {
@@ -103,6 +107,10 @@
       "affiliateNetworkUptime": {
         "title": "Affiliate Network Downtime",
         "description": "Monitor affiliate network downtime and availability in real-time"
+      },
+      "freeLogoApi": {
+        "title": "Free Logo API",
+        "description": "Extract high-quality logos from any website instantly"
       }
     },
     "services": {
@@ -721,6 +729,62 @@
         "programLeasing": {
           "title": "How can program leasing lead to potential issues in affiliate marketing?",
           "description": "Common issues associated with subnetworks include link tracking problems, lost sales, and delays in payments. Additionally, since subnetworks need to generate their own revenue, the mechanics of a program can often differ from the original. This can result in shorter cookie periods, lower commission rates, and other changes that might reduce your overall earnings. It's important to be aware of these potential pitfalls to ensure you're maximizing your affiliate marketing efforts and not missing out on potential income."
+        }
+      }
+    },
+    "freeLogoApi": {
+      "title": "Free Logo API Tool",
+      "description": "Extract high-quality logos from any website instantly. Get logos in multiple formats with customizable dimensions.",
+      "form": {
+        "label": "Website URL:",
+        "placeholder": "https://example.com",
+        "button": "Extract Logo"
+      },
+      "loading": "Extracting logo from website...",
+      "results": {
+        "success": "Logo extracted successfully!",
+        "successDescription": "Logo found and ready for download"
+      },
+      "messages": {
+        "error": "An error occurred while extracting the logo. Please try again later or contact support if the issue persists.",
+        "invalidUrl": "Please enter a valid URL",
+        "logoNotFound": "No logo could be found for this website. The site might not have a suitable logo or it might be protected."
+      },
+      "sections": {
+        "whatIs": {
+          "title": "What is the Free Logo API Tool?",
+          "description": "Our Free Logo API Tool allows you to extract high-quality logos from any website instantly. Simply enter a website URL and our tool will automatically find and extract the best quality logo available, providing it in multiple formats for download."
+        },
+        "howItWorks": {
+          "title": "How does it work?",
+          "description": "The tool analyzes the website's HTML structure, favicon links, and meta tags to find the highest quality logo available. It then processes the image and provides it in your preferred format and dimensions, ensuring you get the best possible result."
+        },
+        "supportedFormats": {
+          "title": "Supported formats",
+          "description": "You can download extracted logos in PNG (with transparency), JPG (with white background), or WebP format. All formats support custom dimensions from 16px to 512px, allowing you to get the perfect size for your needs."
+        },
+        "useCases": {
+          "title": "Use cases",
+          "description": "Perfect for designers, developers, marketers, and anyone who needs to quickly extract logos for presentations, websites, marketing materials, or competitive analysis. Save time by avoiding manual logo extraction and get consistent, high-quality results."
+        },
+        "apiPlayground": {
+          "title": "API Playground",
+          "subtitle": "Integrate logo extraction into your applications",
+          "endpoint": "API Endpoint:",
+          "apiKeyRequired": "API Key Required",
+          "apiKeyDescription": "Sign up for a free account to get your API key and start using the Logo API in your applications.",
+          "getApiKey": "Get API Key",
+          "expectedResponse": "Expected Response:",
+          "rateLimits": "Rate Limits & Usage",
+          "rateLimitsList": {
+            "freeTier": "Free tier: 100 requests per day",
+            "premium": "Premium: Up to 10,000 requests per day",
+            "responseFormat": "Response format: Base64 encoded image data",
+            "supportedFormats": "Supported formats: PNG, JPG, SVG, WebP"
+          },
+          "copy": "Copy",
+          "copied": "Copied!",
+          "example": "Example"
         }
       }
     },

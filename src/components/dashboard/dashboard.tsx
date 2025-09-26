@@ -692,7 +692,6 @@ export default function Dashboard({ userData, selectedProject }: DashboardProps)
                           const startIndex = (wishlistCurrentPage - 1) * wishlistRowsPerPage;
                           const endIndex = startIndex + wishlistRowsPerPage;
                           const displayedData = filteredData.slice(startIndex, endIndex);
-                          const totalPages = Math.ceil(filteredData.length / wishlistRowsPerPage);
 
                           return displayedData.map((item, index) => (
                             <tr 

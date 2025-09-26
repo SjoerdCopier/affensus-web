@@ -1,4 +1,9 @@
+var __create = Object.create;
 var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
 var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
   get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
@@ -6,9 +11,34 @@ var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require
   if (typeof require !== "undefined") return require.apply(this, arguments);
   throw Error('Dynamic require of "' + x + '" is not supported');
 });
+var __esm = (fn, res) => function __init() {
+  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+};
+var __commonJS = (cb, mod) => function __require2() {
+  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
+};
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
 
-// .wrangler/tmp/bundle-FWfNe3/checked-fetch.js
-var urls = /* @__PURE__ */ new Set();
+// ../.wrangler/tmp/bundle-jnhJeu/checked-fetch.js
 function checkURL(request, init) {
   const url = request instanceof URL ? request : new URL(
     (typeof request === "string" ? new Request(request, init) : request).url
@@ -24,86 +54,23 @@ function checkURL(request, init) {
     }
   }
 }
-__name(checkURL, "checkURL");
-globalThis.fetch = new Proxy(globalThis.fetch, {
-  apply(target, thisArg, argArray) {
-    const [request, init] = argArray;
-    checkURL(request, init);
-    return Reflect.apply(target, thisArg, argArray);
-  }
-});
-
-// .wrangler/tmp/pages-OkNYjb/functionsWorker-0.8634646317432765.mjs
-var __create = Object.create;
-var __defProp2 = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __getOwnPropNames = Object.getOwnPropertyNames;
-var __getProtoOf = Object.getPrototypeOf;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __name2 = /* @__PURE__ */ __name((target, value) => __defProp2(target, "name", { value, configurable: true }), "__name");
-var __require2 = /* @__PURE__ */ ((x) => typeof __require !== "undefined" ? __require : typeof Proxy !== "undefined" ? new Proxy(x, {
-  get: /* @__PURE__ */ __name((a, b) => (typeof __require !== "undefined" ? __require : a)[b], "get")
-}) : x)(function(x) {
-  if (typeof __require !== "undefined") return __require.apply(this, arguments);
-  throw Error('Dynamic require of "' + x + '" is not supported');
-});
-var __esm = /* @__PURE__ */ __name((fn, res) => /* @__PURE__ */ __name(function __init() {
-  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
-}, "__init"), "__esm");
-var __commonJS = /* @__PURE__ */ __name((cb, mod) => /* @__PURE__ */ __name(function __require22() {
-  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
-}, "__require2"), "__commonJS");
-var __export = /* @__PURE__ */ __name((target, all) => {
-  for (var name in all)
-    __defProp2(target, name, { get: all[name], enumerable: true });
-}, "__export");
-var __copyProps = /* @__PURE__ */ __name((to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp2(to, key, { get: /* @__PURE__ */ __name(() => from[key], "get"), enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-  }
-  return to;
-}, "__copyProps");
-var __toESM = /* @__PURE__ */ __name((mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
-  // If the importer is in node compatibility mode or this is not an ESM
-  // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. "__esModule" has not been set), then set
-  // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp2(target, "default", { value: mod, enumerable: true }) : target,
-  mod
-)), "__toESM");
-function checkURL2(request, init) {
-  const url = request instanceof URL ? request : new URL(
-    (typeof request === "string" ? new Request(request, init) : request).url
-  );
-  if (url.port && url.port !== "443" && url.protocol === "https:") {
-    if (!urls2.has(url.toString())) {
-      urls2.add(url.toString());
-      console.warn(
-        `WARNING: known issue with \`fetch()\` requests to custom HTTPS ports in published Workers:
- - ${url.toString()} - the custom port will be ignored when the Worker is published using the \`wrangler deploy\` command.
-`
-      );
-    }
-  }
-}
-__name(checkURL2, "checkURL");
-var urls2;
+var urls;
 var init_checked_fetch = __esm({
-  "../.wrangler/tmp/bundle-ulc5eL/checked-fetch.js"() {
+  "../.wrangler/tmp/bundle-jnhJeu/checked-fetch.js"() {
     "use strict";
-    urls2 = /* @__PURE__ */ new Set();
-    __name2(checkURL2, "checkURL");
+    urls = /* @__PURE__ */ new Set();
+    __name(checkURL, "checkURL");
     globalThis.fetch = new Proxy(globalThis.fetch, {
       apply(target, thisArg, argArray) {
         const [request, init] = argArray;
-        checkURL2(request, init);
+        checkURL(request, init);
         return Reflect.apply(target, thisArg, argArray);
       }
     });
   }
 });
+
+// api/notifications/[project_id]/[notification_id]/read.ts
 async function onRequestOptions() {
   return new Response(null, {
     status: 200,
@@ -114,7 +81,6 @@ async function onRequestOptions() {
     }
   });
 }
-__name(onRequestOptions, "onRequestOptions");
 async function onRequestPut(context) {
   try {
     const { env, params } = context;
@@ -167,19 +133,20 @@ async function onRequestPut(context) {
     });
   }
 }
-__name(onRequestPut, "onRequestPut");
 var init_read = __esm({
   "api/notifications/[project_id]/[notification_id]/read.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestOptions, "onRequestOptions");
-    __name2(onRequestPut, "onRequestPut");
+    __name(onRequestOptions, "onRequestOptions");
+    __name(onRequestPut, "onRequestPut");
   }
 });
+
+// api/auth/shared/email-notifications.ts
 var email_notifications_exports = {};
 __export(email_notifications_exports, {
-  sendNewUserNotification: /* @__PURE__ */ __name(() => sendNewUserNotification, "sendNewUserNotification")
+  sendNewUserNotification: () => sendNewUserNotification
 });
 async function sendNewUserNotification(userEmail, loginMethod, resendApiKey) {
   const response = await fetch("https://api.resend.com/emails", {
@@ -240,15 +207,16 @@ This is an automated notification from MorseXpress.
   console.log("New user notification sent successfully:", result);
   return true;
 }
-__name(sendNewUserNotification, "sendNewUserNotification");
 var init_email_notifications = __esm({
   "api/auth/shared/email-notifications.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(sendNewUserNotification, "sendNewUserNotification");
+    __name(sendNewUserNotification, "sendNewUserNotification");
   }
 });
+
+// api/auth/facebook/callback.ts
 function parseCookies(cookieHeader) {
   const cookies = {};
   if (!cookieHeader) return cookies;
@@ -260,7 +228,6 @@ function parseCookies(cookieHeader) {
   });
   return cookies;
 }
-__name(parseCookies, "parseCookies");
 async function signJwt(payload, secret, expiresIn) {
   const header = { alg: "HS256", typ: "JWT" };
   const now = Math.floor(Date.now() / 1e3);
@@ -284,7 +251,6 @@ async function signJwt(payload, secret, expiresIn) {
   const signatureB64 = btoa(String.fromCharCode(...new Uint8Array(signatureArrayBuffer))).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
   return `${headerB64}.${payloadB64}.${signatureB64}`;
 }
-__name(signJwt, "signJwt");
 async function onRequestGet(context) {
   try {
     const { request, env } = context;
@@ -360,7 +326,7 @@ async function onRequestGet(context) {
         headers: { "Location": `${env.SITE_URL || "http://localhost:3000"}/auth?error=database_not_available` }
       });
     }
-    const createUser2 = /* @__PURE__ */ __name2(async (db2, email, loginMethod = "facebook") => {
+    const createUser2 = /* @__PURE__ */ __name(async (db2, email, loginMethod = "facebook") => {
       const bearerToken = env.AFFENSUS_CREDENTIALS_PASSWORD;
       if (!bearerToken) {
         throw new Error("AFFENSUS_CREDENTIALS_PASSWORD not configured");
@@ -398,7 +364,7 @@ async function onRequestGet(context) {
       const isNewUser2 = response.status === 201;
       return { user: user2, isNewUser: isNewUser2 };
     }, "createUser");
-    const updatePreferredLoginMethod2 = /* @__PURE__ */ __name2(async (db2, email, method) => {
+    const updatePreferredLoginMethod2 = /* @__PURE__ */ __name(async (db2, email, method) => {
       await db2.prepare(`
         UPDATE users 
         SET preferred_login_method = ?, updated_at = datetime('now')
@@ -472,17 +438,18 @@ async function onRequestGet(context) {
     });
   }
 }
-__name(onRequestGet, "onRequestGet");
 var init_callback = __esm({
   "api/auth/facebook/callback.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(parseCookies, "parseCookies");
-    __name2(signJwt, "signJwt");
-    __name2(onRequestGet, "onRequestGet");
+    __name(parseCookies, "parseCookies");
+    __name(signJwt, "signJwt");
+    __name(onRequestGet, "onRequestGet");
   }
 });
+
+// api/auth/github/callback.ts
 function parseCookies2(cookieHeader) {
   const cookies = {};
   if (!cookieHeader) return cookies;
@@ -494,7 +461,6 @@ function parseCookies2(cookieHeader) {
   });
   return cookies;
 }
-__name(parseCookies2, "parseCookies2");
 async function signJwt2(payload, secret, expiresIn) {
   const header = { alg: "HS256", typ: "JWT" };
   const now = Math.floor(Date.now() / 1e3);
@@ -518,7 +484,6 @@ async function signJwt2(payload, secret, expiresIn) {
   const signatureB64 = btoa(String.fromCharCode(...new Uint8Array(signatureArrayBuffer))).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
   return `${headerB64}.${payloadB64}.${signatureB64}`;
 }
-__name(signJwt2, "signJwt2");
 async function processPendingPayments(db, email, userId, stripeSecretKey) {
   try {
     const pendingPayments = await db.prepare(`
@@ -587,7 +552,6 @@ async function processPendingPayments(db, email, userId, stripeSecretKey) {
     console.error("Error checking for pending payments:", error);
   }
 }
-__name(processPendingPayments, "processPendingPayments");
 async function onRequestGet2(context) {
   try {
     const { request, env } = context;
@@ -697,7 +661,7 @@ async function onRequestGet2(context) {
         headers: { "Location": `${env.SITE_URL || "http://localhost:3000"}/auth?error=database_not_available` }
       });
     }
-    const createUser2 = /* @__PURE__ */ __name2(async (db2, email, loginMethod = "github") => {
+    const createUser2 = /* @__PURE__ */ __name(async (db2, email, loginMethod = "github") => {
       const bearerToken = env.AFFENSUS_CREDENTIALS_PASSWORD;
       if (!bearerToken) {
         throw new Error("AFFENSUS_CREDENTIALS_PASSWORD not configured");
@@ -735,7 +699,7 @@ async function onRequestGet2(context) {
       const isNewUser2 = response.status === 201;
       return { user: user2, isNewUser: isNewUser2 };
     }, "createUser");
-    const updatePreferredLoginMethod2 = /* @__PURE__ */ __name2(async (db2, email, method) => {
+    const updatePreferredLoginMethod2 = /* @__PURE__ */ __name(async (db2, email, method) => {
       await db2.prepare(`
         UPDATE users 
         SET preferred_login_method = ?, updated_at = datetime('now')
@@ -810,18 +774,19 @@ async function onRequestGet2(context) {
     });
   }
 }
-__name(onRequestGet2, "onRequestGet2");
 var init_callback2 = __esm({
   "api/auth/github/callback.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(parseCookies2, "parseCookies");
-    __name2(signJwt2, "signJwt");
-    __name2(processPendingPayments, "processPendingPayments");
-    __name2(onRequestGet2, "onRequestGet");
+    __name(parseCookies2, "parseCookies");
+    __name(signJwt2, "signJwt");
+    __name(processPendingPayments, "processPendingPayments");
+    __name(onRequestGet2, "onRequestGet");
   }
 });
+
+// api/auth/google/callback.ts
 function parseCookies3(cookieHeader) {
   const cookies = {};
   if (!cookieHeader) return cookies;
@@ -833,7 +798,6 @@ function parseCookies3(cookieHeader) {
   });
   return cookies;
 }
-__name(parseCookies3, "parseCookies3");
 async function signJwt3(payload, secret, expiresIn = 7 * 24 * 60 * 60) {
   const now = Math.floor(Date.now() / 1e3);
   const jwtPayload = {
@@ -856,7 +820,6 @@ async function signJwt3(payload, secret, expiresIn = 7 * 24 * 60 * 60) {
   const signatureB64 = btoa(String.fromCharCode(...new Uint8Array(signature)));
   return `${data}.${signatureB64}`;
 }
-__name(signJwt3, "signJwt3");
 async function processPendingPayments2(db, email, userId, stripeSecretKey) {
   try {
     const pendingPayments = await db.prepare(`
@@ -925,7 +888,6 @@ async function processPendingPayments2(db, email, userId, stripeSecretKey) {
     console.error("Error checking for pending payments:", error);
   }
 }
-__name(processPendingPayments2, "processPendingPayments2");
 async function onRequestGet3(context) {
   try {
     const { request, env } = context;
@@ -1013,7 +975,7 @@ async function onRequestGet3(context) {
         headers: { "Location": `${env.SITE_URL || "http://localhost:3000"}/auth?error=database_not_available` }
       });
     }
-    const getUserByEmail4 = /* @__PURE__ */ __name2(async (email, apiKey) => {
+    const getUserByEmail4 = /* @__PURE__ */ __name(async (email, apiKey) => {
       try {
         const response = await fetch(`https://apiv2.affensus.com/api/auth/user/email/${encodeURIComponent(email)}`, {
           method: "GET",
@@ -1034,7 +996,7 @@ async function onRequestGet3(context) {
         return null;
       }
     }, "getUserByEmail");
-    const createUser2 = /* @__PURE__ */ __name2(async (db2, email, loginMethod = "google") => {
+    const createUser2 = /* @__PURE__ */ __name(async (db2, email, loginMethod = "google") => {
       const bearerToken = env.AFFENSUS_CREDENTIALS_PASSWORD;
       if (!bearerToken) {
         throw new Error("AFFENSUS_CREDENTIALS_PASSWORD not configured");
@@ -1087,7 +1049,7 @@ async function onRequestGet3(context) {
       const isNewUser2 = response.status === 201;
       return { user: user2, isNewUser: isNewUser2 };
     }, "createUser");
-    const updatePreferredLoginMethod2 = /* @__PURE__ */ __name2(async (email, method, apiKey) => {
+    const updatePreferredLoginMethod2 = /* @__PURE__ */ __name(async (email, method, apiKey) => {
       try {
         const response = await fetch(`https://apiv2.affensus.com/api/auth/user/email/${encodeURIComponent(email)}/login-method`, {
           method: "PUT",
@@ -1205,18 +1167,19 @@ async function onRequestGet3(context) {
     });
   }
 }
-__name(onRequestGet3, "onRequestGet3");
 var init_callback3 = __esm({
   "api/auth/google/callback.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(parseCookies3, "parseCookies");
-    __name2(signJwt3, "signJwt");
-    __name2(processPendingPayments2, "processPendingPayments");
-    __name2(onRequestGet3, "onRequestGet");
+    __name(parseCookies3, "parseCookies");
+    __name(signJwt3, "signJwt");
+    __name(processPendingPayments2, "processPendingPayments");
+    __name(onRequestGet3, "onRequestGet");
   }
 });
+
+// api/user/progress/[courseId]/index.ts
 async function onRequestGet4(context) {
   try {
     const { request, env, params } = context;
@@ -1276,7 +1239,6 @@ async function onRequestGet4(context) {
     });
   }
 }
-__name(onRequestGet4, "onRequestGet4");
 async function onRequestPost(context) {
   try {
     const { request, env, params } = context;
@@ -1390,16 +1352,17 @@ async function onRequestPost(context) {
     });
   }
 }
-__name(onRequestPost, "onRequestPost");
 var init_courseId = __esm({
   "api/user/progress/[courseId]/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestGet4, "onRequestGet");
-    __name2(onRequestPost, "onRequestPost");
+    __name(onRequestGet4, "onRequestGet");
+    __name(onRequestPost, "onRequestPost");
   }
 });
+
+// api/job/[job_id]/monitor.ts
 async function onRequestOptions2() {
   return new Response(null, {
     status: 200,
@@ -1410,7 +1373,6 @@ async function onRequestOptions2() {
     }
   });
 }
-__name(onRequestOptions2, "onRequestOptions2");
 async function onRequestGet5(context) {
   try {
     const { request, env, params } = context;
@@ -1502,16 +1464,17 @@ async function onRequestGet5(context) {
     });
   }
 }
-__name(onRequestGet5, "onRequestGet5");
 var init_monitor = __esm({
   "api/job/[job_id]/monitor.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestOptions2, "onRequestOptions");
-    __name2(onRequestGet5, "onRequestGet");
+    __name(onRequestOptions2, "onRequestOptions");
+    __name(onRequestGet5, "onRequestGet");
   }
 });
+
+// api/job/[job_id]/status.ts
 async function onRequestOptions3() {
   return new Response(null, {
     status: 200,
@@ -1522,7 +1485,6 @@ async function onRequestOptions3() {
     }
   });
 }
-__name(onRequestOptions3, "onRequestOptions3");
 async function onRequestGet6(context) {
   try {
     const { request, env, params } = context;
@@ -1609,16 +1571,17 @@ async function onRequestGet6(context) {
     });
   }
 }
-__name(onRequestGet6, "onRequestGet6");
 var init_status = __esm({
   "api/job/[job_id]/status.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestOptions3, "onRequestOptions");
-    __name2(onRequestGet6, "onRequestGet");
+    __name(onRequestOptions3, "onRequestOptions");
+    __name(onRequestGet6, "onRequestGet");
   }
 });
+
+// api/notifications/[project_id]/read-all.ts
 async function onRequestOptions4() {
   return new Response(null, {
     status: 200,
@@ -1629,7 +1592,6 @@ async function onRequestOptions4() {
     }
   });
 }
-__name(onRequestOptions4, "onRequestOptions4");
 async function onRequestPut2(context) {
   try {
     const { request, env, params } = context;
@@ -1690,16 +1652,17 @@ async function onRequestPut2(context) {
     });
   }
 }
-__name(onRequestPut2, "onRequestPut2");
 var init_read_all = __esm({
   "api/notifications/[project_id]/read-all.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestOptions4, "onRequestOptions");
-    __name2(onRequestPut2, "onRequestPut");
+    __name(onRequestOptions4, "onRequestOptions");
+    __name(onRequestPut2, "onRequestPut");
   }
 });
+
+// api/projects/[project_id]/credentials-summary.ts
 async function onRequestOptions5() {
   return new Response(null, {
     status: 200,
@@ -1710,7 +1673,6 @@ async function onRequestOptions5() {
     }
   });
 }
-__name(onRequestOptions5, "onRequestOptions5");
 async function onRequestGet7(context) {
   try {
     const { request, env, params } = context;
@@ -1779,16 +1741,17 @@ async function onRequestGet7(context) {
     });
   }
 }
-__name(onRequestGet7, "onRequestGet7");
 var init_credentials_summary = __esm({
   "api/projects/[project_id]/credentials-summary.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestOptions5, "onRequestOptions");
-    __name2(onRequestGet7, "onRequestGet");
+    __name(onRequestOptions5, "onRequestOptions");
+    __name(onRequestGet7, "onRequestGet");
   }
 });
+
+// api/projects/[project_id]/link-rot.ts
 async function onRequestOptions6() {
   return new Response(null, {
     status: 200,
@@ -1799,7 +1762,6 @@ async function onRequestOptions6() {
     }
   });
 }
-__name(onRequestOptions6, "onRequestOptions6");
 async function onRequestGet8(context) {
   try {
     const { request, env, params } = context;
@@ -1871,16 +1833,17 @@ async function onRequestGet8(context) {
     });
   }
 }
-__name(onRequestGet8, "onRequestGet8");
 var init_link_rot = __esm({
   "api/projects/[project_id]/link-rot.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestOptions6, "onRequestOptions");
-    __name2(onRequestGet8, "onRequestGet");
+    __name(onRequestOptions6, "onRequestOptions");
+    __name(onRequestGet8, "onRequestGet");
   }
 });
+
+// api/projects/[project_id]/merchants.ts
 async function onRequestOptions7() {
   return new Response(null, {
     status: 200,
@@ -1891,7 +1854,6 @@ async function onRequestOptions7() {
     }
   });
 }
-__name(onRequestOptions7, "onRequestOptions7");
 async function onRequestGet9(context) {
   try {
     const { request, env, params } = context;
@@ -1974,16 +1936,17 @@ async function onRequestGet9(context) {
     });
   }
 }
-__name(onRequestGet9, "onRequestGet9");
 var init_merchants = __esm({
   "api/projects/[project_id]/merchants.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestOptions7, "onRequestOptions");
-    __name2(onRequestGet9, "onRequestGet");
+    __name(onRequestOptions7, "onRequestOptions");
+    __name(onRequestGet9, "onRequestGet");
   }
 });
+
+// api/projects/[project_id]/networks.ts
 async function onRequestOptions8() {
   return new Response(null, {
     status: 200,
@@ -1994,7 +1957,6 @@ async function onRequestOptions8() {
     }
   });
 }
-__name(onRequestOptions8, "onRequestOptions8");
 async function onRequestGet10(context) {
   try {
     const { request, env, params } = context;
@@ -2063,16 +2025,17 @@ async function onRequestGet10(context) {
     });
   }
 }
-__name(onRequestGet10, "onRequestGet10");
 var init_networks = __esm({
   "api/projects/[project_id]/networks.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestOptions8, "onRequestOptions");
-    __name2(onRequestGet10, "onRequestGet");
+    __name(onRequestOptions8, "onRequestOptions");
+    __name(onRequestGet10, "onRequestGet");
   }
 });
+
+// api/projects/[project_id]/notifications.ts
 async function onRequestOptions9() {
   return new Response(null, {
     status: 200,
@@ -2083,7 +2046,6 @@ async function onRequestOptions9() {
     }
   });
 }
-__name(onRequestOptions9, "onRequestOptions9");
 async function onRequestGet11(context) {
   try {
     const { request, env, params } = context;
@@ -2152,16 +2114,17 @@ async function onRequestGet11(context) {
     });
   }
 }
-__name(onRequestGet11, "onRequestGet11");
 var init_notifications = __esm({
   "api/projects/[project_id]/notifications.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestOptions9, "onRequestOptions");
-    __name2(onRequestGet11, "onRequestGet");
+    __name(onRequestOptions9, "onRequestOptions");
+    __name(onRequestGet11, "onRequestGet");
   }
 });
+
+// api/projects/[project_id]/search.ts
 async function onRequestOptions10() {
   return new Response(null, {
     status: 200,
@@ -2172,7 +2135,6 @@ async function onRequestOptions10() {
     }
   });
 }
-__name(onRequestOptions10, "onRequestOptions10");
 async function onRequestGet12(context) {
   const { params, request, env } = context;
   const projectId = params.project_id;
@@ -2240,22 +2202,21 @@ async function onRequestGet12(context) {
   ongoingRequests.set(cacheKey, requestPromise);
   return requestPromise;
 }
-__name(onRequestGet12, "onRequestGet12");
-var cache;
-var CACHE_TTL;
-var ongoingRequests;
+var cache, CACHE_TTL, ongoingRequests;
 var init_search = __esm({
   "api/projects/[project_id]/search.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     cache = /* @__PURE__ */ new Map();
     CACHE_TTL = 5 * 60 * 1e3;
     ongoingRequests = /* @__PURE__ */ new Map();
-    __name2(onRequestOptions10, "onRequestOptions");
-    __name2(onRequestGet12, "onRequestGet");
+    __name(onRequestOptions10, "onRequestOptions");
+    __name(onRequestGet12, "onRequestGet");
   }
 });
+
+// api/notifications/[project_id]/[notification_id].ts
 async function onRequestOptions11() {
   return new Response(null, {
     status: 200,
@@ -2266,7 +2227,6 @@ async function onRequestOptions11() {
     }
   });
 }
-__name(onRequestOptions11, "onRequestOptions11");
 async function onRequestGet13(context) {
   const { request, env, params } = context;
   const { project_id, notification_id } = params;
@@ -2369,16 +2329,17 @@ async function onRequestGet13(context) {
     });
   }
 }
-__name(onRequestGet13, "onRequestGet13");
 var init_notification_id = __esm({
   "api/notifications/[project_id]/[notification_id].ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestOptions11, "onRequestOptions");
-    __name2(onRequestGet13, "onRequestGet");
+    __name(onRequestOptions11, "onRequestOptions");
+    __name(onRequestGet13, "onRequestGet");
   }
 });
+
+// api/auth/facebook/index.ts
 async function onRequestGet14(context) {
   try {
     const { request, env } = context;
@@ -2409,21 +2370,21 @@ async function onRequestGet14(context) {
     });
   }
 }
-__name(onRequestGet14, "onRequestGet14");
 var init_facebook = __esm({
   "api/auth/facebook/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestGet14, "onRequestGet");
+    __name(onRequestGet14, "onRequestGet");
   }
 });
+
+// api/auth/github/index.ts
 function generateState() {
   const array = new Uint8Array(32);
   crypto.getRandomValues(array);
   return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
-__name(generateState, "generateState");
 async function onRequestGet15(context) {
   try {
     const { env } = context;
@@ -2452,16 +2413,17 @@ async function onRequestGet15(context) {
     });
   }
 }
-__name(onRequestGet15, "onRequestGet15");
 var init_github = __esm({
   "api/auth/github/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(generateState, "generateState");
-    __name2(onRequestGet15, "onRequestGet");
+    __name(generateState, "generateState");
+    __name(onRequestGet15, "onRequestGet");
   }
 });
+
+// api/auth/google/index.ts
 async function onRequestGet16(context) {
   try {
     const { request, env } = context;
@@ -2492,15 +2454,16 @@ async function onRequestGet16(context) {
     });
   }
 }
-__name(onRequestGet16, "onRequestGet16");
 var init_google = __esm({
   "api/auth/google/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestGet16, "onRequestGet");
+    __name(onRequestGet16, "onRequestGet");
   }
 });
+
+// api/auth/register/index.ts
 async function onRequestOptions12() {
   return new Response(null, {
     status: 200,
@@ -2511,7 +2474,6 @@ async function onRequestOptions12() {
     }
   });
 }
-__name(onRequestOptions12, "onRequestOptions12");
 async function onRequestPost2(context) {
   try {
     const { request, env } = context;
@@ -2588,25 +2550,28 @@ async function onRequestPost2(context) {
     });
   }
 }
-__name(onRequestPost2, "onRequestPost2");
 var init_register = __esm({
   "api/auth/register/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestOptions12, "onRequestOptions");
-    __name2(onRequestPost2, "onRequestPost");
+    __name(onRequestOptions12, "onRequestOptions");
+    __name(onRequestPost2, "onRequestPost");
   }
 });
+
+// (disabled):crypto
 var require_crypto = __commonJS({
   "(disabled):crypto"() {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
   }
 });
+
+// ../node_modules/crypto-js/core.js
 var require_core = __commonJS({
   "../node_modules/crypto-js/core.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory) {
       if (typeof exports === "object") {
@@ -2634,13 +2599,13 @@ var require_core = __commonJS({
         if (!crypto2 && typeof global !== "undefined" && global.crypto) {
           crypto2 = global.crypto;
         }
-        if (!crypto2 && typeof __require2 === "function") {
+        if (!crypto2 && typeof __require === "function") {
           try {
             crypto2 = require_crypto();
           } catch (err) {
           }
         }
-        var cryptoSecureRandomInt = /* @__PURE__ */ __name2(function() {
+        var cryptoSecureRandomInt = /* @__PURE__ */ __name(function() {
           if (crypto2) {
             if (typeof crypto2.getRandomValues === "function") {
               try {
@@ -2661,7 +2626,6 @@ var require_core = __commonJS({
           function F() {
           }
           __name(F, "F");
-          __name2(F, "F");
           return function(obj) {
             var subtype;
             F.prototype = obj;
@@ -2692,7 +2656,7 @@ var require_core = __commonJS({
              *         }
              *     });
              */
-            extend: /* @__PURE__ */ __name2(function(overrides) {
+            extend: /* @__PURE__ */ __name(function(overrides) {
               var subtype = create(this);
               if (overrides) {
                 subtype.mixIn(overrides);
@@ -2718,7 +2682,7 @@ var require_core = __commonJS({
              *
              *     var instance = MyType.create();
              */
-            create: /* @__PURE__ */ __name2(function() {
+            create: /* @__PURE__ */ __name(function() {
               var instance = this.extend();
               instance.init.apply(instance, arguments);
               return instance;
@@ -2735,7 +2699,7 @@ var require_core = __commonJS({
              *         }
              *     });
              */
-            init: /* @__PURE__ */ __name2(function() {
+            init: /* @__PURE__ */ __name(function() {
             }, "init"),
             /**
              * Copies properties into this object.
@@ -2748,7 +2712,7 @@ var require_core = __commonJS({
              *         field: 'value'
              *     });
              */
-            mixIn: /* @__PURE__ */ __name2(function(properties) {
+            mixIn: /* @__PURE__ */ __name(function(properties) {
               for (var propertyName in properties) {
                 if (properties.hasOwnProperty(propertyName)) {
                   this[propertyName] = properties[propertyName];
@@ -2767,7 +2731,7 @@ var require_core = __commonJS({
              *
              *     var clone = instance.clone();
              */
-            clone: /* @__PURE__ */ __name2(function() {
+            clone: /* @__PURE__ */ __name(function() {
               return this.init.prototype.extend(this);
             }, "clone")
           };
@@ -2785,7 +2749,7 @@ var require_core = __commonJS({
            *     var wordArray = CryptoJS.lib.WordArray.create([0x00010203, 0x04050607]);
            *     var wordArray = CryptoJS.lib.WordArray.create([0x00010203, 0x04050607], 6);
            */
-          init: /* @__PURE__ */ __name2(function(words, sigBytes) {
+          init: /* @__PURE__ */ __name(function(words, sigBytes) {
             words = this.words = words || [];
             if (sigBytes != undefined2) {
               this.sigBytes = sigBytes;
@@ -2806,7 +2770,7 @@ var require_core = __commonJS({
            *     var string = wordArray.toString();
            *     var string = wordArray.toString(CryptoJS.enc.Utf8);
            */
-          toString: /* @__PURE__ */ __name2(function(encoder) {
+          toString: /* @__PURE__ */ __name(function(encoder) {
             return (encoder || Hex).stringify(this);
           }, "toString"),
           /**
@@ -2820,7 +2784,7 @@ var require_core = __commonJS({
            *
            *     wordArray1.concat(wordArray2);
            */
-          concat: /* @__PURE__ */ __name2(function(wordArray) {
+          concat: /* @__PURE__ */ __name(function(wordArray) {
             var thisWords = this.words;
             var thatWords = wordArray.words;
             var thisSigBytes = this.sigBytes;
@@ -2846,7 +2810,7 @@ var require_core = __commonJS({
            *
            *     wordArray.clamp();
            */
-          clamp: /* @__PURE__ */ __name2(function() {
+          clamp: /* @__PURE__ */ __name(function() {
             var words = this.words;
             var sigBytes = this.sigBytes;
             words[sigBytes >>> 2] &= 4294967295 << 32 - sigBytes % 4 * 8;
@@ -2861,7 +2825,7 @@ var require_core = __commonJS({
            *
            *     var clone = wordArray.clone();
            */
-          clone: /* @__PURE__ */ __name2(function() {
+          clone: /* @__PURE__ */ __name(function() {
             var clone = Base.clone.call(this);
             clone.words = this.words.slice(0);
             return clone;
@@ -2879,7 +2843,7 @@ var require_core = __commonJS({
            *
            *     var wordArray = CryptoJS.lib.WordArray.random(16);
            */
-          random: /* @__PURE__ */ __name2(function(nBytes) {
+          random: /* @__PURE__ */ __name(function(nBytes) {
             var words = [];
             for (var i = 0; i < nBytes; i += 4) {
               words.push(cryptoSecureRandomInt());
@@ -2902,7 +2866,7 @@ var require_core = __commonJS({
            *
            *     var hexString = CryptoJS.enc.Hex.stringify(wordArray);
            */
-          stringify: /* @__PURE__ */ __name2(function(wordArray) {
+          stringify: /* @__PURE__ */ __name(function(wordArray) {
             var words = wordArray.words;
             var sigBytes = wordArray.sigBytes;
             var hexChars = [];
@@ -2926,7 +2890,7 @@ var require_core = __commonJS({
            *
            *     var wordArray = CryptoJS.enc.Hex.parse(hexString);
            */
-          parse: /* @__PURE__ */ __name2(function(hexStr) {
+          parse: /* @__PURE__ */ __name(function(hexStr) {
             var hexStrLength = hexStr.length;
             var words = [];
             for (var i = 0; i < hexStrLength; i += 2) {
@@ -2949,7 +2913,7 @@ var require_core = __commonJS({
            *
            *     var latin1String = CryptoJS.enc.Latin1.stringify(wordArray);
            */
-          stringify: /* @__PURE__ */ __name2(function(wordArray) {
+          stringify: /* @__PURE__ */ __name(function(wordArray) {
             var words = wordArray.words;
             var sigBytes = wordArray.sigBytes;
             var latin1Chars = [];
@@ -2972,7 +2936,7 @@ var require_core = __commonJS({
            *
            *     var wordArray = CryptoJS.enc.Latin1.parse(latin1String);
            */
-          parse: /* @__PURE__ */ __name2(function(latin1Str) {
+          parse: /* @__PURE__ */ __name(function(latin1Str) {
             var latin1StrLength = latin1Str.length;
             var words = [];
             for (var i = 0; i < latin1StrLength; i++) {
@@ -2995,7 +2959,7 @@ var require_core = __commonJS({
            *
            *     var utf8String = CryptoJS.enc.Utf8.stringify(wordArray);
            */
-          stringify: /* @__PURE__ */ __name2(function(wordArray) {
+          stringify: /* @__PURE__ */ __name(function(wordArray) {
             try {
               return decodeURIComponent(escape(Latin1.stringify(wordArray)));
             } catch (e) {
@@ -3015,7 +2979,7 @@ var require_core = __commonJS({
            *
            *     var wordArray = CryptoJS.enc.Utf8.parse(utf8String);
            */
-          parse: /* @__PURE__ */ __name2(function(utf8Str) {
+          parse: /* @__PURE__ */ __name(function(utf8Str) {
             return Latin1.parse(unescape(encodeURIComponent(utf8Str)));
           }, "parse")
         };
@@ -3027,7 +2991,7 @@ var require_core = __commonJS({
            *
            *     bufferedBlockAlgorithm.reset();
            */
-          reset: /* @__PURE__ */ __name2(function() {
+          reset: /* @__PURE__ */ __name(function() {
             this._data = new WordArray.init();
             this._nDataBytes = 0;
           }, "reset"),
@@ -3041,7 +3005,7 @@ var require_core = __commonJS({
            *     bufferedBlockAlgorithm._append('data');
            *     bufferedBlockAlgorithm._append(wordArray);
            */
-          _append: /* @__PURE__ */ __name2(function(data) {
+          _append: /* @__PURE__ */ __name(function(data) {
             if (typeof data == "string") {
               data = Utf8.parse(data);
             }
@@ -3062,7 +3026,7 @@ var require_core = __commonJS({
            *     var processedData = bufferedBlockAlgorithm._process();
            *     var processedData = bufferedBlockAlgorithm._process(!!'flush');
            */
-          _process: /* @__PURE__ */ __name2(function(doFlush) {
+          _process: /* @__PURE__ */ __name(function(doFlush) {
             var processedWords;
             var data = this._data;
             var dataWords = data.words;
@@ -3095,7 +3059,7 @@ var require_core = __commonJS({
            *
            *     var clone = bufferedBlockAlgorithm.clone();
            */
-          clone: /* @__PURE__ */ __name2(function() {
+          clone: /* @__PURE__ */ __name(function() {
             var clone = Base.clone.call(this);
             clone._data = this._data.clone();
             return clone;
@@ -3116,7 +3080,7 @@ var require_core = __commonJS({
            *
            *     var hasher = CryptoJS.algo.SHA256.create();
            */
-          init: /* @__PURE__ */ __name2(function(cfg) {
+          init: /* @__PURE__ */ __name(function(cfg) {
             this.cfg = this.cfg.extend(cfg);
             this.reset();
           }, "init"),
@@ -3127,7 +3091,7 @@ var require_core = __commonJS({
            *
            *     hasher.reset();
            */
-          reset: /* @__PURE__ */ __name2(function() {
+          reset: /* @__PURE__ */ __name(function() {
             BufferedBlockAlgorithm.reset.call(this);
             this._doReset();
           }, "reset"),
@@ -3143,7 +3107,7 @@ var require_core = __commonJS({
            *     hasher.update('message');
            *     hasher.update(wordArray);
            */
-          update: /* @__PURE__ */ __name2(function(messageUpdate) {
+          update: /* @__PURE__ */ __name(function(messageUpdate) {
             this._append(messageUpdate);
             this._process();
             return this;
@@ -3162,7 +3126,7 @@ var require_core = __commonJS({
            *     var hash = hasher.finalize('message');
            *     var hash = hasher.finalize(wordArray);
            */
-          finalize: /* @__PURE__ */ __name2(function(messageUpdate) {
+          finalize: /* @__PURE__ */ __name(function(messageUpdate) {
             if (messageUpdate) {
               this._append(messageUpdate);
             }
@@ -3183,7 +3147,7 @@ var require_core = __commonJS({
            *
            *     var SHA256 = CryptoJS.lib.Hasher._createHelper(CryptoJS.algo.SHA256);
            */
-          _createHelper: /* @__PURE__ */ __name2(function(hasher) {
+          _createHelper: /* @__PURE__ */ __name(function(hasher) {
             return function(message, cfg) {
               return new hasher.init(cfg).finalize(message);
             };
@@ -3201,7 +3165,7 @@ var require_core = __commonJS({
            *
            *     var HmacSHA256 = CryptoJS.lib.Hasher._createHmacHelper(CryptoJS.algo.SHA256);
            */
-          _createHmacHelper: /* @__PURE__ */ __name2(function(hasher) {
+          _createHmacHelper: /* @__PURE__ */ __name(function(hasher) {
             return function(message, key) {
               return new C_algo.HMAC.init(hasher, key).finalize(message);
             };
@@ -3214,9 +3178,11 @@ var require_core = __commonJS({
     });
   }
 });
+
+// ../node_modules/crypto-js/x64-core.js
 var require_x64_core = __commonJS({
   "../node_modules/crypto-js/x64-core.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory) {
       if (typeof exports === "object") {
@@ -3244,7 +3210,7 @@ var require_x64_core = __commonJS({
            *
            *     var x64Word = CryptoJS.x64.Word.create(0x00010203, 0x04050607);
            */
-          init: /* @__PURE__ */ __name2(function(high, low) {
+          init: /* @__PURE__ */ __name(function(high, low) {
             this.high = high;
             this.low = low;
           }, "init")
@@ -3419,7 +3385,7 @@ var require_x64_core = __commonJS({
            *         CryptoJS.x64.Word.create(0x18191a1b, 0x1c1d1e1f)
            *     ], 10);
            */
-          init: /* @__PURE__ */ __name2(function(words, sigBytes) {
+          init: /* @__PURE__ */ __name(function(words, sigBytes) {
             words = this.words = words || [];
             if (sigBytes != undefined2) {
               this.sigBytes = sigBytes;
@@ -3436,7 +3402,7 @@ var require_x64_core = __commonJS({
            *
            *     var x32WordArray = x64WordArray.toX32();
            */
-          toX32: /* @__PURE__ */ __name2(function() {
+          toX32: /* @__PURE__ */ __name(function() {
             var x64Words = this.words;
             var x64WordsLength = x64Words.length;
             var x32Words = [];
@@ -3456,7 +3422,7 @@ var require_x64_core = __commonJS({
            *
            *     var clone = x64WordArray.clone();
            */
-          clone: /* @__PURE__ */ __name2(function() {
+          clone: /* @__PURE__ */ __name(function() {
             var clone = Base.clone.call(this);
             var words = clone.words = this.words.slice(0);
             var wordsLength = words.length;
@@ -3471,9 +3437,11 @@ var require_x64_core = __commonJS({
     });
   }
 });
+
+// ../node_modules/crypto-js/lib-typedarrays.js
 var require_lib_typedarrays = __commonJS({
   "../node_modules/crypto-js/lib-typedarrays.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory) {
       if (typeof exports === "object") {
@@ -3516,9 +3484,11 @@ var require_lib_typedarrays = __commonJS({
     });
   }
 });
+
+// ../node_modules/crypto-js/enc-utf16.js
 var require_enc_utf16 = __commonJS({
   "../node_modules/crypto-js/enc-utf16.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory) {
       if (typeof exports === "object") {
@@ -3548,7 +3518,7 @@ var require_enc_utf16 = __commonJS({
            *
            *     var utf16String = CryptoJS.enc.Utf16.stringify(wordArray);
            */
-          stringify: /* @__PURE__ */ __name2(function(wordArray) {
+          stringify: /* @__PURE__ */ __name(function(wordArray) {
             var words = wordArray.words;
             var sigBytes = wordArray.sigBytes;
             var utf16Chars = [];
@@ -3571,7 +3541,7 @@ var require_enc_utf16 = __commonJS({
            *
            *     var wordArray = CryptoJS.enc.Utf16.parse(utf16String);
            */
-          parse: /* @__PURE__ */ __name2(function(utf16Str) {
+          parse: /* @__PURE__ */ __name(function(utf16Str) {
             var utf16StrLength = utf16Str.length;
             var words = [];
             for (var i = 0; i < utf16StrLength; i++) {
@@ -3594,7 +3564,7 @@ var require_enc_utf16 = __commonJS({
            *
            *     var utf16Str = CryptoJS.enc.Utf16LE.stringify(wordArray);
            */
-          stringify: /* @__PURE__ */ __name2(function(wordArray) {
+          stringify: /* @__PURE__ */ __name(function(wordArray) {
             var words = wordArray.words;
             var sigBytes = wordArray.sigBytes;
             var utf16Chars = [];
@@ -3617,7 +3587,7 @@ var require_enc_utf16 = __commonJS({
            *
            *     var wordArray = CryptoJS.enc.Utf16LE.parse(utf16Str);
            */
-          parse: /* @__PURE__ */ __name2(function(utf16Str) {
+          parse: /* @__PURE__ */ __name(function(utf16Str) {
             var utf16StrLength = utf16Str.length;
             var words = [];
             for (var i = 0; i < utf16StrLength; i++) {
@@ -3630,15 +3600,16 @@ var require_enc_utf16 = __commonJS({
           return word << 8 & 4278255360 | word >>> 8 & 16711935;
         }
         __name(swapEndian, "swapEndian");
-        __name2(swapEndian, "swapEndian");
       })();
       return CryptoJS3.enc.Utf16;
     });
   }
 });
+
+// ../node_modules/crypto-js/enc-base64.js
 var require_enc_base64 = __commonJS({
   "../node_modules/crypto-js/enc-base64.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory) {
       if (typeof exports === "object") {
@@ -3668,7 +3639,7 @@ var require_enc_base64 = __commonJS({
            *
            *     var base64String = CryptoJS.enc.Base64.stringify(wordArray);
            */
-          stringify: /* @__PURE__ */ __name2(function(wordArray) {
+          stringify: /* @__PURE__ */ __name(function(wordArray) {
             var words = wordArray.words;
             var sigBytes = wordArray.sigBytes;
             var map = this._map;
@@ -3704,7 +3675,7 @@ var require_enc_base64 = __commonJS({
            *
            *     var wordArray = CryptoJS.enc.Base64.parse(base64String);
            */
-          parse: /* @__PURE__ */ __name2(function(base64Str) {
+          parse: /* @__PURE__ */ __name(function(base64Str) {
             var base64StrLength = base64Str.length;
             var map = this._map;
             var reverseMap = this._reverseMap;
@@ -3740,15 +3711,16 @@ var require_enc_base64 = __commonJS({
           return WordArray.create(words, nBytes);
         }
         __name(parseLoop, "parseLoop");
-        __name2(parseLoop, "parseLoop");
       })();
       return CryptoJS3.enc.Base64;
     });
   }
 });
+
+// ../node_modules/crypto-js/enc-base64url.js
 var require_enc_base64url = __commonJS({
   "../node_modules/crypto-js/enc-base64url.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory) {
       if (typeof exports === "object") {
@@ -3780,7 +3752,7 @@ var require_enc_base64url = __commonJS({
            *
            *     var base64String = CryptoJS.enc.Base64url.stringify(wordArray);
            */
-          stringify: /* @__PURE__ */ __name2(function(wordArray, urlSafe) {
+          stringify: /* @__PURE__ */ __name(function(wordArray, urlSafe) {
             if (urlSafe === void 0) {
               urlSafe = true;
             }
@@ -3821,7 +3793,7 @@ var require_enc_base64url = __commonJS({
            *
            *     var wordArray = CryptoJS.enc.Base64url.parse(base64String);
            */
-          parse: /* @__PURE__ */ __name2(function(base64Str, urlSafe) {
+          parse: /* @__PURE__ */ __name(function(base64Str, urlSafe) {
             if (urlSafe === void 0) {
               urlSafe = true;
             }
@@ -3861,15 +3833,16 @@ var require_enc_base64url = __commonJS({
           return WordArray.create(words, nBytes);
         }
         __name(parseLoop, "parseLoop");
-        __name2(parseLoop, "parseLoop");
       })();
       return CryptoJS3.enc.Base64url;
     });
   }
 });
+
+// ../node_modules/crypto-js/md5.js
 var require_md5 = __commonJS({
   "../node_modules/crypto-js/md5.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory) {
       if (typeof exports === "object") {
@@ -3893,7 +3866,7 @@ var require_md5 = __commonJS({
           }
         })();
         var MD5 = C_algo.MD5 = Hasher.extend({
-          _doReset: /* @__PURE__ */ __name2(function() {
+          _doReset: /* @__PURE__ */ __name(function() {
             this._hash = new WordArray.init([
               1732584193,
               4023233417,
@@ -3901,7 +3874,7 @@ var require_md5 = __commonJS({
               271733878
             ]);
           }, "_doReset"),
-          _doProcessBlock: /* @__PURE__ */ __name2(function(M, offset) {
+          _doProcessBlock: /* @__PURE__ */ __name(function(M, offset) {
             for (var i = 0; i < 16; i++) {
               var offset_i = offset + i;
               var M_offset_i = M[offset_i];
@@ -3997,7 +3970,7 @@ var require_md5 = __commonJS({
             H[2] = H[2] + c | 0;
             H[3] = H[3] + d | 0;
           }, "_doProcessBlock"),
-          _doFinalize: /* @__PURE__ */ __name2(function() {
+          _doFinalize: /* @__PURE__ */ __name(function() {
             var data = this._data;
             var dataWords = data.words;
             var nBitsTotal = this._nDataBytes * 8;
@@ -4017,7 +3990,7 @@ var require_md5 = __commonJS({
             }
             return hash;
           }, "_doFinalize"),
-          clone: /* @__PURE__ */ __name2(function() {
+          clone: /* @__PURE__ */ __name(function() {
             var clone = Hasher.clone.call(this);
             clone._hash = this._hash.clone();
             return clone;
@@ -4028,25 +4001,21 @@ var require_md5 = __commonJS({
           return (n << s | n >>> 32 - s) + b;
         }
         __name(FF, "FF");
-        __name2(FF, "FF");
         function GG(a, b, c, d, x, s, t) {
           var n = a + (b & d | c & ~d) + x + t;
           return (n << s | n >>> 32 - s) + b;
         }
         __name(GG, "GG");
-        __name2(GG, "GG");
         function HH(a, b, c, d, x, s, t) {
           var n = a + (b ^ c ^ d) + x + t;
           return (n << s | n >>> 32 - s) + b;
         }
         __name(HH, "HH");
-        __name2(HH, "HH");
         function II(a, b, c, d, x, s, t) {
           var n = a + (c ^ (b | ~d)) + x + t;
           return (n << s | n >>> 32 - s) + b;
         }
         __name(II, "II");
-        __name2(II, "II");
         C.MD5 = Hasher._createHelper(MD5);
         C.HmacMD5 = Hasher._createHmacHelper(MD5);
       })(Math);
@@ -4054,9 +4023,11 @@ var require_md5 = __commonJS({
     });
   }
 });
+
+// ../node_modules/crypto-js/sha1.js
 var require_sha1 = __commonJS({
   "../node_modules/crypto-js/sha1.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory) {
       if (typeof exports === "object") {
@@ -4075,7 +4046,7 @@ var require_sha1 = __commonJS({
         var C_algo = C.algo;
         var W = [];
         var SHA1 = C_algo.SHA1 = Hasher.extend({
-          _doReset: /* @__PURE__ */ __name2(function() {
+          _doReset: /* @__PURE__ */ __name(function() {
             this._hash = new WordArray.init([
               1732584193,
               4023233417,
@@ -4084,7 +4055,7 @@ var require_sha1 = __commonJS({
               3285377520
             ]);
           }, "_doReset"),
-          _doProcessBlock: /* @__PURE__ */ __name2(function(M, offset) {
+          _doProcessBlock: /* @__PURE__ */ __name(function(M, offset) {
             var H = this._hash.words;
             var a = H[0];
             var b = H[1];
@@ -4120,7 +4091,7 @@ var require_sha1 = __commonJS({
             H[3] = H[3] + d | 0;
             H[4] = H[4] + e | 0;
           }, "_doProcessBlock"),
-          _doFinalize: /* @__PURE__ */ __name2(function() {
+          _doFinalize: /* @__PURE__ */ __name(function() {
             var data = this._data;
             var dataWords = data.words;
             var nBitsTotal = this._nDataBytes * 8;
@@ -4132,7 +4103,7 @@ var require_sha1 = __commonJS({
             this._process();
             return this._hash;
           }, "_doFinalize"),
-          clone: /* @__PURE__ */ __name2(function() {
+          clone: /* @__PURE__ */ __name(function() {
             var clone = Hasher.clone.call(this);
             clone._hash = this._hash.clone();
             return clone;
@@ -4145,9 +4116,11 @@ var require_sha1 = __commonJS({
     });
   }
 });
+
+// ../node_modules/crypto-js/sha256.js
 var require_sha256 = __commonJS({
   "../node_modules/crypto-js/sha256.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory) {
       if (typeof exports === "object") {
@@ -4177,12 +4150,10 @@ var require_sha256 = __commonJS({
             return true;
           }
           __name(isPrime, "isPrime");
-          __name2(isPrime, "isPrime");
           function getFractionalBits(n2) {
             return (n2 - (n2 | 0)) * 4294967296 | 0;
           }
           __name(getFractionalBits, "getFractionalBits");
-          __name2(getFractionalBits, "getFractionalBits");
           var n = 2;
           var nPrime = 0;
           while (nPrime < 64) {
@@ -4198,10 +4169,10 @@ var require_sha256 = __commonJS({
         })();
         var W = [];
         var SHA256 = C_algo.SHA256 = Hasher.extend({
-          _doReset: /* @__PURE__ */ __name2(function() {
+          _doReset: /* @__PURE__ */ __name(function() {
             this._hash = new WordArray.init(H.slice(0));
           }, "_doReset"),
-          _doProcessBlock: /* @__PURE__ */ __name2(function(M, offset) {
+          _doProcessBlock: /* @__PURE__ */ __name(function(M, offset) {
             var H2 = this._hash.words;
             var a = H2[0];
             var b = H2[1];
@@ -4245,7 +4216,7 @@ var require_sha256 = __commonJS({
             H2[6] = H2[6] + g | 0;
             H2[7] = H2[7] + h | 0;
           }, "_doProcessBlock"),
-          _doFinalize: /* @__PURE__ */ __name2(function() {
+          _doFinalize: /* @__PURE__ */ __name(function() {
             var data = this._data;
             var dataWords = data.words;
             var nBitsTotal = this._nDataBytes * 8;
@@ -4257,7 +4228,7 @@ var require_sha256 = __commonJS({
             this._process();
             return this._hash;
           }, "_doFinalize"),
-          clone: /* @__PURE__ */ __name2(function() {
+          clone: /* @__PURE__ */ __name(function() {
             var clone = Hasher.clone.call(this);
             clone._hash = this._hash.clone();
             return clone;
@@ -4270,9 +4241,11 @@ var require_sha256 = __commonJS({
     });
   }
 });
+
+// ../node_modules/crypto-js/sha224.js
 var require_sha224 = __commonJS({
   "../node_modules/crypto-js/sha224.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -4290,7 +4263,7 @@ var require_sha224 = __commonJS({
         var C_algo = C.algo;
         var SHA256 = C_algo.SHA256;
         var SHA224 = C_algo.SHA224 = SHA256.extend({
-          _doReset: /* @__PURE__ */ __name2(function() {
+          _doReset: /* @__PURE__ */ __name(function() {
             this._hash = new WordArray.init([
               3238371032,
               914150663,
@@ -4302,7 +4275,7 @@ var require_sha224 = __commonJS({
               3204075428
             ]);
           }, "_doReset"),
-          _doFinalize: /* @__PURE__ */ __name2(function() {
+          _doFinalize: /* @__PURE__ */ __name(function() {
             var hash = SHA256._doFinalize.call(this);
             hash.sigBytes -= 4;
             return hash;
@@ -4315,9 +4288,11 @@ var require_sha224 = __commonJS({
     });
   }
 });
+
+// ../node_modules/crypto-js/sha512.js
 var require_sha512 = __commonJS({
   "../node_modules/crypto-js/sha512.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -4340,7 +4315,6 @@ var require_sha512 = __commonJS({
           return X64Word.create.apply(X64Word, arguments);
         }
         __name(X64Word_create, "X64Word_create");
-        __name2(X64Word_create, "X64Word_create");
         var K = [
           X64Word_create(1116352408, 3609767458),
           X64Word_create(1899447441, 602891725),
@@ -4430,7 +4404,7 @@ var require_sha512 = __commonJS({
           }
         })();
         var SHA512 = C_algo.SHA512 = Hasher.extend({
-          _doReset: /* @__PURE__ */ __name2(function() {
+          _doReset: /* @__PURE__ */ __name(function() {
             this._hash = new X64WordArray.init([
               new X64Word.init(1779033703, 4089235720),
               new X64Word.init(3144134277, 2227873595),
@@ -4442,7 +4416,7 @@ var require_sha512 = __commonJS({
               new X64Word.init(1541459225, 327033209)
             ]);
           }, "_doReset"),
-          _doProcessBlock: /* @__PURE__ */ __name2(function(M, offset) {
+          _doProcessBlock: /* @__PURE__ */ __name(function(M, offset) {
             var H = this._hash.words;
             var H0 = H[0];
             var H1 = H[1];
@@ -4572,7 +4546,7 @@ var require_sha512 = __commonJS({
             H7l = H7.low = H7l + hl;
             H7.high = H7h + hh + (H7l >>> 0 < hl >>> 0 ? 1 : 0);
           }, "_doProcessBlock"),
-          _doFinalize: /* @__PURE__ */ __name2(function() {
+          _doFinalize: /* @__PURE__ */ __name(function() {
             var data = this._data;
             var dataWords = data.words;
             var nBitsTotal = this._nDataBytes * 8;
@@ -4585,7 +4559,7 @@ var require_sha512 = __commonJS({
             var hash = this._hash.toX32();
             return hash;
           }, "_doFinalize"),
-          clone: /* @__PURE__ */ __name2(function() {
+          clone: /* @__PURE__ */ __name(function() {
             var clone = Hasher.clone.call(this);
             clone._hash = this._hash.clone();
             return clone;
@@ -4599,9 +4573,11 @@ var require_sha512 = __commonJS({
     });
   }
 });
+
+// ../node_modules/crypto-js/sha384.js
 var require_sha384 = __commonJS({
   "../node_modules/crypto-js/sha384.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -4620,7 +4596,7 @@ var require_sha384 = __commonJS({
         var C_algo = C.algo;
         var SHA512 = C_algo.SHA512;
         var SHA384 = C_algo.SHA384 = SHA512.extend({
-          _doReset: /* @__PURE__ */ __name2(function() {
+          _doReset: /* @__PURE__ */ __name(function() {
             this._hash = new X64WordArray.init([
               new X64Word.init(3418070365, 3238371032),
               new X64Word.init(1654270250, 914150663),
@@ -4632,7 +4608,7 @@ var require_sha384 = __commonJS({
               new X64Word.init(1203062813, 3204075428)
             ]);
           }, "_doReset"),
-          _doFinalize: /* @__PURE__ */ __name2(function() {
+          _doFinalize: /* @__PURE__ */ __name(function() {
             var hash = SHA512._doFinalize.call(this);
             hash.sigBytes -= 16;
             return hash;
@@ -4645,9 +4621,11 @@ var require_sha384 = __commonJS({
     });
   }
 });
+
+// ../node_modules/crypto-js/sha3.js
 var require_sha3 = __commonJS({
   "../node_modules/crypto-js/sha3.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -4723,14 +4701,14 @@ var require_sha3 = __commonJS({
           cfg: Hasher.cfg.extend({
             outputLength: 512
           }),
-          _doReset: /* @__PURE__ */ __name2(function() {
+          _doReset: /* @__PURE__ */ __name(function() {
             var state = this._state = [];
             for (var i = 0; i < 25; i++) {
               state[i] = new X64Word.init();
             }
             this.blockSize = (1600 - 2 * this.cfg.outputLength) / 32;
           }, "_doReset"),
-          _doProcessBlock: /* @__PURE__ */ __name2(function(M, offset) {
+          _doProcessBlock: /* @__PURE__ */ __name(function(M, offset) {
             var state = this._state;
             var nBlockSizeLanes = this.blockSize / 2;
             for (var i = 0; i < nBlockSizeLanes; i++) {
@@ -4806,7 +4784,7 @@ var require_sha3 = __commonJS({
               lane.low ^= roundConstant.low;
             }
           }, "_doProcessBlock"),
-          _doFinalize: /* @__PURE__ */ __name2(function() {
+          _doFinalize: /* @__PURE__ */ __name(function() {
             var data = this._data;
             var dataWords = data.words;
             var nBitsTotal = this._nDataBytes * 8;
@@ -4831,7 +4809,7 @@ var require_sha3 = __commonJS({
             }
             return new WordArray.init(hashWords, outputLengthBytes);
           }, "_doFinalize"),
-          clone: /* @__PURE__ */ __name2(function() {
+          clone: /* @__PURE__ */ __name(function() {
             var clone = Hasher.clone.call(this);
             var state = clone._state = this._state.slice(0);
             for (var i = 0; i < 25; i++) {
@@ -4847,9 +4825,11 @@ var require_sha3 = __commonJS({
     });
   }
 });
+
+// ../node_modules/crypto-js/ripemd160.js
 var require_ripemd160 = __commonJS({
   "../node_modules/crypto-js/ripemd160.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory) {
       if (typeof exports === "object") {
@@ -5197,10 +5177,10 @@ var require_ripemd160 = __commonJS({
         var _hl = WordArray.create([0, 1518500249, 1859775393, 2400959708, 2840853838]);
         var _hr = WordArray.create([1352829926, 1548603684, 1836072691, 2053994217, 0]);
         var RIPEMD160 = C_algo.RIPEMD160 = Hasher.extend({
-          _doReset: /* @__PURE__ */ __name2(function() {
+          _doReset: /* @__PURE__ */ __name(function() {
             this._hash = WordArray.create([1732584193, 4023233417, 2562383102, 271733878, 3285377520]);
           }, "_doReset"),
-          _doProcessBlock: /* @__PURE__ */ __name2(function(M, offset) {
+          _doProcessBlock: /* @__PURE__ */ __name(function(M, offset) {
             for (var i = 0; i < 16; i++) {
               var offset_i = offset + i;
               var M_offset_i = M[offset_i];
@@ -5270,7 +5250,7 @@ var require_ripemd160 = __commonJS({
             H[4] = H[0] + bl + cr | 0;
             H[0] = t;
           }, "_doProcessBlock"),
-          _doFinalize: /* @__PURE__ */ __name2(function() {
+          _doFinalize: /* @__PURE__ */ __name(function() {
             var data = this._data;
             var dataWords = data.words;
             var nBitsTotal = this._nDataBytes * 8;
@@ -5287,7 +5267,7 @@ var require_ripemd160 = __commonJS({
             }
             return hash;
           }, "_doFinalize"),
-          clone: /* @__PURE__ */ __name2(function() {
+          clone: /* @__PURE__ */ __name(function() {
             var clone = Hasher.clone.call(this);
             clone._hash = this._hash.clone();
             return clone;
@@ -5297,32 +5277,26 @@ var require_ripemd160 = __commonJS({
           return x ^ y ^ z;
         }
         __name(f1, "f1");
-        __name2(f1, "f1");
         function f2(x, y, z) {
           return x & y | ~x & z;
         }
         __name(f2, "f2");
-        __name2(f2, "f2");
         function f3(x, y, z) {
           return (x | ~y) ^ z;
         }
         __name(f3, "f3");
-        __name2(f3, "f3");
         function f4(x, y, z) {
           return x & z | y & ~z;
         }
         __name(f4, "f4");
-        __name2(f4, "f4");
         function f5(x, y, z) {
           return x ^ (y | ~z);
         }
         __name(f5, "f5");
-        __name2(f5, "f5");
         function rotl(x, n) {
           return x << n | x >>> 32 - n;
         }
         __name(rotl, "rotl");
-        __name2(rotl, "rotl");
         C.RIPEMD160 = Hasher._createHelper(RIPEMD160);
         C.HmacRIPEMD160 = Hasher._createHmacHelper(RIPEMD160);
       })(Math);
@@ -5330,9 +5304,11 @@ var require_ripemd160 = __commonJS({
     });
   }
 });
+
+// ../node_modules/crypto-js/hmac.js
 var require_hmac = __commonJS({
   "../node_modules/crypto-js/hmac.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory) {
       if (typeof exports === "object") {
@@ -5361,7 +5337,7 @@ var require_hmac = __commonJS({
            *
            *     var hmacHasher = CryptoJS.algo.HMAC.create(CryptoJS.algo.SHA256, key);
            */
-          init: /* @__PURE__ */ __name2(function(hasher, key) {
+          init: /* @__PURE__ */ __name(function(hasher, key) {
             hasher = this._hasher = new hasher.init();
             if (typeof key == "string") {
               key = Utf8.parse(key);
@@ -5390,7 +5366,7 @@ var require_hmac = __commonJS({
            *
            *     hmacHasher.reset();
            */
-          reset: /* @__PURE__ */ __name2(function() {
+          reset: /* @__PURE__ */ __name(function() {
             var hasher = this._hasher;
             hasher.reset();
             hasher.update(this._iKey);
@@ -5407,7 +5383,7 @@ var require_hmac = __commonJS({
            *     hmacHasher.update('message');
            *     hmacHasher.update(wordArray);
            */
-          update: /* @__PURE__ */ __name2(function(messageUpdate) {
+          update: /* @__PURE__ */ __name(function(messageUpdate) {
             this._hasher.update(messageUpdate);
             return this;
           }, "update"),
@@ -5425,7 +5401,7 @@ var require_hmac = __commonJS({
            *     var hmac = hmacHasher.finalize('message');
            *     var hmac = hmacHasher.finalize(wordArray);
            */
-          finalize: /* @__PURE__ */ __name2(function(messageUpdate) {
+          finalize: /* @__PURE__ */ __name(function(messageUpdate) {
             var hasher = this._hasher;
             var innerHash = hasher.finalize(messageUpdate);
             hasher.reset();
@@ -5437,9 +5413,11 @@ var require_hmac = __commonJS({
     });
   }
 });
+
+// ../node_modules/crypto-js/pbkdf2.js
 var require_pbkdf2 = __commonJS({
   "../node_modules/crypto-js/pbkdf2.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -5482,7 +5460,7 @@ var require_pbkdf2 = __commonJS({
            *     var kdf = CryptoJS.algo.PBKDF2.create({ keySize: 8 });
            *     var kdf = CryptoJS.algo.PBKDF2.create({ keySize: 8, iterations: 1000 });
            */
-          init: /* @__PURE__ */ __name2(function(cfg) {
+          init: /* @__PURE__ */ __name(function(cfg) {
             this.cfg = this.cfg.extend(cfg);
           }, "init"),
           /**
@@ -5497,7 +5475,7 @@ var require_pbkdf2 = __commonJS({
            *
            *     var key = kdf.compute(password, salt);
            */
-          compute: /* @__PURE__ */ __name2(function(password, salt) {
+          compute: /* @__PURE__ */ __name(function(password, salt) {
             var cfg = this.cfg;
             var hmac = HMAC.create(cfg.hasher, password);
             var derivedKey = WordArray.create();
@@ -5535,9 +5513,11 @@ var require_pbkdf2 = __commonJS({
     });
   }
 });
+
+// ../node_modules/crypto-js/evpkdf.js
 var require_evpkdf = __commonJS({
   "../node_modules/crypto-js/evpkdf.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -5579,7 +5559,7 @@ var require_evpkdf = __commonJS({
            *     var kdf = CryptoJS.algo.EvpKDF.create({ keySize: 8 });
            *     var kdf = CryptoJS.algo.EvpKDF.create({ keySize: 8, iterations: 1000 });
            */
-          init: /* @__PURE__ */ __name2(function(cfg) {
+          init: /* @__PURE__ */ __name(function(cfg) {
             this.cfg = this.cfg.extend(cfg);
           }, "init"),
           /**
@@ -5594,7 +5574,7 @@ var require_evpkdf = __commonJS({
            *
            *     var key = kdf.compute(password, salt);
            */
-          compute: /* @__PURE__ */ __name2(function(password, salt) {
+          compute: /* @__PURE__ */ __name(function(password, salt) {
             var block;
             var cfg = this.cfg;
             var hasher = cfg.hasher.create();
@@ -5626,9 +5606,11 @@ var require_evpkdf = __commonJS({
     });
   }
 });
+
+// ../node_modules/crypto-js/cipher-core.js
 var require_cipher_core = __commonJS({
   "../node_modules/crypto-js/cipher-core.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -5671,7 +5653,7 @@ var require_cipher_core = __commonJS({
            *
            *     var cipher = CryptoJS.algo.AES.createEncryptor(keyWordArray, { iv: ivWordArray });
            */
-          createEncryptor: /* @__PURE__ */ __name2(function(key, cfg) {
+          createEncryptor: /* @__PURE__ */ __name(function(key, cfg) {
             return this.create(this._ENC_XFORM_MODE, key, cfg);
           }, "createEncryptor"),
           /**
@@ -5688,7 +5670,7 @@ var require_cipher_core = __commonJS({
            *
            *     var cipher = CryptoJS.algo.AES.createDecryptor(keyWordArray, { iv: ivWordArray });
            */
-          createDecryptor: /* @__PURE__ */ __name2(function(key, cfg) {
+          createDecryptor: /* @__PURE__ */ __name(function(key, cfg) {
             return this.create(this._DEC_XFORM_MODE, key, cfg);
           }, "createDecryptor"),
           /**
@@ -5702,7 +5684,7 @@ var require_cipher_core = __commonJS({
            *
            *     var cipher = CryptoJS.algo.AES.create(CryptoJS.algo.AES._ENC_XFORM_MODE, keyWordArray, { iv: ivWordArray });
            */
-          init: /* @__PURE__ */ __name2(function(xformMode, key, cfg) {
+          init: /* @__PURE__ */ __name(function(xformMode, key, cfg) {
             this.cfg = this.cfg.extend(cfg);
             this._xformMode = xformMode;
             this._key = key;
@@ -5715,7 +5697,7 @@ var require_cipher_core = __commonJS({
            *
            *     cipher.reset();
            */
-          reset: /* @__PURE__ */ __name2(function() {
+          reset: /* @__PURE__ */ __name(function() {
             BufferedBlockAlgorithm.reset.call(this);
             this._doReset();
           }, "reset"),
@@ -5731,7 +5713,7 @@ var require_cipher_core = __commonJS({
            *     var encrypted = cipher.process('data');
            *     var encrypted = cipher.process(wordArray);
            */
-          process: /* @__PURE__ */ __name2(function(dataUpdate) {
+          process: /* @__PURE__ */ __name(function(dataUpdate) {
             this._append(dataUpdate);
             return this._process();
           }, "process"),
@@ -5749,7 +5731,7 @@ var require_cipher_core = __commonJS({
            *     var encrypted = cipher.finalize('data');
            *     var encrypted = cipher.finalize(wordArray);
            */
-          finalize: /* @__PURE__ */ __name2(function(dataUpdate) {
+          finalize: /* @__PURE__ */ __name(function(dataUpdate) {
             if (dataUpdate) {
               this._append(dataUpdate);
             }
@@ -5782,13 +5764,12 @@ var require_cipher_core = __commonJS({
               }
             }
             __name(selectCipherStrategy, "selectCipherStrategy");
-            __name2(selectCipherStrategy, "selectCipherStrategy");
             return function(cipher) {
               return {
-                encrypt: /* @__PURE__ */ __name2(function(message, key, cfg) {
+                encrypt: /* @__PURE__ */ __name(function(message, key, cfg) {
                   return selectCipherStrategy(key).encrypt(cipher, message, key, cfg);
                 }, "encrypt"),
-                decrypt: /* @__PURE__ */ __name2(function(ciphertext, key, cfg) {
+                decrypt: /* @__PURE__ */ __name(function(ciphertext, key, cfg) {
                   return selectCipherStrategy(key).decrypt(cipher, ciphertext, key, cfg);
                 }, "decrypt")
               };
@@ -5796,7 +5777,7 @@ var require_cipher_core = __commonJS({
           }()
         });
         var StreamCipher = C_lib.StreamCipher = Cipher.extend({
-          _doFinalize: /* @__PURE__ */ __name2(function() {
+          _doFinalize: /* @__PURE__ */ __name(function() {
             var finalProcessedBlocks = this._process(true);
             return finalProcessedBlocks;
           }, "_doFinalize"),
@@ -5816,7 +5797,7 @@ var require_cipher_core = __commonJS({
            *
            *     var mode = CryptoJS.mode.CBC.createEncryptor(cipher, iv.words);
            */
-          createEncryptor: /* @__PURE__ */ __name2(function(cipher, iv) {
+          createEncryptor: /* @__PURE__ */ __name(function(cipher, iv) {
             return this.Encryptor.create(cipher, iv);
           }, "createEncryptor"),
           /**
@@ -5831,7 +5812,7 @@ var require_cipher_core = __commonJS({
            *
            *     var mode = CryptoJS.mode.CBC.createDecryptor(cipher, iv.words);
            */
-          createDecryptor: /* @__PURE__ */ __name2(function(cipher, iv) {
+          createDecryptor: /* @__PURE__ */ __name(function(cipher, iv) {
             return this.Decryptor.create(cipher, iv);
           }, "createDecryptor"),
           /**
@@ -5844,7 +5825,7 @@ var require_cipher_core = __commonJS({
            *
            *     var mode = CryptoJS.mode.CBC.Encryptor.create(cipher, iv.words);
            */
-          init: /* @__PURE__ */ __name2(function(cipher, iv) {
+          init: /* @__PURE__ */ __name(function(cipher, iv) {
             this._cipher = cipher;
             this._iv = iv;
           }, "init")
@@ -5862,7 +5843,7 @@ var require_cipher_core = __commonJS({
              *
              *     mode.processBlock(data.words, offset);
              */
-            processBlock: /* @__PURE__ */ __name2(function(words, offset) {
+            processBlock: /* @__PURE__ */ __name(function(words, offset) {
               var cipher = this._cipher;
               var blockSize = cipher.blockSize;
               xorBlock.call(this, words, offset, blockSize);
@@ -5881,7 +5862,7 @@ var require_cipher_core = __commonJS({
              *
              *     mode.processBlock(data.words, offset);
              */
-            processBlock: /* @__PURE__ */ __name2(function(words, offset) {
+            processBlock: /* @__PURE__ */ __name(function(words, offset) {
               var cipher = this._cipher;
               var blockSize = cipher.blockSize;
               var thisBlock = words.slice(offset, offset + blockSize);
@@ -5904,7 +5885,6 @@ var require_cipher_core = __commonJS({
             }
           }
           __name(xorBlock, "xorBlock");
-          __name2(xorBlock, "xorBlock");
           return CBC2;
         }();
         var C_pad = C.pad = {};
@@ -5921,7 +5901,7 @@ var require_cipher_core = __commonJS({
            *
            *     CryptoJS.pad.Pkcs7.pad(wordArray, 4);
            */
-          pad: /* @__PURE__ */ __name2(function(data, blockSize) {
+          pad: /* @__PURE__ */ __name(function(data, blockSize) {
             var blockSizeBytes = blockSize * 4;
             var nPaddingBytes = blockSizeBytes - data.sigBytes % blockSizeBytes;
             var paddingWord = nPaddingBytes << 24 | nPaddingBytes << 16 | nPaddingBytes << 8 | nPaddingBytes;
@@ -5943,7 +5923,7 @@ var require_cipher_core = __commonJS({
            *
            *     CryptoJS.pad.Pkcs7.unpad(wordArray);
            */
-          unpad: /* @__PURE__ */ __name2(function(data) {
+          unpad: /* @__PURE__ */ __name(function(data) {
             var nPaddingBytes = data.words[data.sigBytes - 1 >>> 2] & 255;
             data.sigBytes -= nPaddingBytes;
           }, "unpad")
@@ -5959,7 +5939,7 @@ var require_cipher_core = __commonJS({
             mode: CBC,
             padding: Pkcs7
           }),
-          reset: /* @__PURE__ */ __name2(function() {
+          reset: /* @__PURE__ */ __name(function() {
             var modeCreator;
             Cipher.reset.call(this);
             var cfg = this.cfg;
@@ -5978,10 +5958,10 @@ var require_cipher_core = __commonJS({
               this._mode.__creator = modeCreator;
             }
           }, "reset"),
-          _doProcessBlock: /* @__PURE__ */ __name2(function(words, offset) {
+          _doProcessBlock: /* @__PURE__ */ __name(function(words, offset) {
             this._mode.processBlock(words, offset);
           }, "_doProcessBlock"),
-          _doFinalize: /* @__PURE__ */ __name2(function() {
+          _doFinalize: /* @__PURE__ */ __name(function() {
             var finalProcessedBlocks;
             var padding = this.cfg.padding;
             if (this._xformMode == this._ENC_XFORM_MODE) {
@@ -6015,7 +5995,7 @@ var require_cipher_core = __commonJS({
            *         formatter: CryptoJS.format.OpenSSL
            *     });
            */
-          init: /* @__PURE__ */ __name2(function(cipherParams) {
+          init: /* @__PURE__ */ __name(function(cipherParams) {
             this.mixIn(cipherParams);
           }, "init"),
           /**
@@ -6033,7 +6013,7 @@ var require_cipher_core = __commonJS({
            *     var string = cipherParams.toString();
            *     var string = cipherParams.toString(CryptoJS.format.OpenSSL);
            */
-          toString: /* @__PURE__ */ __name2(function(formatter) {
+          toString: /* @__PURE__ */ __name(function(formatter) {
             return (formatter || this.formatter).stringify(this);
           }, "toString")
         });
@@ -6052,7 +6032,7 @@ var require_cipher_core = __commonJS({
            *
            *     var openSSLString = CryptoJS.format.OpenSSL.stringify(cipherParams);
            */
-          stringify: /* @__PURE__ */ __name2(function(cipherParams) {
+          stringify: /* @__PURE__ */ __name(function(cipherParams) {
             var wordArray;
             var ciphertext = cipherParams.ciphertext;
             var salt = cipherParams.salt;
@@ -6076,7 +6056,7 @@ var require_cipher_core = __commonJS({
            *
            *     var cipherParams = CryptoJS.format.OpenSSL.parse(openSSLString);
            */
-          parse: /* @__PURE__ */ __name2(function(openSSLStr) {
+          parse: /* @__PURE__ */ __name(function(openSSLStr) {
             var salt;
             var ciphertext = Base64.parse(openSSLStr);
             var ciphertextWords = ciphertext.words;
@@ -6115,7 +6095,7 @@ var require_cipher_core = __commonJS({
            *     var ciphertextParams = CryptoJS.lib.SerializableCipher.encrypt(CryptoJS.algo.AES, message, key, { iv: iv });
            *     var ciphertextParams = CryptoJS.lib.SerializableCipher.encrypt(CryptoJS.algo.AES, message, key, { iv: iv, format: CryptoJS.format.OpenSSL });
            */
-          encrypt: /* @__PURE__ */ __name2(function(cipher, message, key, cfg) {
+          encrypt: /* @__PURE__ */ __name(function(cipher, message, key, cfg) {
             cfg = this.cfg.extend(cfg);
             var encryptor = cipher.createEncryptor(key, cfg);
             var ciphertext = encryptor.finalize(message);
@@ -6148,7 +6128,7 @@ var require_cipher_core = __commonJS({
            *     var plaintext = CryptoJS.lib.SerializableCipher.decrypt(CryptoJS.algo.AES, formattedCiphertext, key, { iv: iv, format: CryptoJS.format.OpenSSL });
            *     var plaintext = CryptoJS.lib.SerializableCipher.decrypt(CryptoJS.algo.AES, ciphertextParams, key, { iv: iv, format: CryptoJS.format.OpenSSL });
            */
-          decrypt: /* @__PURE__ */ __name2(function(cipher, ciphertext, key, cfg) {
+          decrypt: /* @__PURE__ */ __name(function(cipher, ciphertext, key, cfg) {
             cfg = this.cfg.extend(cfg);
             ciphertext = this._parse(ciphertext, cfg.format);
             var plaintext = cipher.createDecryptor(key, cfg).finalize(ciphertext.ciphertext);
@@ -6169,7 +6149,7 @@ var require_cipher_core = __commonJS({
            *
            *     var ciphertextParams = CryptoJS.lib.SerializableCipher._parse(ciphertextStringOrParams, format);
            */
-          _parse: /* @__PURE__ */ __name2(function(ciphertext, format) {
+          _parse: /* @__PURE__ */ __name(function(ciphertext, format) {
             if (typeof ciphertext == "string") {
               return format.parse(ciphertext, this);
             } else {
@@ -6196,7 +6176,7 @@ var require_cipher_core = __commonJS({
            *     var derivedParams = CryptoJS.kdf.OpenSSL.execute('Password', 256/32, 128/32);
            *     var derivedParams = CryptoJS.kdf.OpenSSL.execute('Password', 256/32, 128/32, 'saltsalt');
            */
-          execute: /* @__PURE__ */ __name2(function(password, keySize, ivSize, salt, hasher) {
+          execute: /* @__PURE__ */ __name(function(password, keySize, ivSize, salt, hasher) {
             if (!salt) {
               salt = WordArray.random(64 / 8);
             }
@@ -6236,7 +6216,7 @@ var require_cipher_core = __commonJS({
            *     var ciphertextParams = CryptoJS.lib.PasswordBasedCipher.encrypt(CryptoJS.algo.AES, message, 'password');
            *     var ciphertextParams = CryptoJS.lib.PasswordBasedCipher.encrypt(CryptoJS.algo.AES, message, 'password', { format: CryptoJS.format.OpenSSL });
            */
-          encrypt: /* @__PURE__ */ __name2(function(cipher, message, password, cfg) {
+          encrypt: /* @__PURE__ */ __name(function(cipher, message, password, cfg) {
             cfg = this.cfg.extend(cfg);
             var derivedParams = cfg.kdf.execute(password, cipher.keySize, cipher.ivSize, cfg.salt, cfg.hasher);
             cfg.iv = derivedParams.iv;
@@ -6261,7 +6241,7 @@ var require_cipher_core = __commonJS({
            *     var plaintext = CryptoJS.lib.PasswordBasedCipher.decrypt(CryptoJS.algo.AES, formattedCiphertext, 'password', { format: CryptoJS.format.OpenSSL });
            *     var plaintext = CryptoJS.lib.PasswordBasedCipher.decrypt(CryptoJS.algo.AES, ciphertextParams, 'password', { format: CryptoJS.format.OpenSSL });
            */
-          decrypt: /* @__PURE__ */ __name2(function(cipher, ciphertext, password, cfg) {
+          decrypt: /* @__PURE__ */ __name(function(cipher, ciphertext, password, cfg) {
             cfg = this.cfg.extend(cfg);
             ciphertext = this._parse(ciphertext, cfg.format);
             var derivedParams = cfg.kdf.execute(password, cipher.keySize, cipher.ivSize, ciphertext.salt, cfg.hasher);
@@ -6274,9 +6254,11 @@ var require_cipher_core = __commonJS({
     });
   }
 });
+
+// ../node_modules/crypto-js/mode-cfb.js
 var require_mode_cfb = __commonJS({
   "../node_modules/crypto-js/mode-cfb.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -6290,7 +6272,7 @@ var require_mode_cfb = __commonJS({
       CryptoJS3.mode.CFB = function() {
         var CFB = CryptoJS3.lib.BlockCipherMode.extend();
         CFB.Encryptor = CFB.extend({
-          processBlock: /* @__PURE__ */ __name2(function(words, offset) {
+          processBlock: /* @__PURE__ */ __name(function(words, offset) {
             var cipher = this._cipher;
             var blockSize = cipher.blockSize;
             generateKeystreamAndEncrypt.call(this, words, offset, blockSize, cipher);
@@ -6298,7 +6280,7 @@ var require_mode_cfb = __commonJS({
           }, "processBlock")
         });
         CFB.Decryptor = CFB.extend({
-          processBlock: /* @__PURE__ */ __name2(function(words, offset) {
+          processBlock: /* @__PURE__ */ __name(function(words, offset) {
             var cipher = this._cipher;
             var blockSize = cipher.blockSize;
             var thisBlock = words.slice(offset, offset + blockSize);
@@ -6321,16 +6303,17 @@ var require_mode_cfb = __commonJS({
           }
         }
         __name(generateKeystreamAndEncrypt, "generateKeystreamAndEncrypt");
-        __name2(generateKeystreamAndEncrypt, "generateKeystreamAndEncrypt");
         return CFB;
       }();
       return CryptoJS3.mode.CFB;
     });
   }
 });
+
+// ../node_modules/crypto-js/mode-ctr.js
 var require_mode_ctr = __commonJS({
   "../node_modules/crypto-js/mode-ctr.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -6344,7 +6327,7 @@ var require_mode_ctr = __commonJS({
       CryptoJS3.mode.CTR = function() {
         var CTR = CryptoJS3.lib.BlockCipherMode.extend();
         var Encryptor = CTR.Encryptor = CTR.extend({
-          processBlock: /* @__PURE__ */ __name2(function(words, offset) {
+          processBlock: /* @__PURE__ */ __name(function(words, offset) {
             var cipher = this._cipher;
             var blockSize = cipher.blockSize;
             var iv = this._iv;
@@ -6368,9 +6351,11 @@ var require_mode_ctr = __commonJS({
     });
   }
 });
+
+// ../node_modules/crypto-js/mode-ctr-gladman.js
 var require_mode_ctr_gladman = __commonJS({
   "../node_modules/crypto-js/mode-ctr-gladman.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -6413,7 +6398,6 @@ var require_mode_ctr_gladman = __commonJS({
           return word;
         }
         __name(incWord, "incWord");
-        __name2(incWord, "incWord");
         function incCounter(counter) {
           if ((counter[0] = incWord(counter[0])) === 0) {
             counter[1] = incWord(counter[1]);
@@ -6421,9 +6405,8 @@ var require_mode_ctr_gladman = __commonJS({
           return counter;
         }
         __name(incCounter, "incCounter");
-        __name2(incCounter, "incCounter");
         var Encryptor = CTRGladman.Encryptor = CTRGladman.extend({
-          processBlock: /* @__PURE__ */ __name2(function(words, offset) {
+          processBlock: /* @__PURE__ */ __name(function(words, offset) {
             var cipher = this._cipher;
             var blockSize = cipher.blockSize;
             var iv = this._iv;
@@ -6447,9 +6430,11 @@ var require_mode_ctr_gladman = __commonJS({
     });
   }
 });
+
+// ../node_modules/crypto-js/mode-ofb.js
 var require_mode_ofb = __commonJS({
   "../node_modules/crypto-js/mode-ofb.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -6463,7 +6448,7 @@ var require_mode_ofb = __commonJS({
       CryptoJS3.mode.OFB = function() {
         var OFB = CryptoJS3.lib.BlockCipherMode.extend();
         var Encryptor = OFB.Encryptor = OFB.extend({
-          processBlock: /* @__PURE__ */ __name2(function(words, offset) {
+          processBlock: /* @__PURE__ */ __name(function(words, offset) {
             var cipher = this._cipher;
             var blockSize = cipher.blockSize;
             var iv = this._iv;
@@ -6485,9 +6470,11 @@ var require_mode_ofb = __commonJS({
     });
   }
 });
+
+// ../node_modules/crypto-js/mode-ecb.js
 var require_mode_ecb = __commonJS({
   "../node_modules/crypto-js/mode-ecb.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -6501,12 +6488,12 @@ var require_mode_ecb = __commonJS({
       CryptoJS3.mode.ECB = function() {
         var ECB = CryptoJS3.lib.BlockCipherMode.extend();
         ECB.Encryptor = ECB.extend({
-          processBlock: /* @__PURE__ */ __name2(function(words, offset) {
+          processBlock: /* @__PURE__ */ __name(function(words, offset) {
             this._cipher.encryptBlock(words, offset);
           }, "processBlock")
         });
         ECB.Decryptor = ECB.extend({
-          processBlock: /* @__PURE__ */ __name2(function(words, offset) {
+          processBlock: /* @__PURE__ */ __name(function(words, offset) {
             this._cipher.decryptBlock(words, offset);
           }, "processBlock")
         });
@@ -6516,9 +6503,11 @@ var require_mode_ecb = __commonJS({
     });
   }
 });
+
+// ../node_modules/crypto-js/pad-ansix923.js
 var require_pad_ansix923 = __commonJS({
   "../node_modules/crypto-js/pad-ansix923.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -6530,7 +6519,7 @@ var require_pad_ansix923 = __commonJS({
       }
     })(exports, function(CryptoJS3) {
       CryptoJS3.pad.AnsiX923 = {
-        pad: /* @__PURE__ */ __name2(function(data, blockSize) {
+        pad: /* @__PURE__ */ __name(function(data, blockSize) {
           var dataSigBytes = data.sigBytes;
           var blockSizeBytes = blockSize * 4;
           var nPaddingBytes = blockSizeBytes - dataSigBytes % blockSizeBytes;
@@ -6539,7 +6528,7 @@ var require_pad_ansix923 = __commonJS({
           data.words[lastBytePos >>> 2] |= nPaddingBytes << 24 - lastBytePos % 4 * 8;
           data.sigBytes += nPaddingBytes;
         }, "pad"),
-        unpad: /* @__PURE__ */ __name2(function(data) {
+        unpad: /* @__PURE__ */ __name(function(data) {
           var nPaddingBytes = data.words[data.sigBytes - 1 >>> 2] & 255;
           data.sigBytes -= nPaddingBytes;
         }, "unpad")
@@ -6548,9 +6537,11 @@ var require_pad_ansix923 = __commonJS({
     });
   }
 });
+
+// ../node_modules/crypto-js/pad-iso10126.js
 var require_pad_iso10126 = __commonJS({
   "../node_modules/crypto-js/pad-iso10126.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -6562,12 +6553,12 @@ var require_pad_iso10126 = __commonJS({
       }
     })(exports, function(CryptoJS3) {
       CryptoJS3.pad.Iso10126 = {
-        pad: /* @__PURE__ */ __name2(function(data, blockSize) {
+        pad: /* @__PURE__ */ __name(function(data, blockSize) {
           var blockSizeBytes = blockSize * 4;
           var nPaddingBytes = blockSizeBytes - data.sigBytes % blockSizeBytes;
           data.concat(CryptoJS3.lib.WordArray.random(nPaddingBytes - 1)).concat(CryptoJS3.lib.WordArray.create([nPaddingBytes << 24], 1));
         }, "pad"),
-        unpad: /* @__PURE__ */ __name2(function(data) {
+        unpad: /* @__PURE__ */ __name(function(data) {
           var nPaddingBytes = data.words[data.sigBytes - 1 >>> 2] & 255;
           data.sigBytes -= nPaddingBytes;
         }, "unpad")
@@ -6576,9 +6567,11 @@ var require_pad_iso10126 = __commonJS({
     });
   }
 });
+
+// ../node_modules/crypto-js/pad-iso97971.js
 var require_pad_iso97971 = __commonJS({
   "../node_modules/crypto-js/pad-iso97971.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -6590,11 +6583,11 @@ var require_pad_iso97971 = __commonJS({
       }
     })(exports, function(CryptoJS3) {
       CryptoJS3.pad.Iso97971 = {
-        pad: /* @__PURE__ */ __name2(function(data, blockSize) {
+        pad: /* @__PURE__ */ __name(function(data, blockSize) {
           data.concat(CryptoJS3.lib.WordArray.create([2147483648], 1));
           CryptoJS3.pad.ZeroPadding.pad(data, blockSize);
         }, "pad"),
-        unpad: /* @__PURE__ */ __name2(function(data) {
+        unpad: /* @__PURE__ */ __name(function(data) {
           CryptoJS3.pad.ZeroPadding.unpad(data);
           data.sigBytes--;
         }, "unpad")
@@ -6603,9 +6596,11 @@ var require_pad_iso97971 = __commonJS({
     });
   }
 });
+
+// ../node_modules/crypto-js/pad-zeropadding.js
 var require_pad_zeropadding = __commonJS({
   "../node_modules/crypto-js/pad-zeropadding.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -6617,12 +6612,12 @@ var require_pad_zeropadding = __commonJS({
       }
     })(exports, function(CryptoJS3) {
       CryptoJS3.pad.ZeroPadding = {
-        pad: /* @__PURE__ */ __name2(function(data, blockSize) {
+        pad: /* @__PURE__ */ __name(function(data, blockSize) {
           var blockSizeBytes = blockSize * 4;
           data.clamp();
           data.sigBytes += blockSizeBytes - (data.sigBytes % blockSizeBytes || blockSizeBytes);
         }, "pad"),
-        unpad: /* @__PURE__ */ __name2(function(data) {
+        unpad: /* @__PURE__ */ __name(function(data) {
           var dataWords = data.words;
           var i = data.sigBytes - 1;
           for (var i = data.sigBytes - 1; i >= 0; i--) {
@@ -6637,9 +6632,11 @@ var require_pad_zeropadding = __commonJS({
     });
   }
 });
+
+// ../node_modules/crypto-js/pad-nopadding.js
 var require_pad_nopadding = __commonJS({
   "../node_modules/crypto-js/pad-nopadding.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -6651,18 +6648,20 @@ var require_pad_nopadding = __commonJS({
       }
     })(exports, function(CryptoJS3) {
       CryptoJS3.pad.NoPadding = {
-        pad: /* @__PURE__ */ __name2(function() {
+        pad: /* @__PURE__ */ __name(function() {
         }, "pad"),
-        unpad: /* @__PURE__ */ __name2(function() {
+        unpad: /* @__PURE__ */ __name(function() {
         }, "unpad")
       };
       return CryptoJS3.pad.NoPadding;
     });
   }
 });
+
+// ../node_modules/crypto-js/format-hex.js
 var require_format_hex = __commonJS({
   "../node_modules/crypto-js/format-hex.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -6694,7 +6693,7 @@ var require_format_hex = __commonJS({
            *
            *     var hexString = CryptoJS.format.Hex.stringify(cipherParams);
            */
-          stringify: /* @__PURE__ */ __name2(function(cipherParams) {
+          stringify: /* @__PURE__ */ __name(function(cipherParams) {
             return cipherParams.ciphertext.toString(Hex);
           }, "stringify"),
           /**
@@ -6710,7 +6709,7 @@ var require_format_hex = __commonJS({
            *
            *     var cipherParams = CryptoJS.format.Hex.parse(hexString);
            */
-          parse: /* @__PURE__ */ __name2(function(input) {
+          parse: /* @__PURE__ */ __name(function(input) {
             var ciphertext = Hex.parse(input);
             return CipherParams.create({ ciphertext });
           }, "parse")
@@ -6720,9 +6719,11 @@ var require_format_hex = __commonJS({
     });
   }
 });
+
+// ../node_modules/crypto-js/aes.js
 var require_aes = __commonJS({
   "../node_modules/crypto-js/aes.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -6787,7 +6788,7 @@ var require_aes = __commonJS({
         })();
         var RCON = [0, 1, 2, 4, 8, 16, 32, 64, 128, 27, 54];
         var AES = C_algo.AES = BlockCipher.extend({
-          _doReset: /* @__PURE__ */ __name2(function() {
+          _doReset: /* @__PURE__ */ __name(function() {
             var t;
             if (this._nRounds && this._keyPriorReset === this._key) {
               return;
@@ -6828,10 +6829,10 @@ var require_aes = __commonJS({
               }
             }
           }, "_doReset"),
-          encryptBlock: /* @__PURE__ */ __name2(function(M, offset) {
+          encryptBlock: /* @__PURE__ */ __name(function(M, offset) {
             this._doCryptBlock(M, offset, this._keySchedule, SUB_MIX_0, SUB_MIX_1, SUB_MIX_2, SUB_MIX_3, SBOX);
           }, "encryptBlock"),
-          decryptBlock: /* @__PURE__ */ __name2(function(M, offset) {
+          decryptBlock: /* @__PURE__ */ __name(function(M, offset) {
             var t = M[offset + 1];
             M[offset + 1] = M[offset + 3];
             M[offset + 3] = t;
@@ -6840,7 +6841,7 @@ var require_aes = __commonJS({
             M[offset + 1] = M[offset + 3];
             M[offset + 3] = t;
           }, "decryptBlock"),
-          _doCryptBlock: /* @__PURE__ */ __name2(function(M, offset, keySchedule, SUB_MIX_02, SUB_MIX_12, SUB_MIX_22, SUB_MIX_32, SBOX2) {
+          _doCryptBlock: /* @__PURE__ */ __name(function(M, offset, keySchedule, SUB_MIX_02, SUB_MIX_12, SUB_MIX_22, SUB_MIX_32, SBOX2) {
             var nRounds = this._nRounds;
             var s0 = M[offset] ^ keySchedule[0];
             var s1 = M[offset + 1] ^ keySchedule[1];
@@ -6874,9 +6875,11 @@ var require_aes = __commonJS({
     });
   }
 });
+
+// ../node_modules/crypto-js/tripledes.js
 var require_tripledes = __commonJS({
   "../node_modules/crypto-js/tripledes.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -7543,7 +7546,7 @@ var require_tripledes = __commonJS({
           2147483679
         ];
         var DES = C_algo.DES = BlockCipher.extend({
-          _doReset: /* @__PURE__ */ __name2(function() {
+          _doReset: /* @__PURE__ */ __name(function() {
             var key = this._key;
             var keyWords = key.words;
             var keyBits = [];
@@ -7570,13 +7573,13 @@ var require_tripledes = __commonJS({
               invSubKeys[i] = subKeys[15 - i];
             }
           }, "_doReset"),
-          encryptBlock: /* @__PURE__ */ __name2(function(M, offset) {
+          encryptBlock: /* @__PURE__ */ __name(function(M, offset) {
             this._doCryptBlock(M, offset, this._subKeys);
           }, "encryptBlock"),
-          decryptBlock: /* @__PURE__ */ __name2(function(M, offset) {
+          decryptBlock: /* @__PURE__ */ __name(function(M, offset) {
             this._doCryptBlock(M, offset, this._invSubKeys);
           }, "decryptBlock"),
-          _doCryptBlock: /* @__PURE__ */ __name2(function(M, offset, subKeys) {
+          _doCryptBlock: /* @__PURE__ */ __name(function(M, offset, subKeys) {
             this._lBlock = M[offset];
             this._rBlock = M[offset + 1];
             exchangeLR.call(this, 4, 252645135);
@@ -7616,17 +7619,15 @@ var require_tripledes = __commonJS({
           this._lBlock ^= t << offset;
         }
         __name(exchangeLR, "exchangeLR");
-        __name2(exchangeLR, "exchangeLR");
         function exchangeRL(offset, mask) {
           var t = (this._rBlock >>> offset ^ this._lBlock) & mask;
           this._lBlock ^= t;
           this._rBlock ^= t << offset;
         }
         __name(exchangeRL, "exchangeRL");
-        __name2(exchangeRL, "exchangeRL");
         C.DES = BlockCipher._createHelper(DES);
         var TripleDES = C_algo.TripleDES = BlockCipher.extend({
-          _doReset: /* @__PURE__ */ __name2(function() {
+          _doReset: /* @__PURE__ */ __name(function() {
             var key = this._key;
             var keyWords = key.words;
             if (keyWords.length !== 2 && keyWords.length !== 4 && keyWords.length < 6) {
@@ -7639,12 +7640,12 @@ var require_tripledes = __commonJS({
             this._des2 = DES.createEncryptor(WordArray.create(key2));
             this._des3 = DES.createEncryptor(WordArray.create(key3));
           }, "_doReset"),
-          encryptBlock: /* @__PURE__ */ __name2(function(M, offset) {
+          encryptBlock: /* @__PURE__ */ __name(function(M, offset) {
             this._des1.encryptBlock(M, offset);
             this._des2.decryptBlock(M, offset);
             this._des3.encryptBlock(M, offset);
           }, "encryptBlock"),
-          decryptBlock: /* @__PURE__ */ __name2(function(M, offset) {
+          decryptBlock: /* @__PURE__ */ __name(function(M, offset) {
             this._des3.decryptBlock(M, offset);
             this._des2.encryptBlock(M, offset);
             this._des1.decryptBlock(M, offset);
@@ -7659,9 +7660,11 @@ var require_tripledes = __commonJS({
     });
   }
 });
+
+// ../node_modules/crypto-js/rc4.js
 var require_rc4 = __commonJS({
   "../node_modules/crypto-js/rc4.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -7678,7 +7681,7 @@ var require_rc4 = __commonJS({
         var StreamCipher = C_lib.StreamCipher;
         var C_algo = C.algo;
         var RC4 = C_algo.RC4 = StreamCipher.extend({
-          _doReset: /* @__PURE__ */ __name2(function() {
+          _doReset: /* @__PURE__ */ __name(function() {
             var key = this._key;
             var keyWords = key.words;
             var keySigBytes = key.sigBytes;
@@ -7696,7 +7699,7 @@ var require_rc4 = __commonJS({
             }
             this._i = this._j = 0;
           }, "_doReset"),
-          _doProcessBlock: /* @__PURE__ */ __name2(function(M, offset) {
+          _doProcessBlock: /* @__PURE__ */ __name(function(M, offset) {
             M[offset] ^= generateKeystreamWord.call(this);
           }, "_doProcessBlock"),
           keySize: 256 / 32,
@@ -7720,7 +7723,6 @@ var require_rc4 = __commonJS({
           return keystreamWord;
         }
         __name(generateKeystreamWord, "generateKeystreamWord");
-        __name2(generateKeystreamWord, "generateKeystreamWord");
         C.RC4 = StreamCipher._createHelper(RC4);
         var RC4Drop = C_algo.RC4Drop = RC4.extend({
           /**
@@ -7731,7 +7733,7 @@ var require_rc4 = __commonJS({
           cfg: RC4.cfg.extend({
             drop: 192
           }),
-          _doReset: /* @__PURE__ */ __name2(function() {
+          _doReset: /* @__PURE__ */ __name(function() {
             RC4._doReset.call(this);
             for (var i = this.cfg.drop; i > 0; i--) {
               generateKeystreamWord.call(this);
@@ -7744,9 +7746,11 @@ var require_rc4 = __commonJS({
     });
   }
 });
+
+// ../node_modules/crypto-js/rabbit.js
 var require_rabbit = __commonJS({
   "../node_modules/crypto-js/rabbit.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -7766,7 +7770,7 @@ var require_rabbit = __commonJS({
         var C_ = [];
         var G = [];
         var Rabbit = C_algo.Rabbit = StreamCipher.extend({
-          _doReset: /* @__PURE__ */ __name2(function() {
+          _doReset: /* @__PURE__ */ __name(function() {
             var K = this._key.words;
             var iv = this.cfg.iv;
             for (var i = 0; i < 4; i++) {
@@ -7820,7 +7824,7 @@ var require_rabbit = __commonJS({
               }
             }
           }, "_doReset"),
-          _doProcessBlock: /* @__PURE__ */ __name2(function(M, offset) {
+          _doProcessBlock: /* @__PURE__ */ __name(function(M, offset) {
             var X = this._X;
             nextState.call(this);
             S[0] = X[0] ^ X[5] >>> 16 ^ X[3] << 16;
@@ -7868,16 +7872,17 @@ var require_rabbit = __commonJS({
           X[7] = G[7] + (G[6] << 8 | G[6] >>> 24) + G[5] | 0;
         }
         __name(nextState, "nextState");
-        __name2(nextState, "nextState");
         C.Rabbit = StreamCipher._createHelper(Rabbit);
       })();
       return CryptoJS3.Rabbit;
     });
   }
 });
+
+// ../node_modules/crypto-js/rabbit-legacy.js
 var require_rabbit_legacy = __commonJS({
   "../node_modules/crypto-js/rabbit-legacy.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -7897,7 +7902,7 @@ var require_rabbit_legacy = __commonJS({
         var C_ = [];
         var G = [];
         var RabbitLegacy = C_algo.RabbitLegacy = StreamCipher.extend({
-          _doReset: /* @__PURE__ */ __name2(function() {
+          _doReset: /* @__PURE__ */ __name(function() {
             var K = this._key.words;
             var iv = this.cfg.iv;
             var X = this._X = [
@@ -7948,7 +7953,7 @@ var require_rabbit_legacy = __commonJS({
               }
             }
           }, "_doReset"),
-          _doProcessBlock: /* @__PURE__ */ __name2(function(M, offset) {
+          _doProcessBlock: /* @__PURE__ */ __name(function(M, offset) {
             var X = this._X;
             nextState.call(this);
             S[0] = X[0] ^ X[5] >>> 16 ^ X[3] << 16;
@@ -7996,16 +8001,17 @@ var require_rabbit_legacy = __commonJS({
           X[7] = G[7] + (G[6] << 8 | G[6] >>> 24) + G[5] | 0;
         }
         __name(nextState, "nextState");
-        __name2(nextState, "nextState");
         C.RabbitLegacy = StreamCipher._createHelper(RabbitLegacy);
       })();
       return CryptoJS3.RabbitLegacy;
     });
   }
 });
+
+// ../node_modules/crypto-js/blowfish.js
 var require_blowfish = __commonJS({
   "../node_modules/crypto-js/blowfish.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -9091,7 +9097,6 @@ var require_blowfish = __commonJS({
           return y;
         }
         __name(F, "F");
-        __name2(F, "F");
         function BlowFish_Encrypt(ctx, left, right) {
           let Xl = left;
           let Xr = right;
@@ -9111,7 +9116,6 @@ var require_blowfish = __commonJS({
           return { left: Xl, right: Xr };
         }
         __name(BlowFish_Encrypt, "BlowFish_Encrypt");
-        __name2(BlowFish_Encrypt, "BlowFish_Encrypt");
         function BlowFish_Decrypt(ctx, left, right) {
           let Xl = left;
           let Xr = right;
@@ -9131,7 +9135,6 @@ var require_blowfish = __commonJS({
           return { left: Xl, right: Xr };
         }
         __name(BlowFish_Decrypt, "BlowFish_Decrypt");
-        __name2(BlowFish_Decrypt, "BlowFish_Decrypt");
         function BlowFishInit(ctx, key, keysize) {
           for (let Row = 0; Row < 4; Row++) {
             ctx.sbox[Row] = [];
@@ -9169,9 +9172,8 @@ var require_blowfish = __commonJS({
           return true;
         }
         __name(BlowFishInit, "BlowFishInit");
-        __name2(BlowFishInit, "BlowFishInit");
         var Blowfish = C_algo.Blowfish = BlockCipher.extend({
-          _doReset: /* @__PURE__ */ __name2(function() {
+          _doReset: /* @__PURE__ */ __name(function() {
             if (this._keyPriorReset === this._key) {
               return;
             }
@@ -9180,12 +9182,12 @@ var require_blowfish = __commonJS({
             var keySize = key.sigBytes / 4;
             BlowFishInit(BLOWFISH_CTX, keyWords, keySize);
           }, "_doReset"),
-          encryptBlock: /* @__PURE__ */ __name2(function(M, offset) {
+          encryptBlock: /* @__PURE__ */ __name(function(M, offset) {
             var res = BlowFish_Encrypt(BLOWFISH_CTX, M[offset], M[offset + 1]);
             M[offset] = res.left;
             M[offset + 1] = res.right;
           }, "encryptBlock"),
-          decryptBlock: /* @__PURE__ */ __name2(function(M, offset) {
+          decryptBlock: /* @__PURE__ */ __name(function(M, offset) {
             var res = BlowFish_Decrypt(BLOWFISH_CTX, M[offset], M[offset + 1]);
             M[offset] = res.left;
             M[offset + 1] = res.right;
@@ -9200,9 +9202,11 @@ var require_blowfish = __commonJS({
     });
   }
 });
+
+// ../node_modules/crypto-js/index.js
 var require_crypto_js = __commonJS({
   "../node_modules/crypto-js/index.js"(exports, module) {
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     (function(root, factory, undef) {
       if (typeof exports === "object") {
@@ -9217,6 +9221,8 @@ var require_crypto_js = __commonJS({
     });
   }
 });
+
+// api/credentials/create.ts
 async function onRequestOptions13() {
   return new Response(null, {
     status: 200,
@@ -9227,7 +9233,6 @@ async function onRequestOptions13() {
     }
   });
 }
-__name(onRequestOptions13, "onRequestOptions13");
 async function onRequestPost3(context) {
   const { request, env } = context;
   try {
@@ -9263,7 +9268,7 @@ async function onRequestPost3(context) {
       });
     }
     console.log("Data to encrypt:", JSON.stringify(credentials, null, 2));
-    const encryptCredentials = /* @__PURE__ */ __name2((data) => {
+    const encryptCredentials = /* @__PURE__ */ __name((data) => {
       const encrypted = import_crypto_js.default.AES.encrypt(JSON.stringify(data), password);
       return encrypted.toString();
     }, "encryptCredentials");
@@ -9334,18 +9339,19 @@ async function onRequestPost3(context) {
     });
   }
 }
-__name(onRequestPost3, "onRequestPost3");
 var import_crypto_js;
 var init_create = __esm({
   "api/credentials/create.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     import_crypto_js = __toESM(require_crypto_js());
-    __name2(onRequestOptions13, "onRequestOptions");
-    __name2(onRequestPost3, "onRequestPost");
+    __name(onRequestOptions13, "onRequestOptions");
+    __name(onRequestPost3, "onRequestPost");
   }
 });
+
+// api/credentials/delete.ts
 async function onRequestOptions14() {
   return new Response(null, {
     status: 200,
@@ -9356,7 +9362,6 @@ async function onRequestOptions14() {
     }
   });
 }
-__name(onRequestOptions14, "onRequestOptions14");
 async function onRequestDelete(context) {
   const { request, env } = context;
   try {
@@ -9423,16 +9428,17 @@ async function onRequestDelete(context) {
     });
   }
 }
-__name(onRequestDelete, "onRequestDelete");
 var init_delete = __esm({
   "api/credentials/delete.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestOptions14, "onRequestOptions");
-    __name2(onRequestDelete, "onRequestDelete");
+    __name(onRequestOptions14, "onRequestOptions");
+    __name(onRequestDelete, "onRequestDelete");
   }
 });
+
+// api/credentials/update.ts
 async function onRequestOptions15() {
   return new Response(null, {
     status: 200,
@@ -9443,7 +9449,6 @@ async function onRequestOptions15() {
     }
   });
 }
-__name(onRequestOptions15, "onRequestOptions15");
 async function onRequestPut3(context) {
   const { request, env } = context;
   try {
@@ -9481,7 +9486,7 @@ async function onRequestPut3(context) {
       });
     }
     console.log("Data to encrypt:", JSON.stringify(credentials, null, 2));
-    const encryptCredentials = /* @__PURE__ */ __name2((data) => {
+    const encryptCredentials = /* @__PURE__ */ __name((data) => {
       const encrypted = import_crypto_js2.default.AES.encrypt(JSON.stringify(data), password);
       return encrypted.toString();
     }, "encryptCredentials");
@@ -9542,18 +9547,19 @@ async function onRequestPut3(context) {
     });
   }
 }
-__name(onRequestPut3, "onRequestPut3");
 var import_crypto_js2;
 var init_update = __esm({
   "api/credentials/update.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     import_crypto_js2 = __toESM(require_crypto_js());
-    __name2(onRequestOptions15, "onRequestOptions");
-    __name2(onRequestPut3, "onRequestPut");
+    __name(onRequestOptions15, "onRequestOptions");
+    __name(onRequestPut3, "onRequestPut");
   }
 });
+
+// api/merchants/hide.ts
 async function onRequestOptions16() {
   return new Response(null, {
     status: 200,
@@ -9564,7 +9570,6 @@ async function onRequestOptions16() {
     }
   });
 }
-__name(onRequestOptions16, "onRequestOptions16");
 async function onRequestPost4(context) {
   const { request, env } = context;
   try {
@@ -9658,16 +9663,17 @@ async function onRequestPost4(context) {
     });
   }
 }
-__name(onRequestPost4, "onRequestPost4");
 var init_hide = __esm({
   "api/merchants/hide.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestOptions16, "onRequestOptions");
-    __name2(onRequestPost4, "onRequestPost");
+    __name(onRequestOptions16, "onRequestOptions");
+    __name(onRequestPost4, "onRequestPost");
   }
 });
+
+// ../src/lib/jwt.ts
 async function signJwt4(payload, secret, expiresIn = 7 * 24 * 60 * 60) {
   const now = Math.floor(Date.now() / 1e3);
   const jwtPayload = {
@@ -9690,7 +9696,6 @@ async function signJwt4(payload, secret, expiresIn = 7 * 24 * 60 * 60) {
   const signatureB64 = btoa(String.fromCharCode(...new Uint8Array(signature)));
   return `${data}.${signatureB64}`;
 }
-__name(signJwt4, "signJwt4");
 async function verifyJwt(token, secret) {
   try {
     const parts = token.split(".");
@@ -9722,20 +9727,20 @@ async function verifyJwt(token, secret) {
     return null;
   }
 }
-__name(verifyJwt, "verifyJwt");
-var JWT_ALGORITHM;
-var JWT_HEADER;
+var JWT_ALGORITHM, JWT_HEADER;
 var init_jwt = __esm({
   "../src/lib/jwt.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     JWT_ALGORITHM = "HS256";
     JWT_HEADER = { alg: JWT_ALGORITHM, typ: "JWT" };
-    __name2(signJwt4, "signJwt");
-    __name2(verifyJwt, "verifyJwt");
+    __name(signJwt4, "signJwt");
+    __name(verifyJwt, "verifyJwt");
   }
 });
+
+// api/profile/billing-address.ts
 function parseCookies4(cookieHeader) {
   const cookies = {};
   if (!cookieHeader) return cookies;
@@ -9749,7 +9754,6 @@ function parseCookies4(cookieHeader) {
   }
   return cookies;
 }
-__name(parseCookies4, "parseCookies4");
 async function onRequestGet17(context) {
   try {
     const { request, env } = context;
@@ -9808,7 +9812,6 @@ async function onRequestGet17(context) {
     });
   }
 }
-__name(onRequestGet17, "onRequestGet17");
 async function onRequestPut4(context) {
   try {
     const { request, env } = context;
@@ -9889,18 +9892,19 @@ async function onRequestPut4(context) {
     });
   }
 }
-__name(onRequestPut4, "onRequestPut4");
 var init_billing_address = __esm({
   "api/profile/billing-address.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     init_jwt();
-    __name2(parseCookies4, "parseCookies");
-    __name2(onRequestGet17, "onRequestGet");
-    __name2(onRequestPut4, "onRequestPut");
+    __name(parseCookies4, "parseCookies");
+    __name(onRequestGet17, "onRequestGet");
+    __name(onRequestPut4, "onRequestPut");
   }
 });
+
+// api/profile/completion-status.ts
 function parseCookies5(cookieHeader) {
   if (!cookieHeader) return {};
   return cookieHeader.split(";").reduce((cookies, cookie) => {
@@ -9911,7 +9915,6 @@ function parseCookies5(cookieHeader) {
     return cookies;
   }, {});
 }
-__name(parseCookies5, "parseCookies5");
 async function getUserById(db, userId) {
   try {
     const user = await db.prepare(`
@@ -9927,7 +9930,6 @@ async function getUserById(db, userId) {
     return null;
   }
 }
-__name(getUserById, "getUserById");
 async function onRequestGet18(context) {
   try {
     const { request, env } = context;
@@ -9999,18 +10001,19 @@ async function onRequestGet18(context) {
     });
   }
 }
-__name(onRequestGet18, "onRequestGet18");
 var init_completion_status = __esm({
   "api/profile/completion-status.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     init_jwt();
-    __name2(parseCookies5, "parseCookies");
-    __name2(getUserById, "getUserById");
-    __name2(onRequestGet18, "onRequestGet");
+    __name(parseCookies5, "parseCookies");
+    __name(getUserById, "getUserById");
+    __name(onRequestGet18, "onRequestGet");
   }
 });
+
+// api/profile/invoices.ts
 async function getUserInvoices(db, userId) {
   return await db.prepare(`
     SELECT * FROM stripe_invoices 
@@ -10019,7 +10022,6 @@ async function getUserInvoices(db, userId) {
     LIMIT 50
   `).bind(userId).all();
 }
-__name(getUserInvoices, "getUserInvoices");
 async function onRequestGet19(context) {
   try {
     const { request, env } = context;
@@ -10102,24 +10104,24 @@ async function onRequestGet19(context) {
     });
   }
 }
-__name(onRequestGet19, "onRequestGet19");
 var init_invoices = __esm({
   "api/profile/invoices.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     init_jwt();
-    __name2(getUserInvoices, "getUserInvoices");
-    __name2(onRequestGet19, "onRequestGet");
+    __name(getUserInvoices, "getUserInvoices");
+    __name(onRequestGet19, "onRequestGet");
   }
 });
+
+// api/profile/preferences.ts
 async function getUserPreferences(db, userId) {
   return await db.prepare(`
     SELECT * FROM user_preferences 
     WHERE user_id = ?
   `).bind(userId).first();
 }
-__name(getUserPreferences, "getUserPreferences");
 async function createDefaultPreferences(db, userId) {
   await db.prepare(`
     INSERT INTO user_preferences (user_id, speed_preference, audio_enabled, notifications_enabled, theme, language)
@@ -10127,7 +10129,6 @@ async function createDefaultPreferences(db, userId) {
   `).bind(userId).run();
   return await getUserPreferences(db, userId);
 }
-__name(createDefaultPreferences, "createDefaultPreferences");
 async function onRequestGet20(context) {
   try {
     const { request, env } = context;
@@ -10201,26 +10202,27 @@ async function onRequestGet20(context) {
     });
   }
 }
-__name(onRequestGet20, "onRequestGet20");
 var init_preferences = __esm({
   "api/profile/preferences.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     init_jwt();
-    __name2(getUserPreferences, "getUserPreferences");
-    __name2(createDefaultPreferences, "createDefaultPreferences");
-    __name2(onRequestGet20, "onRequestGet");
+    __name(getUserPreferences, "getUserPreferences");
+    __name(createDefaultPreferences, "createDefaultPreferences");
+    __name(onRequestGet20, "onRequestGet");
   }
 });
+
+// ../src/lib/invoice-generator.ts
 var invoice_generator_exports = {};
 __export(invoice_generator_exports, {
-  calculateTax: /* @__PURE__ */ __name(() => calculateTax, "calculateTax"),
-  createCreditNote: /* @__PURE__ */ __name(() => createCreditNote, "createCreditNote"),
-  createInvoiceRecord: /* @__PURE__ */ __name(() => createInvoiceRecord, "createInvoiceRecord"),
-  generateInvoiceNumber: /* @__PURE__ */ __name(() => generateInvoiceNumber, "generateInvoiceNumber"),
-  getUserBillingAddress: /* @__PURE__ */ __name(() => getUserBillingAddress, "getUserBillingAddress"),
-  processPendingInvoices: /* @__PURE__ */ __name(() => processPendingInvoices, "processPendingInvoices")
+  calculateTax: () => calculateTax,
+  createCreditNote: () => createCreditNote,
+  createInvoiceRecord: () => createInvoiceRecord,
+  generateInvoiceNumber: () => generateInvoiceNumber,
+  getUserBillingAddress: () => getUserBillingAddress,
+  processPendingInvoices: () => processPendingInvoices
 });
 async function generateInvoiceNumber(db) {
   const currentYear = (/* @__PURE__ */ new Date()).getFullYear();
@@ -10235,7 +10237,6 @@ async function generateInvoiceNumber(db) {
   const sequenceNumber = result?.sequence_number;
   return `INV-${currentYear}-${sequenceNumber.toString().padStart(3, "0")}`;
 }
-__name(generateInvoiceNumber, "generateInvoiceNumber");
 function calculateTax(amount, billingAddress) {
   const taxRate = 0;
   const taxAmount = 0;
@@ -10250,7 +10251,6 @@ function calculateTax(amount, billingAddress) {
     totalAmount
   };
 }
-__name(calculateTax, "calculateTax");
 async function createInvoiceRecord(db, invoiceData) {
   const invoiceNumber = await generateInvoiceNumber(db);
   const invoiceDate = (/* @__PURE__ */ new Date()).toISOString();
@@ -10318,7 +10318,6 @@ async function createInvoiceRecord(db, invoiceData) {
   console.log(`Generated invoice: ${invoiceNumber} for user ${invoiceData.userId}`);
   return invoiceRecord;
 }
-__name(createInvoiceRecord, "createInvoiceRecord");
 async function createCreditNote(db, originalInvoiceId, refundReason) {
   const originalInvoice = await db.prepare(`
     SELECT * FROM stripe_invoices WHERE id = ?
@@ -10349,7 +10348,6 @@ async function createCreditNote(db, originalInvoiceId, refundReason) {
   };
   return await createInvoiceRecord(db, creditNoteData);
 }
-__name(createCreditNote, "createCreditNote");
 async function getUserBillingAddress(db, userId) {
   const address = await db.prepare(`
     SELECT * FROM user_billing_addresses WHERE user_id = ?
@@ -10370,7 +10368,6 @@ async function getUserBillingAddress(db, userId) {
     taxIdNumber: address.tax_id_number
   };
 }
-__name(getUserBillingAddress, "getUserBillingAddress");
 async function processPendingInvoices(db, userId, userEmail) {
   const billingAddress = await getUserBillingAddress(db, userId);
   if (!billingAddress) {
@@ -10405,20 +10402,21 @@ async function processPendingInvoices(db, userId, userEmail) {
   console.log(`Processed ${createdInvoices.length} pending invoices for user ${userId}`);
   return createdInvoices;
 }
-__name(processPendingInvoices, "processPendingInvoices");
 var init_invoice_generator = __esm({
   "../src/lib/invoice-generator.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(generateInvoiceNumber, "generateInvoiceNumber");
-    __name2(calculateTax, "calculateTax");
-    __name2(createInvoiceRecord, "createInvoiceRecord");
-    __name2(createCreditNote, "createCreditNote");
-    __name2(getUserBillingAddress, "getUserBillingAddress");
-    __name2(processPendingInvoices, "processPendingInvoices");
+    __name(generateInvoiceNumber, "generateInvoiceNumber");
+    __name(calculateTax, "calculateTax");
+    __name(createInvoiceRecord, "createInvoiceRecord");
+    __name(createCreditNote, "createCreditNote");
+    __name(getUserBillingAddress, "getUserBillingAddress");
+    __name(processPendingInvoices, "processPendingInvoices");
   }
 });
+
+// api/profile/process-pending-invoices.ts
 async function onRequestOptions17() {
   return new Response(null, {
     status: 200,
@@ -10429,7 +10427,6 @@ async function onRequestOptions17() {
     }
   });
 }
-__name(onRequestOptions17, "onRequestOptions17");
 async function onRequestPost5(context) {
   try {
     const { request, env } = context;
@@ -10501,17 +10498,18 @@ async function onRequestPost5(context) {
     });
   }
 }
-__name(onRequestPost5, "onRequestPost5");
 var init_process_pending_invoices = __esm({
   "api/profile/process-pending-invoices.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     init_jwt();
-    __name2(onRequestOptions17, "onRequestOptions");
-    __name2(onRequestPost5, "onRequestPost");
+    __name(onRequestOptions17, "onRequestOptions");
+    __name(onRequestPost5, "onRequestPost");
   }
 });
+
+// api/queue/status.ts
 async function onRequestOptions18() {
   return new Response(null, {
     status: 200,
@@ -10522,7 +10520,6 @@ async function onRequestOptions18() {
     }
   });
 }
-__name(onRequestOptions18, "onRequestOptions18");
 async function onRequestGet21(context) {
   try {
     const { request, env } = context;
@@ -10573,16 +10570,17 @@ async function onRequestGet21(context) {
     });
   }
 }
-__name(onRequestGet21, "onRequestGet21");
 var init_status2 = __esm({
   "api/queue/status.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestOptions18, "onRequestOptions");
-    __name2(onRequestGet21, "onRequestGet");
+    __name(onRequestOptions18, "onRequestOptions");
+    __name(onRequestGet21, "onRequestGet");
   }
 });
+
+// api/tools/affiliate-link-checker.ts
 async function onRequestOptions19() {
   return new Response(null, {
     status: 200,
@@ -10593,7 +10591,6 @@ async function onRequestOptions19() {
     }
   });
 }
-__name(onRequestOptions19, "onRequestOptions19");
 async function onRequestGet22(context) {
   const { request, env } = context;
   try {
@@ -10660,7 +10657,6 @@ async function onRequestGet22(context) {
     });
   }
 }
-__name(onRequestGet22, "onRequestGet22");
 async function onRequestPost6(context) {
   const { request, env } = context;
   try {
@@ -10735,17 +10731,18 @@ async function onRequestPost6(context) {
     });
   }
 }
-__name(onRequestPost6, "onRequestPost6");
 var init_affiliate_link_checker = __esm({
   "api/tools/affiliate-link-checker.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestOptions19, "onRequestOptions");
-    __name2(onRequestGet22, "onRequestGet");
-    __name2(onRequestPost6, "onRequestPost");
+    __name(onRequestOptions19, "onRequestOptions");
+    __name(onRequestGet22, "onRequestGet");
+    __name(onRequestPost6, "onRequestPost");
   }
 });
+
+// api/tools/affiliate-network-uptime.ts
 async function onRequestGet23(context) {
   try {
     const { env, request } = context;
@@ -10881,7 +10878,6 @@ async function onRequestGet23(context) {
     });
   }
 }
-__name(onRequestGet23, "onRequestGet23");
 async function onRequestOptions20() {
   return new Response(null, {
     status: 200,
@@ -10892,7 +10888,6 @@ async function onRequestOptions20() {
     }
   });
 }
-__name(onRequestOptions20, "onRequestOptions20");
 function formatNetworkDisplayName(networkName) {
   const nameMappings = {
     "involveasia": "Involve Asia",
@@ -10904,7 +10899,6 @@ function formatNetworkDisplayName(networkName) {
   const normalizedName = networkName.toLowerCase().replace(/[^a-z0-9]/g, "");
   return nameMappings[normalizedName] || networkName;
 }
-__name(formatNetworkDisplayName, "formatNetworkDisplayName");
 async function fetchStatusPageData(networkName, uptimeKumaUrl) {
   try {
     const url = `${uptimeKumaUrl || "http://uptime.affensus.com:3001"}/api/status-page/heartbeat/${networkName}?limit=10080`;
@@ -10919,7 +10913,6 @@ async function fetchStatusPageData(networkName, uptimeKumaUrl) {
     return null;
   }
 }
-__name(fetchStatusPageData, "fetchStatusPageData");
 async function processPrometheusMetrics(metricsText, uptimeKumaUrl) {
   const domains = /* @__PURE__ */ new Map();
   const lines = metricsText.split("\n");
@@ -11043,19 +11036,20 @@ async function processPrometheusMetrics(metricsText, uptimeKumaUrl) {
   });
   return domainsWithStatusPages;
 }
-__name(processPrometheusMetrics, "processPrometheusMetrics");
 var init_affiliate_network_uptime = __esm({
   "api/tools/affiliate-network-uptime.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestGet23, "onRequestGet");
-    __name2(onRequestOptions20, "onRequestOptions");
-    __name2(formatNetworkDisplayName, "formatNetworkDisplayName");
-    __name2(fetchStatusPageData, "fetchStatusPageData");
-    __name2(processPrometheusMetrics, "processPrometheusMetrics");
+    __name(onRequestGet23, "onRequestGet");
+    __name(onRequestOptions20, "onRequestOptions");
+    __name(formatNetworkDisplayName, "formatNetworkDisplayName");
+    __name(fetchStatusPageData, "fetchStatusPageData");
+    __name(processPrometheusMetrics, "processPrometheusMetrics");
   }
 });
+
+// ../src/pricing-plans.json
 var pricing_plans_default;
 var init_pricing_plans = __esm({
   "../src/pricing-plans.json"() {
@@ -11230,11 +11224,13 @@ var init_pricing_plans = __esm({
     };
   }
 });
+
+// ../src/locales/settings.ts
 var locales;
 var init_settings = __esm({
   "../src/locales/settings.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     locales = {
       "en": {
@@ -11260,6 +11256,8 @@ var init_settings = __esm({
     };
   }
 });
+
+// api/stripe/create-checkout-session.ts
 function parseCookies6(cookieHeader) {
   const cookies = {};
   if (!cookieHeader) return cookies;
@@ -11271,17 +11269,16 @@ function parseCookies6(cookieHeader) {
   });
   return cookies;
 }
-__name(parseCookies6, "parseCookies6");
 var onRequest;
 var init_create_checkout_session = __esm({
   "api/stripe/create-checkout-session.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     init_pricing_plans();
     init_settings();
-    __name2(parseCookies6, "parseCookies");
-    onRequest = /* @__PURE__ */ __name2(async (context) => {
+    __name(parseCookies6, "parseCookies");
+    onRequest = /* @__PURE__ */ __name(async (context) => {
       try {
         const { request, env } = context;
         const cookies = parseCookies6(request.headers.get("Cookie"));
@@ -11432,6 +11429,8 @@ var init_create_checkout_session = __esm({
     }, "onRequest");
   }
 });
+
+// api/stripe/create-portal-session.ts
 async function verifyJwt2(token, secret) {
   try {
     const [headerB64, payloadB64, signatureB64] = token.split(".");
@@ -11458,7 +11457,6 @@ async function verifyJwt2(token, secret) {
     throw new Error("Invalid token");
   }
 }
-__name(verifyJwt2, "verifyJwt2");
 function parseCookies7(cookieHeader) {
   const cookies = {};
   if (!cookieHeader) return cookies;
@@ -11470,21 +11468,19 @@ function parseCookies7(cookieHeader) {
   });
   return cookies;
 }
-__name(parseCookies7, "parseCookies7");
 async function getUserByEmail(db, email) {
   return await db.prepare("SELECT * FROM users WHERE email = ?").bind(email).first();
 }
-__name(getUserByEmail, "getUserByEmail");
 var onRequest2;
 var init_create_portal_session = __esm({
   "api/stripe/create-portal-session.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(verifyJwt2, "verifyJwt");
-    __name2(parseCookies7, "parseCookies");
-    __name2(getUserByEmail, "getUserByEmail");
-    onRequest2 = /* @__PURE__ */ __name2(async (context) => {
+    __name(verifyJwt2, "verifyJwt");
+    __name(parseCookies7, "parseCookies");
+    __name(getUserByEmail, "getUserByEmail");
+    onRequest2 = /* @__PURE__ */ __name(async (context) => {
       try {
         const { request, env } = context;
         const cookies = parseCookies7(request.headers.get("Cookie"));
@@ -11560,6 +11556,8 @@ var init_create_portal_session = __esm({
     }, "onRequest");
   }
 });
+
+// api/stripe/create-user-account.ts
 async function createUserAccount(db, email, loginMethod, stripeCustomerId) {
   const stmt = db.prepare(`
     INSERT OR IGNORE INTO users (email, preferred_login_method, stripe_customer_id, created_at, updated_at)
@@ -11570,7 +11568,6 @@ async function createUserAccount(db, email, loginMethod, stripeCustomerId) {
   const isNewUser = result.changes > 0;
   return { user, isNewUser };
 }
-__name(createUserAccount, "createUserAccount");
 async function updateStripeCustomerId(db, email, stripeCustomerId) {
   await db.prepare(`
     UPDATE users 
@@ -11578,17 +11575,16 @@ async function updateStripeCustomerId(db, email, stripeCustomerId) {
     WHERE email = ?
   `).bind(stripeCustomerId, email).run();
 }
-__name(updateStripeCustomerId, "updateStripeCustomerId");
 var onRequest3;
 var init_create_user_account = __esm({
   "api/stripe/create-user-account.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     init_jwt();
-    __name2(createUserAccount, "createUserAccount");
-    __name2(updateStripeCustomerId, "updateStripeCustomerId");
-    onRequest3 = /* @__PURE__ */ __name2(async (context) => {
+    __name(createUserAccount, "createUserAccount");
+    __name(updateStripeCustomerId, "updateStripeCustomerId");
+    onRequest3 = /* @__PURE__ */ __name(async (context) => {
       try {
         const { request, env } = context;
         const { email, loginMethod, sessionId } = await request.json();
@@ -11675,6 +11671,8 @@ var init_create_user_account = __esm({
     }, "onRequest");
   }
 });
+
+// api/stripe/webhook.ts
 async function handlePaymentWithoutCustomer(db, session, stripeSecretKey, resendApiKey) {
   try {
     const { customer_details, amount_total, currency, metadata } = session;
@@ -11743,7 +11741,6 @@ async function handlePaymentWithoutCustomer(db, session, stripeSecretKey, resend
     console.error("Error handling payment without customer:", error);
   }
 }
-__name(handlePaymentWithoutCustomer, "handlePaymentWithoutCustomer");
 async function sendPaymentConfirmationEmail(email, payment, resendApiKey) {
   const emailResponse = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -11769,7 +11766,6 @@ async function sendPaymentConfirmationEmail(email, payment, resendApiKey) {
     throw new Error(`Failed to send email: ${await emailResponse.text()}`);
   }
 }
-__name(sendPaymentConfirmationEmail, "sendPaymentConfirmationEmail");
 async function updateUserSubscription(db, customerId, paymentData) {
   const { id, status, amount_total, currency, metadata } = paymentData;
   let planId = metadata?.plan_id || "basic";
@@ -11789,7 +11785,6 @@ async function updateUserSubscription(db, customerId, paymentData) {
     WHERE stripe_customer_id = ?
   `).bind(subscriptionStatus, customerId).run();
 }
-__name(updateUserSubscription, "updateUserSubscription");
 async function createInvoiceRecord2(db, customerId, paymentData, stripeSecretKey) {
   let user = await db.prepare("SELECT id, email, first_name, last_name FROM users WHERE stripe_customer_id = ?").bind(customerId).first();
   if (!user && stripeSecretKey) {
@@ -11861,7 +11856,6 @@ async function createInvoiceRecord2(db, customerId, paymentData, stripeSecretKey
   };
   await generateInvoice(db, invoiceData);
 }
-__name(createInvoiceRecord2, "createInvoiceRecord2");
 async function verifyStripeSignature(payload, signature, secret) {
   try {
     const elements = signature.split(",");
@@ -11891,19 +11885,18 @@ async function verifyStripeSignature(payload, signature, secret) {
     return false;
   }
 }
-__name(verifyStripeSignature, "verifyStripeSignature");
 var onRequest4;
 var init_webhook = __esm({
   "api/stripe/webhook.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(handlePaymentWithoutCustomer, "handlePaymentWithoutCustomer");
-    __name2(sendPaymentConfirmationEmail, "sendPaymentConfirmationEmail");
-    __name2(updateUserSubscription, "updateUserSubscription");
-    __name2(createInvoiceRecord2, "createInvoiceRecord");
-    __name2(verifyStripeSignature, "verifyStripeSignature");
-    onRequest4 = /* @__PURE__ */ __name2(async (context) => {
+    __name(handlePaymentWithoutCustomer, "handlePaymentWithoutCustomer");
+    __name(sendPaymentConfirmationEmail, "sendPaymentConfirmationEmail");
+    __name(updateUserSubscription, "updateUserSubscription");
+    __name(createInvoiceRecord2, "createInvoiceRecord");
+    __name(verifyStripeSignature, "verifyStripeSignature");
+    onRequest4 = /* @__PURE__ */ __name(async (context) => {
       try {
         const { request, env } = context;
         const stripeWebhookSecret = env.STRIPE_WEBHOOK_SECRET;
@@ -11993,6 +11986,8 @@ var init_webhook = __esm({
     }, "onRequest");
   }
 });
+
+// api/invoice/[invoiceNumber].ts
 async function onRequestOptions21() {
   return new Response(null, {
     status: 200,
@@ -12003,7 +11998,6 @@ async function onRequestOptions21() {
     }
   });
 }
-__name(onRequestOptions21, "onRequestOptions21");
 async function onRequestGet24(context) {
   try {
     const { request, env, params } = context;
@@ -12118,12 +12112,11 @@ async function onRequestGet24(context) {
     });
   }
 }
-__name(onRequestGet24, "onRequestGet24");
 function generateInvoiceHTML(invoice) {
   const isCredit = invoice.invoice_type === "credit_note";
   const amountPrefix = isCredit ? "-" : "";
   const documentTitle = isCredit ? "CREDIT NOTE" : "INVOICE";
-  const formatAmount = /* @__PURE__ */ __name2((amount) => {
+  const formatAmount = /* @__PURE__ */ __name((amount) => {
     const formatted = Math.abs(amount / 100).toFixed(2);
     return `${amountPrefix}$${formatted} ${(invoice.currency || "USD").toUpperCase()}`;
   }, "formatAmount");
@@ -12682,18 +12675,19 @@ function generateInvoiceHTML(invoice) {
 </html>`;
   return html;
 }
-__name(generateInvoiceHTML, "generateInvoiceHTML");
 var init_invoiceNumber = __esm({
   "api/invoice/[invoiceNumber].ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     init_jwt();
-    __name2(onRequestOptions21, "onRequestOptions");
-    __name2(onRequestGet24, "onRequestGet");
-    __name2(generateInvoiceHTML, "generateInvoiceHTML");
+    __name(onRequestOptions21, "onRequestOptions");
+    __name(onRequestGet24, "onRequestGet");
+    __name(generateInvoiceHTML, "generateInvoiceHTML");
   }
 });
+
+// api/users/[userId]/index.ts
 async function onRequestOptions22() {
   return new Response(null, {
     status: 200,
@@ -12704,7 +12698,6 @@ async function onRequestOptions22() {
     }
   });
 }
-__name(onRequestOptions22, "onRequestOptions22");
 async function onRequestGet25(context) {
   try {
     const { request, env, params } = context;
@@ -12773,16 +12766,17 @@ async function onRequestGet25(context) {
     });
   }
 }
-__name(onRequestGet25, "onRequestGet25");
 var init_userId = __esm({
   "api/users/[userId]/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestOptions22, "onRequestOptions");
-    __name2(onRequestGet25, "onRequestGet");
+    __name(onRequestOptions22, "onRequestOptions");
+    __name(onRequestGet25, "onRequestGet");
   }
 });
+
+// api/contact/index.ts
 async function onRequestPost7(context) {
   try {
     const { request, env } = context;
@@ -12825,15 +12819,16 @@ async function onRequestPost7(context) {
     });
   }
 }
-__name(onRequestPost7, "onRequestPost7");
 var init_contact = __esm({
   "api/contact/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestPost7, "onRequestPost");
+    __name(onRequestPost7, "onRequestPost");
   }
 });
+
+// api/credential-schemas.ts
 async function onRequestOptions23() {
   return new Response(null, {
     status: 200,
@@ -12844,7 +12839,6 @@ async function onRequestOptions23() {
     }
   });
 }
-__name(onRequestOptions23, "onRequestOptions23");
 async function onRequestGet26(context) {
   try {
     const { request, env } = context;
@@ -12894,16 +12888,17 @@ async function onRequestGet26(context) {
     });
   }
 }
-__name(onRequestGet26, "onRequestGet26");
 var init_credential_schemas = __esm({
   "api/credential-schemas.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestOptions23, "onRequestOptions");
-    __name2(onRequestGet26, "onRequestGet");
+    __name(onRequestOptions23, "onRequestOptions");
+    __name(onRequestGet26, "onRequestGet");
   }
 });
+
+// api/decrypt-credentials.ts
 async function onRequestOptions24() {
   return new Response(null, {
     status: 200,
@@ -12914,7 +12909,6 @@ async function onRequestOptions24() {
     }
   });
 }
-__name(onRequestOptions24, "onRequestOptions24");
 async function onRequestPost8(context) {
   const { request, env } = context;
   try {
@@ -12994,16 +12988,17 @@ async function onRequestPost8(context) {
     });
   }
 }
-__name(onRequestPost8, "onRequestPost8");
 var init_decrypt_credentials = __esm({
   "api/decrypt-credentials.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestOptions24, "onRequestOptions");
-    __name2(onRequestPost8, "onRequestPost");
+    __name(onRequestOptions24, "onRequestOptions");
+    __name(onRequestPost8, "onRequestPost");
   }
 });
+
+// api/import-network.ts
 async function onRequestOptions25() {
   return new Response(null, {
     status: 200,
@@ -13014,7 +13009,6 @@ async function onRequestOptions25() {
     }
   });
 }
-__name(onRequestOptions25, "onRequestOptions25");
 async function onRequestPost9(context) {
   try {
     const { request, env } = context;
@@ -13063,16 +13057,17 @@ async function onRequestPost9(context) {
     });
   }
 }
-__name(onRequestPost9, "onRequestPost9");
 var init_import_network = __esm({
   "api/import-network.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestOptions25, "onRequestOptions");
-    __name2(onRequestPost9, "onRequestPost");
+    __name(onRequestOptions25, "onRequestOptions");
+    __name(onRequestPost9, "onRequestPost");
   }
 });
+
+// api/logo/index.ts
 async function onRequestOptions26() {
   return new Response(null, {
     status: 200,
@@ -13083,7 +13078,6 @@ async function onRequestOptions26() {
     }
   });
 }
-__name(onRequestOptions26, "onRequestOptions26");
 async function onRequestPost10(context) {
   try {
     const { request, env } = context;
@@ -13139,16 +13133,17 @@ async function onRequestPost10(context) {
     });
   }
 }
-__name(onRequestPost10, "onRequestPost10");
 var init_logo = __esm({
   "api/logo/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestOptions26, "onRequestOptions");
-    __name2(onRequestPost10, "onRequestPost");
+    __name(onRequestOptions26, "onRequestOptions");
+    __name(onRequestPost10, "onRequestPost");
   }
 });
+
+// api/logout/index.ts
 async function onRequestPost11(context) {
   const { env } = context;
   const isProduction = env.SITE_URL?.startsWith("https://") || false;
@@ -13162,15 +13157,16 @@ async function onRequestPost11(context) {
   response.headers.set("Set-Cookie", clearCookieHeader);
   return response;
 }
-__name(onRequestPost11, "onRequestPost11");
 var init_logout = __esm({
   "api/logout/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestPost11, "onRequestPost");
+    __name(onRequestPost11, "onRequestPost");
   }
 });
+
+// api/magic-login/index.ts
 async function signJwt5(payload, secret, expiresIn) {
   const header = { alg: "HS256", typ: "JWT" };
   const now = Math.floor(Date.now() / 1e3);
@@ -13194,7 +13190,6 @@ async function signJwt5(payload, secret, expiresIn) {
   const signatureB64 = btoa(String.fromCharCode(...new Uint8Array(signatureArrayBuffer))).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
   return `${headerB64}.${payloadB64}.${signatureB64}`;
 }
-__name(signJwt5, "signJwt5");
 async function getMagicLinkByToken(token, apiKey) {
   try {
     const response = await fetch(`https://apiv2.affensus.com/api/auth/magic-link/${token}`, {
@@ -13220,7 +13215,6 @@ async function getMagicLinkByToken(token, apiKey) {
     return null;
   }
 }
-__name(getMagicLinkByToken, "getMagicLinkByToken");
 async function markMagicLinkAsUsed(token, apiKey) {
   try {
     const response = await fetch(`https://apiv2.affensus.com/api/auth/magic-link/${token}/use`, {
@@ -13239,7 +13233,6 @@ async function markMagicLinkAsUsed(token, apiKey) {
     return false;
   }
 }
-__name(markMagicLinkAsUsed, "markMagicLinkAsUsed");
 async function getUserByEmail2(email, apiKey) {
   try {
     const response = await fetch(`https://apiv2.affensus.com/api/auth/user/email/${encodeURIComponent(email)}`, {
@@ -13261,7 +13254,6 @@ async function getUserByEmail2(email, apiKey) {
     return null;
   }
 }
-__name(getUserByEmail2, "getUserByEmail2");
 async function updatePreferredLoginMethod(email, method, apiKey) {
   try {
     const response = await fetch(`https://apiv2.affensus.com/api/auth/user/preferred-login-method`, {
@@ -13284,7 +13276,6 @@ async function updatePreferredLoginMethod(email, method, apiKey) {
     return false;
   }
 }
-__name(updatePreferredLoginMethod, "updatePreferredLoginMethod");
 async function processPendingPayments3(email, userId, stripeSecretKey) {
   try {
     console.log(`Processing pending payments for user ${userId} (${email})`);
@@ -13292,7 +13283,6 @@ async function processPendingPayments3(email, userId, stripeSecretKey) {
     console.error("Error processing pending payments:", error);
   }
 }
-__name(processPendingPayments3, "processPendingPayments3");
 async function onRequestGet27(context) {
   try {
     const { request, env } = context;
@@ -13396,21 +13386,22 @@ async function onRequestGet27(context) {
     });
   }
 }
-__name(onRequestGet27, "onRequestGet27");
 var init_magic_login = __esm({
   "api/magic-login/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(signJwt5, "signJwt");
-    __name2(getMagicLinkByToken, "getMagicLinkByToken");
-    __name2(markMagicLinkAsUsed, "markMagicLinkAsUsed");
-    __name2(getUserByEmail2, "getUserByEmail");
-    __name2(updatePreferredLoginMethod, "updatePreferredLoginMethod");
-    __name2(processPendingPayments3, "processPendingPayments");
-    __name2(onRequestGet27, "onRequestGet");
+    __name(signJwt5, "signJwt");
+    __name(getMagicLinkByToken, "getMagicLinkByToken");
+    __name(markMagicLinkAsUsed, "markMagicLinkAsUsed");
+    __name(getUserByEmail2, "getUserByEmail");
+    __name(updatePreferredLoginMethod, "updatePreferredLoginMethod");
+    __name(processPendingPayments3, "processPendingPayments");
+    __name(onRequestGet27, "onRequestGet");
   }
 });
+
+// api/mistake-report/index.ts
 async function onRequestPost12(context) {
   try {
     const { request, env } = context;
@@ -13502,15 +13493,16 @@ async function onRequestPost12(context) {
     });
   }
 }
-__name(onRequestPost12, "onRequestPost12");
 var init_mistake_report = __esm({
   "api/mistake-report/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestPost12, "onRequestPost");
+    __name(onRequestPost12, "onRequestPost");
   }
 });
+
+// api/network-monitors/index.ts
 async function onRequestOptions27() {
   return new Response(null, {
     status: 200,
@@ -13521,7 +13513,6 @@ async function onRequestOptions27() {
     }
   });
 }
-__name(onRequestOptions27, "onRequestOptions27");
 async function onRequestGet28(context) {
   try {
     const { request, env } = context;
@@ -13585,7 +13576,6 @@ async function onRequestGet28(context) {
     });
   }
 }
-__name(onRequestGet28, "onRequestGet28");
 async function onRequestPost13(context) {
   try {
     const { request, env } = context;
@@ -13661,7 +13651,6 @@ async function onRequestPost13(context) {
     });
   }
 }
-__name(onRequestPost13, "onRequestPost13");
 async function onRequestPut5(context) {
   try {
     const { request, env } = context;
@@ -13721,7 +13710,6 @@ async function onRequestPut5(context) {
     });
   }
 }
-__name(onRequestPut5, "onRequestPut5");
 async function onRequestDelete2(context) {
   try {
     const { request, env } = context;
@@ -13777,19 +13765,20 @@ async function onRequestDelete2(context) {
     });
   }
 }
-__name(onRequestDelete2, "onRequestDelete2");
 var init_network_monitors = __esm({
   "api/network-monitors/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestOptions27, "onRequestOptions");
-    __name2(onRequestGet28, "onRequestGet");
-    __name2(onRequestPost13, "onRequestPost");
-    __name2(onRequestPut5, "onRequestPut");
-    __name2(onRequestDelete2, "onRequestDelete");
+    __name(onRequestOptions27, "onRequestOptions");
+    __name(onRequestGet28, "onRequestGet");
+    __name(onRequestPost13, "onRequestPost");
+    __name(onRequestPut5, "onRequestPut");
+    __name(onRequestDelete2, "onRequestDelete");
   }
 });
+
+// api/profile/index.ts
 function parseCookies8(cookieHeader) {
   const cookies = {};
   if (!cookieHeader) return cookies;
@@ -13803,11 +13792,9 @@ function parseCookies8(cookieHeader) {
   }
   return cookies;
 }
-__name(parseCookies8, "parseCookies8");
 async function getUserById2(db, userId) {
   return await db.prepare("SELECT * FROM users WHERE id = ?").bind(userId).first();
 }
-__name(getUserById2, "getUserById2");
 async function updateUser(db, userId, data) {
   const { firstName, lastName } = data;
   await db.prepare(`
@@ -13817,7 +13804,6 @@ async function updateUser(db, userId, data) {
   `).bind(firstName, lastName, userId).run();
   return await getUserById2(db, userId);
 }
-__name(updateUser, "updateUser");
 async function onRequestGet29(context) {
   try {
     const { request, env } = context;
@@ -13891,7 +13877,6 @@ async function onRequestGet29(context) {
     });
   }
 }
-__name(onRequestGet29, "onRequestGet29");
 async function onRequestPut6(context) {
   try {
     const { request, env } = context;
@@ -13966,20 +13951,21 @@ async function onRequestPut6(context) {
     });
   }
 }
-__name(onRequestPut6, "onRequestPut6");
 var init_profile = __esm({
   "api/profile/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     init_jwt();
-    __name2(parseCookies8, "parseCookies");
-    __name2(getUserById2, "getUserById");
-    __name2(updateUser, "updateUser");
-    __name2(onRequestGet29, "onRequestGet");
-    __name2(onRequestPut6, "onRequestPut");
+    __name(parseCookies8, "parseCookies");
+    __name(getUserById2, "getUserById");
+    __name(updateUser, "updateUser");
+    __name(onRequestGet29, "onRequestGet");
+    __name(onRequestPut6, "onRequestPut");
   }
 });
+
+// api/refresh-published/index.ts
 async function onRequestOptions28() {
   return new Response(null, {
     status: 200,
@@ -13990,7 +13976,6 @@ async function onRequestOptions28() {
     }
   });
 }
-__name(onRequestOptions28, "onRequestOptions28");
 async function onRequestPost14(context) {
   const { request, env } = context;
   try {
@@ -14071,16 +14056,17 @@ async function onRequestPost14(context) {
     });
   }
 }
-__name(onRequestPost14, "onRequestPost14");
 var init_refresh_published = __esm({
   "api/refresh-published/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestOptions28, "onRequestOptions");
-    __name2(onRequestPost14, "onRequestPost");
+    __name(onRequestOptions28, "onRequestOptions");
+    __name(onRequestPost14, "onRequestPost");
   }
 });
+
+// api/refresh-wishlist/index.ts
 async function onRequestOptions29() {
   return new Response(null, {
     status: 200,
@@ -14091,7 +14077,6 @@ async function onRequestOptions29() {
     }
   });
 }
-__name(onRequestOptions29, "onRequestOptions29");
 async function verifyJwt3(token, secret) {
   try {
     const [headerB64, payloadB64, signatureB64] = token.split(".");
@@ -14118,7 +14103,6 @@ async function verifyJwt3(token, secret) {
     throw new Error("Invalid token");
   }
 }
-__name(verifyJwt3, "verifyJwt3");
 async function onRequestPost15(context) {
   try {
     const { request, env } = context;
@@ -14245,17 +14229,18 @@ async function onRequestPost15(context) {
     });
   }
 }
-__name(onRequestPost15, "onRequestPost15");
 var init_refresh_wishlist = __esm({
   "api/refresh-wishlist/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(onRequestOptions29, "onRequestOptions");
-    __name2(verifyJwt3, "verifyJwt");
-    __name2(onRequestPost15, "onRequestPost");
+    __name(onRequestOptions29, "onRequestOptions");
+    __name(verifyJwt3, "verifyJwt");
+    __name(onRequestPost15, "onRequestPost");
   }
 });
+
+// api/refund-request/index.ts
 async function onRequestOptions30() {
   return new Response(null, {
     status: 200,
@@ -14266,7 +14251,6 @@ async function onRequestOptions30() {
     }
   });
 }
-__name(onRequestOptions30, "onRequestOptions30");
 async function onRequestPost16(context) {
   try {
     const { request, env } = context;
@@ -14526,23 +14510,23 @@ async function onRequestPost16(context) {
     });
   }
 }
-__name(onRequestPost16, "onRequestPost16");
 var init_refund_request = __esm({
   "api/refund-request/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     init_jwt();
-    __name2(onRequestOptions30, "onRequestOptions");
-    __name2(onRequestPost16, "onRequestPost");
+    __name(onRequestOptions30, "onRequestOptions");
+    __name(onRequestPost16, "onRequestPost");
   }
 });
+
+// api/request-magic-link/index.ts
 function generateToken() {
   const array = new Uint8Array(32);
   crypto.getRandomValues(array);
   return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
-__name(generateToken, "generateToken");
 async function createUser(db, email, loginMethod = "magic_link") {
   const bearerToken = process.env.AFFENSUS_CREDENTIALS_PASSWORD;
   if (!bearerToken) {
@@ -14581,7 +14565,6 @@ async function createUser(db, email, loginMethod = "magic_link") {
   const isNewUser = response.status === 201;
   return { user, isNewUser };
 }
-__name(createUser, "createUser");
 async function createMagicLink(db, email, token) {
   const expiresAt = new Date(Date.now() + 10 * 60 * 1e3);
   const stmt = db.prepare(`
@@ -14590,11 +14573,9 @@ async function createMagicLink(db, email, token) {
   `);
   await stmt.bind(email, token, expiresAt.toISOString()).run();
 }
-__name(createMagicLink, "createMagicLink");
 async function cleanupExpiredMagicLinks(db) {
   await db.prepare('DELETE FROM magic_links WHERE expires_at < datetime("now")').run();
 }
-__name(cleanupExpiredMagicLinks, "cleanupExpiredMagicLinks");
 async function sendMagicLinkEmail(email, magicLinkUrl, resendApiKey) {
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -14656,7 +14637,6 @@ If you didn't request this email, you can safely ignore it.
   }
   return await response.json();
 }
-__name(sendMagicLinkEmail, "sendMagicLinkEmail");
 async function onRequestPost17(context) {
   try {
     const { request, env } = context;
@@ -14749,20 +14729,21 @@ async function onRequestPost17(context) {
     });
   }
 }
-__name(onRequestPost17, "onRequestPost17");
 var init_request_magic_link = __esm({
   "api/request-magic-link/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(generateToken, "generateToken");
-    __name2(createUser, "createUser");
-    __name2(createMagicLink, "createMagicLink");
-    __name2(cleanupExpiredMagicLinks, "cleanupExpiredMagicLinks");
-    __name2(sendMagicLinkEmail, "sendMagicLinkEmail");
-    __name2(onRequestPost17, "onRequestPost");
+    __name(generateToken, "generateToken");
+    __name(createUser, "createUser");
+    __name(createMagicLink, "createMagicLink");
+    __name(cleanupExpiredMagicLinks, "cleanupExpiredMagicLinks");
+    __name(sendMagicLinkEmail, "sendMagicLinkEmail");
+    __name(onRequestPost17, "onRequestPost");
   }
 });
+
+// api/user/index.ts
 async function onRequestOptions31() {
   return new Response(null, {
     status: 200,
@@ -14773,7 +14754,6 @@ async function onRequestOptions31() {
     }
   });
 }
-__name(onRequestOptions31, "onRequestOptions31");
 async function onRequestGet30(context) {
   try {
     const { request, env } = context;
@@ -14847,17 +14827,18 @@ async function onRequestGet30(context) {
     });
   }
 }
-__name(onRequestGet30, "onRequestGet30");
 var init_user = __esm({
   "api/user/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     init_jwt();
-    __name2(onRequestOptions31, "onRequestOptions");
-    __name2(onRequestGet30, "onRequestGet");
+    __name(onRequestOptions31, "onRequestOptions");
+    __name(onRequestGet30, "onRequestGet");
   }
 });
+
+// api/user-preferences.ts
 async function verifyJwt4(token, secret) {
   try {
     const [headerB64, payloadB64, signatureB64] = token.split(".");
@@ -14884,7 +14865,6 @@ async function verifyJwt4(token, secret) {
     throw new Error("Invalid token");
   }
 }
-__name(verifyJwt4, "verifyJwt4");
 function parseCookies9(cookieHeader) {
   const cookies = {};
   if (!cookieHeader) return cookies;
@@ -14896,11 +14876,9 @@ function parseCookies9(cookieHeader) {
   });
   return cookies;
 }
-__name(parseCookies9, "parseCookies9");
 async function getUserByEmail3(db, email) {
   return await db.prepare("SELECT * FROM users WHERE email = ?").bind(email).first();
 }
-__name(getUserByEmail3, "getUserByEmail3");
 async function onRequestGet31(context) {
   try {
     const { request, env } = context;
@@ -14963,18 +14941,19 @@ async function onRequestGet31(context) {
     });
   }
 }
-__name(onRequestGet31, "onRequestGet31");
 var init_user_preferences = __esm({
   "api/user-preferences.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
-    __name2(verifyJwt4, "verifyJwt");
-    __name2(parseCookies9, "parseCookies");
-    __name2(getUserByEmail3, "getUserByEmail");
-    __name2(onRequestGet31, "onRequestGet");
+    __name(verifyJwt4, "verifyJwt");
+    __name(parseCookies9, "parseCookies");
+    __name(getUserByEmail3, "getUserByEmail");
+    __name(onRequestGet31, "onRequestGet");
   }
 });
+
+// api/wishlist-info/index.ts
 async function onRequestOptions32() {
   return new Response(null, {
     status: 200,
@@ -14985,7 +14964,6 @@ async function onRequestOptions32() {
     }
   });
 }
-__name(onRequestOptions32, "onRequestOptions32");
 async function onRequestPost18(context) {
   try {
     const { request, env } = context;
@@ -15107,25 +15085,26 @@ async function onRequestPost18(context) {
     });
   }
 }
-__name(onRequestPost18, "onRequestPost18");
 var init_wishlist_info = __esm({
   "api/wishlist-info/index.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     init_jwt();
-    __name2(onRequestOptions32, "onRequestOptions");
-    __name2(onRequestPost18, "onRequestPost");
+    __name(onRequestOptions32, "onRequestOptions");
+    __name(onRequestPost18, "onRequestPost");
   }
 });
+
+// api/currency-rates.ts
 var onRequest5;
 var init_currency_rates = __esm({
   "api/currency-rates.ts"() {
     "use strict";
-    init_functionsRoutes_0_5227351204984628();
+    init_functionsRoutes_0_32105587586213225();
     init_checked_fetch();
     init_settings();
-    onRequest5 = /* @__PURE__ */ __name2(async (context) => {
+    onRequest5 = /* @__PURE__ */ __name(async (context) => {
       const { request } = context;
       const corsHeaders = {
         "Access-Control-Allow-Origin": "*",
@@ -15197,9 +15176,11 @@ var init_currency_rates = __esm({
     }, "onRequest");
   }
 });
+
+// ../.wrangler/tmp/pages-tpH96T/functionsRoutes-0.32105587586213225.mjs
 var routes;
-var init_functionsRoutes_0_5227351204984628 = __esm({
-  "../.wrangler/tmp/pages-OkNYjb/functionsRoutes-0.5227351204984628.mjs"() {
+var init_functionsRoutes_0_32105587586213225 = __esm({
+  "../.wrangler/tmp/pages-tpH96T/functionsRoutes-0.32105587586213225.mjs"() {
     "use strict";
     init_read();
     init_read();
@@ -15957,13 +15938,21 @@ var init_functionsRoutes_0_5227351204984628 = __esm({
     ];
   }
 });
-init_functionsRoutes_0_5227351204984628();
+
+// ../.wrangler/tmp/bundle-jnhJeu/middleware-loader.entry.ts
+init_functionsRoutes_0_32105587586213225();
 init_checked_fetch();
-init_functionsRoutes_0_5227351204984628();
+
+// ../.wrangler/tmp/bundle-jnhJeu/middleware-insertion-facade.js
+init_functionsRoutes_0_32105587586213225();
 init_checked_fetch();
-init_functionsRoutes_0_5227351204984628();
+
+// ../node_modules/wrangler/templates/pages-template-worker.ts
+init_functionsRoutes_0_32105587586213225();
 init_checked_fetch();
-init_functionsRoutes_0_5227351204984628();
+
+// ../node_modules/path-to-regexp/dist.es2015/index.js
+init_functionsRoutes_0_32105587586213225();
 init_checked_fetch();
 function lexer(str) {
   var tokens = [];
@@ -16049,7 +16038,6 @@ function lexer(str) {
   return tokens;
 }
 __name(lexer, "lexer");
-__name2(lexer, "lexer");
 function parse(str, options) {
   if (options === void 0) {
     options = {};
@@ -16060,18 +16048,18 @@ function parse(str, options) {
   var key = 0;
   var i = 0;
   var path = "";
-  var tryConsume = /* @__PURE__ */ __name2(function(type) {
+  var tryConsume = /* @__PURE__ */ __name(function(type) {
     if (i < tokens.length && tokens[i].type === type)
       return tokens[i++].value;
   }, "tryConsume");
-  var mustConsume = /* @__PURE__ */ __name2(function(type) {
+  var mustConsume = /* @__PURE__ */ __name(function(type) {
     var value2 = tryConsume(type);
     if (value2 !== void 0)
       return value2;
     var _a2 = tokens[i], nextType = _a2.type, index = _a2.index;
     throw new TypeError("Unexpected ".concat(nextType, " at ").concat(index, ", expected ").concat(type));
   }, "mustConsume");
-  var consumeText = /* @__PURE__ */ __name2(function() {
+  var consumeText = /* @__PURE__ */ __name(function() {
     var result2 = "";
     var value2;
     while (value2 = tryConsume("CHAR") || tryConsume("ESCAPED_CHAR")) {
@@ -16079,7 +16067,7 @@ function parse(str, options) {
     }
     return result2;
   }, "consumeText");
-  var isSafe = /* @__PURE__ */ __name2(function(value2) {
+  var isSafe = /* @__PURE__ */ __name(function(value2) {
     for (var _i = 0, delimiter_1 = delimiter; _i < delimiter_1.length; _i++) {
       var char2 = delimiter_1[_i];
       if (value2.indexOf(char2) > -1)
@@ -16087,7 +16075,7 @@ function parse(str, options) {
     }
     return false;
   }, "isSafe");
-  var safePattern = /* @__PURE__ */ __name2(function(prefix2) {
+  var safePattern = /* @__PURE__ */ __name(function(prefix2) {
     var prev = result[result.length - 1];
     var prevText = prefix2 || (prev && typeof prev === "string" ? prev : "");
     if (prev && !prevText) {
@@ -16150,14 +16138,12 @@ function parse(str, options) {
   return result;
 }
 __name(parse, "parse");
-__name2(parse, "parse");
 function match(str, options) {
   var keys = [];
   var re = pathToRegexp(str, keys, options);
   return regexpToFunction(re, keys, options);
 }
 __name(match, "match");
-__name2(match, "match");
 function regexpToFunction(re, keys, options) {
   if (options === void 0) {
     options = {};
@@ -16171,7 +16157,7 @@ function regexpToFunction(re, keys, options) {
       return false;
     var path = m[0], index = m.index;
     var params = /* @__PURE__ */ Object.create(null);
-    var _loop_1 = /* @__PURE__ */ __name2(function(i2) {
+    var _loop_1 = /* @__PURE__ */ __name(function(i2) {
       if (m[i2] === void 0)
         return "continue";
       var key = keys[i2 - 1];
@@ -16190,17 +16176,14 @@ function regexpToFunction(re, keys, options) {
   };
 }
 __name(regexpToFunction, "regexpToFunction");
-__name2(regexpToFunction, "regexpToFunction");
 function escapeString(str) {
   return str.replace(/([.+*?=^!:${}()[\]|/\\])/g, "\\$1");
 }
 __name(escapeString, "escapeString");
-__name2(escapeString, "escapeString");
 function flags(options) {
   return options && options.sensitive ? "" : "i";
 }
 __name(flags, "flags");
-__name2(flags, "flags");
 function regexpToRegexp(path, keys) {
   if (!keys)
     return path;
@@ -16221,7 +16204,6 @@ function regexpToRegexp(path, keys) {
   return path;
 }
 __name(regexpToRegexp, "regexpToRegexp");
-__name2(regexpToRegexp, "regexpToRegexp");
 function arrayToRegexp(paths, keys, options) {
   var parts = paths.map(function(path) {
     return pathToRegexp(path, keys, options).source;
@@ -16229,12 +16211,10 @@ function arrayToRegexp(paths, keys, options) {
   return new RegExp("(?:".concat(parts.join("|"), ")"), flags(options));
 }
 __name(arrayToRegexp, "arrayToRegexp");
-__name2(arrayToRegexp, "arrayToRegexp");
 function stringToRegexp(path, keys, options) {
   return tokensToRegexp(parse(path, options), keys, options);
 }
 __name(stringToRegexp, "stringToRegexp");
-__name2(stringToRegexp, "stringToRegexp");
 function tokensToRegexp(tokens, keys, options) {
   if (options === void 0) {
     options = {};
@@ -16290,7 +16270,6 @@ function tokensToRegexp(tokens, keys, options) {
   return new RegExp(route, flags(options));
 }
 __name(tokensToRegexp, "tokensToRegexp");
-__name2(tokensToRegexp, "tokensToRegexp");
 function pathToRegexp(path, keys, options) {
   if (path instanceof RegExp)
     return regexpToRegexp(path, keys);
@@ -16299,7 +16278,8 @@ function pathToRegexp(path, keys, options) {
   return stringToRegexp(path, keys, options);
 }
 __name(pathToRegexp, "pathToRegexp");
-__name2(pathToRegexp, "pathToRegexp");
+
+// ../node_modules/wrangler/templates/pages-template-worker.ts
 var escapeRegex = /[.+?^${}()|[\]\\]/g;
 function* executeRequest(request) {
   const requestPath = new URL(request.url).pathname;
@@ -16350,14 +16330,13 @@ function* executeRequest(request) {
   }
 }
 __name(executeRequest, "executeRequest");
-__name2(executeRequest, "executeRequest");
 var pages_template_worker_default = {
   async fetch(originalRequest, env, workerContext) {
     let request = originalRequest;
     const handlerIterator = executeRequest(request);
     let data = {};
     let isFailOpen = false;
-    const next = /* @__PURE__ */ __name2(async (input, init) => {
+    const next = /* @__PURE__ */ __name(async (input, init) => {
       if (input !== void 0) {
         let url = input;
         if (typeof input === "string") {
@@ -16384,7 +16363,7 @@ var pages_template_worker_default = {
           },
           env,
           waitUntil: workerContext.waitUntil.bind(workerContext),
-          passThroughOnException: /* @__PURE__ */ __name2(() => {
+          passThroughOnException: /* @__PURE__ */ __name(() => {
             isFailOpen = true;
           }, "passThroughOnException")
         };
@@ -16412,16 +16391,18 @@ var pages_template_worker_default = {
     }
   }
 };
-var cloneResponse = /* @__PURE__ */ __name2((response) => (
+var cloneResponse = /* @__PURE__ */ __name((response) => (
   // https://fetch.spec.whatwg.org/#null-body-status
   new Response(
     [101, 204, 205, 304].includes(response.status) ? null : response.body,
     response
   )
 ), "cloneResponse");
-init_functionsRoutes_0_5227351204984628();
+
+// ../node_modules/wrangler/templates/middleware/middleware-ensure-req-body-drained.ts
+init_functionsRoutes_0_32105587586213225();
 init_checked_fetch();
-var drainBody = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx) => {
+var drainBody = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
   try {
     return await middlewareCtx.next(request, env);
   } finally {
@@ -16437,7 +16418,9 @@ var drainBody = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx
   }
 }, "drainBody");
 var middleware_ensure_req_body_drained_default = drainBody;
-init_functionsRoutes_0_5227351204984628();
+
+// ../node_modules/wrangler/templates/middleware/middleware-miniflare3-json-error.ts
+init_functionsRoutes_0_32105587586213225();
 init_checked_fetch();
 function reduceError(e) {
   return {
@@ -16448,8 +16431,7 @@ function reduceError(e) {
   };
 }
 __name(reduceError, "reduceError");
-__name2(reduceError, "reduceError");
-var jsonError = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx) => {
+var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
   try {
     return await middlewareCtx.next(request, env);
   } catch (e) {
@@ -16461,19 +16443,22 @@ var jsonError = /* @__PURE__ */ __name2(async (request, env, _ctx, middlewareCtx
   }
 }, "jsonError");
 var middleware_miniflare3_json_error_default = jsonError;
+
+// ../.wrangler/tmp/bundle-jnhJeu/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_ensure_req_body_drained_default,
   middleware_miniflare3_json_error_default
 ];
 var middleware_insertion_facade_default = pages_template_worker_default;
-init_functionsRoutes_0_5227351204984628();
+
+// ../node_modules/wrangler/templates/middleware/common.ts
+init_functionsRoutes_0_32105587586213225();
 init_checked_fetch();
 var __facade_middleware__ = [];
 function __facade_register__(...args) {
   __facade_middleware__.push(...args.flat());
 }
 __name(__facade_register__, "__facade_register__");
-__name2(__facade_register__, "__facade_register__");
 function __facade_invokeChain__(request, env, ctx, dispatch, middlewareChain) {
   const [head, ...tail] = middlewareChain;
   const middlewareCtx = {
@@ -16485,7 +16470,6 @@ function __facade_invokeChain__(request, env, ctx, dispatch, middlewareChain) {
   return head(request, env, ctx, middlewareCtx);
 }
 __name(__facade_invokeChain__, "__facade_invokeChain__");
-__name2(__facade_invokeChain__, "__facade_invokeChain__");
 function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
   return __facade_invokeChain__(request, env, ctx, dispatch, [
     ...__facade_middleware__,
@@ -16493,18 +16477,16 @@ function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
   ]);
 }
 __name(__facade_invoke__, "__facade_invoke__");
-__name2(__facade_invoke__, "__facade_invoke__");
+
+// ../.wrangler/tmp/bundle-jnhJeu/middleware-loader.entry.ts
 var __Facade_ScheduledController__ = class ___Facade_ScheduledController__ {
-  static {
-    __name(this, "___Facade_ScheduledController__");
-  }
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;
     this.cron = cron;
     this.#noRetry = noRetry;
   }
   static {
-    __name2(this, "__Facade_ScheduledController__");
+    __name(this, "__Facade_ScheduledController__");
   }
   #noRetry;
   noRetry() {
@@ -16521,7 +16503,7 @@ function wrapExportedHandler(worker) {
   for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__) {
     __facade_register__(middleware);
   }
-  const fetchDispatcher = /* @__PURE__ */ __name2(function(request, env, ctx) {
+  const fetchDispatcher = /* @__PURE__ */ __name(function(request, env, ctx) {
     if (worker.fetch === void 0) {
       throw new Error("Handler does not export a fetch() function.");
     }
@@ -16530,7 +16512,7 @@ function wrapExportedHandler(worker) {
   return {
     ...worker,
     fetch(request, env, ctx) {
-      const dispatcher = /* @__PURE__ */ __name2(function(type, init) {
+      const dispatcher = /* @__PURE__ */ __name(function(type, init) {
         if (type === "scheduled" && worker.scheduled !== void 0) {
           const controller = new __Facade_ScheduledController__(
             Date.now(),
@@ -16546,7 +16528,6 @@ function wrapExportedHandler(worker) {
   };
 }
 __name(wrapExportedHandler, "wrapExportedHandler");
-__name2(wrapExportedHandler, "wrapExportedHandler");
 function wrapWorkerEntrypoint(klass) {
   if (__INTERNAL_WRANGLER_MIDDLEWARE__ === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__.length === 0) {
     return klass;
@@ -16555,7 +16536,7 @@ function wrapWorkerEntrypoint(klass) {
     __facade_register__(middleware);
   }
   return class extends klass {
-    #fetchDispatcher = /* @__PURE__ */ __name2((request, env, ctx) => {
+    #fetchDispatcher = /* @__PURE__ */ __name((request, env, ctx) => {
       this.env = env;
       this.ctx = ctx;
       if (super.fetch === void 0) {
@@ -16563,7 +16544,7 @@ function wrapWorkerEntrypoint(klass) {
       }
       return super.fetch(request);
     }, "#fetchDispatcher");
-    #dispatcher = /* @__PURE__ */ __name2((type, init) => {
+    #dispatcher = /* @__PURE__ */ __name((type, init) => {
       if (type === "scheduled" && super.scheduled !== void 0) {
         const controller = new __Facade_ScheduledController__(
           Date.now(),
@@ -16586,7 +16567,6 @@ function wrapWorkerEntrypoint(klass) {
   };
 }
 __name(wrapWorkerEntrypoint, "wrapWorkerEntrypoint");
-__name2(wrapWorkerEntrypoint, "wrapWorkerEntrypoint");
 var WRAPPED_ENTRY;
 if (typeof middleware_insertion_facade_default === "object") {
   WRAPPED_ENTRY = wrapExportedHandler(middleware_insertion_facade_default);
@@ -16594,179 +16574,9 @@ if (typeof middleware_insertion_facade_default === "object") {
   WRAPPED_ENTRY = wrapWorkerEntrypoint(middleware_insertion_facade_default);
 }
 var middleware_loader_entry_default = WRAPPED_ENTRY;
-
-// node_modules/wrangler/templates/middleware/middleware-ensure-req-body-drained.ts
-var drainBody2 = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
-  try {
-    return await middlewareCtx.next(request, env);
-  } finally {
-    try {
-      if (request.body !== null && !request.bodyUsed) {
-        const reader = request.body.getReader();
-        while (!(await reader.read()).done) {
-        }
-      }
-    } catch (e) {
-      console.error("Failed to drain the unused request body.", e);
-    }
-  }
-}, "drainBody");
-var middleware_ensure_req_body_drained_default2 = drainBody2;
-
-// node_modules/wrangler/templates/middleware/middleware-miniflare3-json-error.ts
-function reduceError2(e) {
-  return {
-    name: e?.name,
-    message: e?.message ?? String(e),
-    stack: e?.stack,
-    cause: e?.cause === void 0 ? void 0 : reduceError2(e.cause)
-  };
-}
-__name(reduceError2, "reduceError");
-var jsonError2 = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx) => {
-  try {
-    return await middlewareCtx.next(request, env);
-  } catch (e) {
-    const error = reduceError2(e);
-    return Response.json(error, {
-      status: 500,
-      headers: { "MF-Experimental-Error-Stack": "true" }
-    });
-  }
-}, "jsonError");
-var middleware_miniflare3_json_error_default2 = jsonError2;
-
-// .wrangler/tmp/bundle-FWfNe3/middleware-insertion-facade.js
-var __INTERNAL_WRANGLER_MIDDLEWARE__2 = [
-  middleware_ensure_req_body_drained_default2,
-  middleware_miniflare3_json_error_default2
-];
-var middleware_insertion_facade_default2 = middleware_loader_entry_default;
-
-// node_modules/wrangler/templates/middleware/common.ts
-var __facade_middleware__2 = [];
-function __facade_register__2(...args) {
-  __facade_middleware__2.push(...args.flat());
-}
-__name(__facade_register__2, "__facade_register__");
-function __facade_invokeChain__2(request, env, ctx, dispatch, middlewareChain) {
-  const [head, ...tail] = middlewareChain;
-  const middlewareCtx = {
-    dispatch,
-    next(newRequest, newEnv) {
-      return __facade_invokeChain__2(newRequest, newEnv, ctx, dispatch, tail);
-    }
-  };
-  return head(request, env, ctx, middlewareCtx);
-}
-__name(__facade_invokeChain__2, "__facade_invokeChain__");
-function __facade_invoke__2(request, env, ctx, dispatch, finalMiddleware) {
-  return __facade_invokeChain__2(request, env, ctx, dispatch, [
-    ...__facade_middleware__2,
-    finalMiddleware
-  ]);
-}
-__name(__facade_invoke__2, "__facade_invoke__");
-
-// .wrangler/tmp/bundle-FWfNe3/middleware-loader.entry.ts
-var __Facade_ScheduledController__2 = class ___Facade_ScheduledController__2 {
-  constructor(scheduledTime, cron, noRetry) {
-    this.scheduledTime = scheduledTime;
-    this.cron = cron;
-    this.#noRetry = noRetry;
-  }
-  static {
-    __name(this, "__Facade_ScheduledController__");
-  }
-  #noRetry;
-  noRetry() {
-    if (!(this instanceof ___Facade_ScheduledController__2)) {
-      throw new TypeError("Illegal invocation");
-    }
-    this.#noRetry();
-  }
-};
-function wrapExportedHandler2(worker) {
-  if (__INTERNAL_WRANGLER_MIDDLEWARE__2 === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__2.length === 0) {
-    return worker;
-  }
-  for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__2) {
-    __facade_register__2(middleware);
-  }
-  const fetchDispatcher = /* @__PURE__ */ __name(function(request, env, ctx) {
-    if (worker.fetch === void 0) {
-      throw new Error("Handler does not export a fetch() function.");
-    }
-    return worker.fetch(request, env, ctx);
-  }, "fetchDispatcher");
-  return {
-    ...worker,
-    fetch(request, env, ctx) {
-      const dispatcher = /* @__PURE__ */ __name(function(type, init) {
-        if (type === "scheduled" && worker.scheduled !== void 0) {
-          const controller = new __Facade_ScheduledController__2(
-            Date.now(),
-            init.cron ?? "",
-            () => {
-            }
-          );
-          return worker.scheduled(controller, env, ctx);
-        }
-      }, "dispatcher");
-      return __facade_invoke__2(request, env, ctx, dispatcher, fetchDispatcher);
-    }
-  };
-}
-__name(wrapExportedHandler2, "wrapExportedHandler");
-function wrapWorkerEntrypoint2(klass) {
-  if (__INTERNAL_WRANGLER_MIDDLEWARE__2 === void 0 || __INTERNAL_WRANGLER_MIDDLEWARE__2.length === 0) {
-    return klass;
-  }
-  for (const middleware of __INTERNAL_WRANGLER_MIDDLEWARE__2) {
-    __facade_register__2(middleware);
-  }
-  return class extends klass {
-    #fetchDispatcher = /* @__PURE__ */ __name((request, env, ctx) => {
-      this.env = env;
-      this.ctx = ctx;
-      if (super.fetch === void 0) {
-        throw new Error("Entrypoint class does not define a fetch() function.");
-      }
-      return super.fetch(request);
-    }, "#fetchDispatcher");
-    #dispatcher = /* @__PURE__ */ __name((type, init) => {
-      if (type === "scheduled" && super.scheduled !== void 0) {
-        const controller = new __Facade_ScheduledController__2(
-          Date.now(),
-          init.cron ?? "",
-          () => {
-          }
-        );
-        return super.scheduled(controller);
-      }
-    }, "#dispatcher");
-    fetch(request) {
-      return __facade_invoke__2(
-        request,
-        this.env,
-        this.ctx,
-        this.#dispatcher,
-        this.#fetchDispatcher
-      );
-    }
-  };
-}
-__name(wrapWorkerEntrypoint2, "wrapWorkerEntrypoint");
-var WRAPPED_ENTRY2;
-if (typeof middleware_insertion_facade_default2 === "object") {
-  WRAPPED_ENTRY2 = wrapExportedHandler2(middleware_insertion_facade_default2);
-} else if (typeof middleware_insertion_facade_default2 === "function") {
-  WRAPPED_ENTRY2 = wrapWorkerEntrypoint2(middleware_insertion_facade_default2);
-}
-var middleware_loader_entry_default2 = WRAPPED_ENTRY2;
 export {
-  __INTERNAL_WRANGLER_MIDDLEWARE__2 as __INTERNAL_WRANGLER_MIDDLEWARE__,
-  middleware_loader_entry_default2 as default
+  __INTERNAL_WRANGLER_MIDDLEWARE__,
+  middleware_loader_entry_default as default
 };
 /*! Bundled license information:
 
@@ -16789,4 +16599,4 @@ crypto-js/mode-ctr-gladman.js:
    * Jan Hruby jhruby.web@gmail.com
    *)
 */
-//# sourceMappingURL=functionsWorker-0.8634646317432765.js.map
+//# sourceMappingURL=functionsWorker-0.46199546442370576.mjs.map

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Project } from '../../hooks/use-project-selection';
 import { useProjectNotifications } from '../../hooks/use-project-notifications';
 import { getStatusBadgeStyles } from '../../lib/status-utils';
@@ -48,8 +49,9 @@ interface NotificationsProps {
 }
 
 export default function DashboardNotifications({ selectedProject, onNotificationRead }: NotificationsProps) {
-  // Get notification ID from URL params
-  const [notificationId, setNotificationId] = React.useState<string | null>(null);
+  // Get notification ID from URL params using Next.js hook
+  const searchParams = useSearchParams();
+  const notificationId = searchParams.get('id');
   
   // Filter states for all merchant types
   const [searchTerm, setSearchTerm] = useState('');
@@ -60,13 +62,7 @@ export default function DashboardNotifications({ selectedProject, onNotification
   const [selectedMerchant, setSelectedMerchant] = useState<Merchant | null>(null);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
 
-  React.useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const id = urlParams.get('id');
-    setNotificationId(id);
-  }, []);
-
-  // Mark notification as read when page loads with a specific notification ID
+  // Mark notification as read when notification ID changes
   React.useEffect(() => {
     if (notificationId && onNotificationRead) {
       const numericId = parseInt(notificationId, 10);

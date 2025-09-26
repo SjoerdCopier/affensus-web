@@ -786,7 +786,8 @@ function AffiliateLinkCheckerContent() {
                                         const cleanedRedirects = redirects.map(redirect => {
                                             const { affiliate_network, ...rest } = redirect;
                                             if (affiliate_network) {
-                                                const { networkId: _, ...cleanNetwork } = affiliate_network;
+                                                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                                                const { networkId, ...cleanNetwork } = affiliate_network;
                                                 return { ...rest, affiliate_network: cleanNetwork };
                                             }
                                             return rest;
