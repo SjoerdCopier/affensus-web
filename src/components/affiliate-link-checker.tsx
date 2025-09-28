@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Breadcrumbs from "@/components/breadcrumbs";
 import { useLocaleTranslations } from "@/hooks/use-locale-translations";
 import { useUser } from "@/hooks/use-user";
-import { Shield, Search, Clock, Globe, ChevronDown, ChevronUp, Copy, Check, Flag, AlertTriangle } from 'lucide-react';
+import { Shield, Search, Clock, Globe, ChevronDown, ChevronUp, Copy, Check, Flag, AlertTriangle, BarChart3, Network } from 'lucide-react';
 import { CountrySelect } from "@/components/ui/country-select";
 
 interface Flag {
@@ -13,6 +13,12 @@ interface Flag {
     flag_type: string;
     description: string;
     severity: string;
+}
+
+interface TrackingSoftware {
+    name: string;
+    campaignId?: string;
+    publisherId?: string;
 }
 
 interface Redirect {
@@ -29,19 +35,14 @@ interface Redirect {
     userId?: string;
     programId?: string;
     };
+    advertiser?: {
+        name: string;
+    };
+    tracking_software?: TrackingSoftware;
 }
 
 // ApiRedirectStep interface removed - using main Redirect interface
 
-// Helper function to extract domain from URL
-const extractDomain = (url: string): string => {
-    try {
-        const urlObj = new URL(url);
-        return urlObj.hostname;
-    } catch {
-        return url;
-    }
-};
 
 // Helper function to truncate URL for display
 const truncateUrl = (url: string, maxLength: number = 60): string => {
@@ -272,6 +273,25 @@ function AffiliateLinkCheckerContent() {
                             </svg>
                             <div className="ml-4">
                                 {t('tools.affiliateLinkChecker.messages.multipleNetworks').replace('{network}', firstNetwork)}
+                            </div>
+                        </>
+                    );
+                } else if (redirects.length === 1) {
+                    // Only 1 step means no redirects - likely not an affiliate link
+                    setResultMessage(
+                        <>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="w-20 h-20 mt-1"
+                            >
+                                <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
+                            </svg>
+                            <div className="ml-4">
+                                {t('tools.affiliateLinkChecker.messages.likelyNotAffiliate')}
                             </div>
                         </>
                     );
@@ -600,6 +620,25 @@ function AffiliateLinkCheckerContent() {
                         </div>
                     </>
                 );
+            } else if (redirects.length === 1) {
+                // Only 1 step means no redirects - likely not an affiliate link
+                setResultMessage(
+                    <>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="w-20 h-20 mt-1"
+                        >
+                            <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
+                        </svg>
+                        <div className="ml-4">
+                            {t('tools.affiliateLinkChecker.messages.likelyNotAffiliate')}
+                        </div>
+                    </>
+                );
             } else if (!responseData.success) {
                 // Set error message for API error
                 setResultMessage(
@@ -828,7 +867,7 @@ function AffiliateLinkCheckerContent() {
                 )}
                 
                 {resultMessage && (
-                    <div className={`mt-6 p-4 border rounded-md flex items-start ${has404 || hasRedirectError ? 'bg-red-100 text-red-700 border-red-300' : multipleNetworks ? 'bg-yellow-100 text-yellow-700 border-yellow-300' : 'bg-green-100 text-green-700 border-green-300'}`}>
+                    <div className={`mt-6 p-4 border rounded-md flex items-start ${has404 || hasRedirectError ? 'bg-red-100 text-red-700 border-red-300' : multipleNetworks || redirects.length === 1 ? 'bg-yellow-100 text-yellow-700 border-yellow-300' : 'bg-green-100 text-green-700 border-green-300'}`}>
                         {resultMessage}
                     </div>
                 )}
@@ -921,11 +960,37 @@ function AffiliateLinkCheckerContent() {
                                     
                                     {/* Badges below URL */}
                                     <div className="flex items-center gap-2 flex-wrap">
+                                        {/* Advertiser badge */}
+                                        {redirect.advertiser?.name && (
+                                            <span className="inline-flex items-center justify-center rounded-md border border-purple-300 bg-purple-50 px-2 py-0.5 font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden text-purple-800 [a&]:hover:bg-accent [a&]:hover:text-accent-foreground text-xs">
+                                                <Globe className="w-3 h-3 mr-1" aria-hidden="true" />
+                                                {redirect.advertiser.name}
+                                            </span>
+                                        )}
+                                        
                                         {/* Network badge */}
-                                        <span className="inline-flex items-center justify-center rounded-md border border-gray-300 px-2 py-0.5 font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground text-xs">
-                                            <Globe className="w-3 h-3 mr-1" aria-hidden="true" />
-                                            {redirect.affiliate_network?.name || 'Unknown'}
-                                        </span>
+                                        {redirect.affiliate_network?.name && (
+                                            <span className="inline-flex items-center justify-center rounded-md border border-indigo-300 bg-indigo-50 px-2 py-0.5 font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden text-indigo-800 [a&]:hover:bg-accent [a&]:hover:text-accent-foreground text-xs">
+                                                <Network className="w-3 h-3 mr-1" aria-hidden="true" />
+                                                {redirect.affiliate_network.name}
+                                            </span>
+                                        )}
+                                        
+                                        {/* Show "Unknown" badge only if no advertiser and no network */}
+                                        {!redirect.advertiser?.name && !redirect.affiliate_network?.name && !redirect.tracking_software && (
+                                            <span className="inline-flex items-center justify-center rounded-md border border-slate-300 bg-slate-50 px-2 py-0.5 font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden text-slate-700 [a&]:hover:bg-accent [a&]:hover:text-accent-foreground text-xs">
+                                                <Globe className="w-3 h-3 mr-1" aria-hidden="true" />
+                                                Unknown
+                                            </span>
+                                        )}
+                                        
+                                        {/* Tracking software badge */}
+                                        {redirect.tracking_software && (
+                                            <span className="inline-flex items-center justify-center rounded-md border border-blue-300 bg-blue-50 px-2 py-0.5 font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden text-blue-800 [a&]:hover:bg-accent [a&]:hover:text-accent-foreground text-xs">
+                                                <BarChart3 className="w-3 h-3 mr-1" aria-hidden="true" />
+                                                {redirect.tracking_software.name}
+                                            </span>
+                                        )}
                                         
                                         {/* Status code badge */}
                                         <span className={`inline-flex items-center justify-center rounded-md border px-2 py-0.5 font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden border-transparent text-xs ${
@@ -963,6 +1028,21 @@ function AffiliateLinkCheckerContent() {
                                                             return redirect.affiliate_network.programId;
                                                         }
                                                     })()}
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                    
+                                    {redirect.tracking_software && (redirect.tracking_software.campaignId || redirect.tracking_software.publisherId) && (
+                                        <div className="text-sm text-gray-600 mt-2">
+                                            {redirect.tracking_software.campaignId && (
+                                                <div className="text-xs text-gray-500">
+                                                    Campaign ID: {redirect.tracking_software.campaignId}
+                                                </div>
+                                            )}
+                                            {redirect.tracking_software.publisherId && (
+                                                <div className="text-xs text-gray-500">
+                                                    Publisher ID: {redirect.tracking_software.publisherId}
                                                 </div>
                                             )}
                                         </div>
