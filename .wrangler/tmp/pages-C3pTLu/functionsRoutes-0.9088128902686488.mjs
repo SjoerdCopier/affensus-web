@@ -67,6 +67,8 @@ import { onRequestOptions as __api_decrypt_credentials_ts_onRequestOptions } fro
 import { onRequestPost as __api_decrypt_credentials_ts_onRequestPost } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/decrypt-credentials.ts"
 import { onRequestOptions as __api_import_network_ts_onRequestOptions } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/import-network.ts"
 import { onRequestPost as __api_import_network_ts_onRequestPost } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/import-network.ts"
+import { onRequestOptions as __api_logo_index_ts_onRequestOptions } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/logo/index.ts"
+import { onRequestPost as __api_logo_index_ts_onRequestPost } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/logo/index.ts"
 import { onRequestPost as __api_logout_index_ts_onRequestPost } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/logout/index.ts"
 import { onRequestGet as __api_magic_login_index_ts_onRequestGet } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/magic-login/index.ts"
 import { onRequestPost as __api_mistake_report_index_ts_onRequestPost } from "/Users/sjoerdcopier/PhpstormProjects/affensus_web/functions/api/mistake-report/index.ts"
@@ -574,6 +576,20 @@ export const routes = [
       method: "POST",
       middlewares: [],
       modules: [__api_import_network_ts_onRequestPost],
+    },
+  {
+      routePath: "/api/logo",
+      mountPath: "/api/logo",
+      method: "OPTIONS",
+      middlewares: [],
+      modules: [__api_logo_index_ts_onRequestOptions],
+    },
+  {
+      routePath: "/api/logo",
+      mountPath: "/api/logo",
+      method: "POST",
+      middlewares: [],
+      modules: [__api_logo_index_ts_onRequestPost],
     },
   {
       routePath: "/api/logout",

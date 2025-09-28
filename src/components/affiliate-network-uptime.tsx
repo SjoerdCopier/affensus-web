@@ -130,10 +130,10 @@ const HeartbeatBar = ({ heartbeats, showTimeRange = false }: { heartbeats: Statu
     </HoverCard>
   );
 
-  // Show recent heartbeats (limit to prevent performance issues)
+  // Show recent heartbeats (limit to fit within card width - approximately 60-80 heartbeats fit in a card)
   const recentHeartbeats = heartbeats
     .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime())
-    .slice(0, 2016);
+    .slice(0, 60);
 
   // Calculate the actual time range for these specific heartbeats
   const getTimeRange = (): string => {
