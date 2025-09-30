@@ -334,7 +334,21 @@ function AffiliateLinkCheckerContent() {
                     );
                 }
             } else {
-                console.error('Error fetching shared result');
+                // Check if this is a "Result not found" error
+                let errorText;
+                try {
+                    const errorResponse = await response.text();
+                    const errorData = JSON.parse(errorResponse);
+                    if (errorData.error && errorData.error.includes('Result not found')) {
+                        errorText = t('tools.affiliateLinkChecker.messages.sharedResultNotFound');
+                    } else {
+                        errorText = t('tools.affiliateLinkChecker.messages.error');
+                    }
+                } catch {
+                    console.error('Error fetching shared result');
+                    errorText = t('tools.affiliateLinkChecker.messages.error');
+                }
+                
                 setResultMessage(
                     <>
                         <svg
@@ -348,13 +362,17 @@ function AffiliateLinkCheckerContent() {
                             <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
                         </svg>
                         <div className="ml-4">
-                            {t('tools.affiliateLinkChecker.messages.error')}
+                            {errorText}
                         </div>
                     </>
                 );
             }
         } catch (error) {
             console.error('Error loading shared result:', error);
+            // Check if the error message indicates a "Result not found" scenario
+            const errorMessage = error instanceof Error ? error.message : '';
+            const isResultNotFound = errorMessage.includes('Result not found') || errorMessage.includes('404');
+            
             setResultMessage(
                 <>
                     <svg
@@ -368,7 +386,7 @@ function AffiliateLinkCheckerContent() {
                         <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"></path>
                     </svg>
                     <div className="ml-4">
-                        {t('tools.affiliateLinkChecker.messages.error')}
+                        {isResultNotFound ? t('tools.affiliateLinkChecker.messages.sharedResultNotFound') : t('tools.affiliateLinkChecker.messages.error')}
                     </div>
                 </>
             );
@@ -986,7 +1004,7 @@ function AffiliateLinkCheckerContent() {
                                         
                                         {/* Tracking software badge */}
                                         {redirect.tracking_software && (
-                                            <span className="inline-flex items-center justify-center rounded-md border border-blue-300 bg-blue-50 px-2 py-0.5 font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden text-blue-800 [a&]:hover:bg-accent [a&]:hover:text-accent-foreground text-xs">
+                                            <span className="inline-flex items-center justify-center rounded-md border border-emerald-300 bg-emerald-50 px-2 py-0.5 font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden text-emerald-800 [a&]:hover:bg-accent [a&]:hover:text-accent-foreground text-xs">
                                                 <BarChart3 className="w-3 h-3 mr-1" aria-hidden="true" />
                                                 {redirect.tracking_software.name}
                                             </span>

@@ -6,14 +6,12 @@ import { usePathname } from 'next/navigation'
 import { 
   LayoutDashboard,
   TableOfContents,
-  Lightbulb,
   Unlink,
   TicketPercent,
   Bot,
   Folder,
   ChevronDown,
-  Wifi,
-  FileText
+  Wifi
 } from "lucide-react"
 import { Project } from '../../hooks/use-project-selection'
 
@@ -117,18 +115,6 @@ export default function DashboardSidebar({
               </Link>
             </li>
             <li className={`rounded-lg border mb-1 ${
-              isActive('/dashboard/network-uptime')
-                ? 'bg-white border-gray-200 border-b-2' 
-                : 'border-transparent hover:border-gray-200'
-            }`}>
-              <Link href="/dashboard/network-uptime" className="flex items-center py-1 px-2">
-                <Wifi className={`w-3 h-3 mr-2 ${
-                  isActive('/dashboard/network-uptime') ? 'text-green-600' : ''
-                }`} />
-                <span className="text-xs">Network Uptime</span>
-              </Link>
-            </li>
-            <li className={`rounded-lg border mb-1 ${
               isActive('/dashboard/networks')
                 ? 'bg-white border-gray-200 border-b-2' 
                 : 'border-transparent hover:border-gray-200'
@@ -140,18 +126,7 @@ export default function DashboardSidebar({
                 <span className="text-xs">Campaigns</span>
               </Link>
             </li>
-            <li className={`rounded-lg border mb-1 ${
-              isActive('/dashboard/merchants/suggestions')
-                ? 'bg-white border-gray-200 border-b-2' 
-                : 'border-transparent hover:border-gray-200'
-            }`}>
-              <Link href="/dashboard/merchants/suggestions" className="flex items-center py-1 px-2">
-                <Lightbulb className={`w-3 h-3 mr-2 ${
-                  isActive('/dashboard/merchants/suggestions') ? 'text-green-600' : ''
-                }`} />
-                <span className="text-xs">Suggestions</span>
-              </Link>
-            </li>
+            
             <li className={`rounded-lg border mb-1 ${
               isActive('/dashboard/link-rot')
                 ? 'bg-white border-gray-200 border-b-2' 
@@ -176,25 +151,25 @@ export default function DashboardSidebar({
                 <span className="text-xs">Coupons</span>
               </Link>
             </li>
-            <li className={`rounded-lg border mb-1 ${
-              isActive('/dashboard/published')
-                ? 'bg-white border-gray-200 border-b-2' 
-                : 'border-transparent hover:border-gray-200'
-            }`}>
-              <Link href="/dashboard/published" className="flex items-center py-1 px-2">
-                <FileText className={`w-3 h-3 mr-2 ${
-                  isActive('/dashboard/published') ? 'text-green-600' : ''
-                }`} />
-                <span className="text-xs">Published</span>
-              </Link>
-            </li>
           </ul>
         </div>
 
         {/* Scraping Section */}
         <div className="mb-1 mt-4">
-          <h3 className="text-xs font-bold uppercase text-gray-500 mb-2">Scraping</h3>
+          <h3 className="text-xs font-bold uppercase text-gray-500 mb-2">Tools</h3>
           <ul>
+          <li className={`rounded-lg border mb-1 ${
+              isActive('/dashboard/network-uptime')
+                ? 'bg-white border-gray-200 border-b-2' 
+                : 'border-transparent hover:border-gray-200'
+            }`}>
+              <Link href="/dashboard/network-uptime" className="flex items-center py-1 px-2">
+                <Wifi className={`w-3 h-3 mr-2 ${
+                  isActive('/dashboard/network-uptime') ? 'text-green-600' : ''
+                }`} />
+                <span className="text-xs">Network Downtime</span>
+              </Link>
+            </li>
             <li className={`rounded-lg border mb-1 ${
               isActive('/dashboard/logos')
                 ? 'bg-white border-gray-200 border-b-2' 
@@ -219,42 +194,8 @@ export default function DashboardSidebar({
                 <span className="text-xs">Link validation</span>
               </Link>
             </li>
-            <li className={`rounded-lg border mb-1 ${
-              isActive('/dashboard/coupon-scraper')
-                ? 'bg-white border-gray-200 border-b-2' 
-                : 'border-transparent hover:border-gray-200'
-            }`}>
-              <Link href="/dashboard/coupon-scraper" className="flex items-center py-1 px-2">
-                <Bot className={`w-3 h-3 mr-2 ${
-                  isActive('/dashboard/coupon-scraper') ? 'text-green-600' : ''
-                }`} />
-                <span className="text-xs">Coupon Scraper</span>
-              </Link>
-            </li>
-            <li className={`rounded-lg border mb-1 ${
-              isActive('/dashboard/content-generator')
-                ? 'bg-white border-gray-200 border-b-2' 
-                : 'border-transparent hover:border-gray-200'
-            }`}>
-              <Link href="/dashboard/content-generator" className="flex items-center py-1 px-2">
-                <Bot className={`w-3 h-3 mr-2 ${
-                  isActive('/dashboard/content-generator') ? 'text-green-600' : ''
-                }`} />
-                <span className="text-xs">Content</span>
-              </Link>
-            </li>
-            <li className={`rounded-lg border mb-1 ${
-              isActive('/dashboard/store-creator')
-                ? 'bg-white border-gray-200 border-b-2' 
-                : 'border-transparent hover:border-gray-200'
-            }`}>
-              <Link href="/dashboard/store-creator" className="flex items-center py-1 px-2">
-                <Bot className={`w-3 h-3 mr-2 ${
-                  isActive('/dashboard/store-creator') ? 'text-green-600' : ''
-                }`} />
-                <span className="text-xs">Store Creator</span>
-              </Link>
-            </li>
+   
+                  
           </ul>
         </div>
       </nav>

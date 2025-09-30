@@ -67,6 +67,10 @@
         "title": "Notifications | Track Merchant Changes | Affensus",
         "description": "Stay updated with merchant changes, status updates, and new opportunities in your affiliate marketing campaigns. Monitor all important changes in real-time."
       },
+      "coupons": {
+        "title": "Coupons Dashboard | Manage Affiliate Coupons | Affensus",
+        "description": "Manage and monitor your affiliate coupons and promotional offers from your dashboard. Track coupon performance, validity, and merchant promotions."
+      },
       "logos": {
         "title": "Logo Fetcher | Extract Website Logos | Affensus",
         "description": "Extract and download logos from any website URL. Perfect for affiliate marketers to get merchant logos for their campaigns."
@@ -701,10 +705,12 @@
       },
       "messages": {
         "error": "An error occurred while processing your request. Please try again later. If the issue persists, contact support.",
+        "sharedResultNotFound": "This shared result could not be found. It may have been removed or the link is invalid. Please check the URL or try analyzing a new affiliate link.",
         "deadEnd": "We've detected a dead end in one of the redirects. It's likely that this affiliate link is no longer working. Log in to promote this advertiser via a different network.",
         "deadLink": "We've detected a 404 dead link in one of the redirects. It's likely that this affiliate link is no longer working. Log in to promote this advertiser via a different network.",
         "multipleNetworks": "We've identified multiple affiliate networks associated with this link. You may be eligible to run this program through a different network instead of {network}. Log in to explore this opportunity and apply to their campaign.",
-        "success": "Great news! Your link is in perfect shape with no issues detected. Log in to explore how you can maximize your earnings from this link."
+        "success": "Great news! Your link is in perfect shape with no issues detected. Log in to explore how you can maximize your earnings from this link.",
+        "likelyNotAffiliate": "This URL doesn't appear to be an affiliate link as it shows no redirects. It may be a direct link to the merchant or a non-affiliate URL."
       },
       "sections": {
         "about": {

@@ -67,6 +67,10 @@
           "title": "Notificaties | Volg Merchant Wijzigingen | Affensus",
           "description": "Blijf op de hoogte van merchant wijzigingen, status updates en nieuwe kansen in je affiliate marketing campagnes. Monitor alle belangrijke wijzigingen in real-time."
         },
+        "coupons": {
+          "title": "Coupons Dashboard | Beheer Affiliate Coupons | Affensus",
+          "description": "Beheer en monitor je affiliate coupons en promotionele aanbiedingen vanuit je dashboard. Volg coupon prestaties, geldigheid en merchant promoties."
+        },
         "logos": {
           "title": "Logo Ophaler | Extracteer Website Logo's | Affensus",
           "description": "Extracteer en download logo's van elke website URL. Perfect voor affiliate marketeers om merchant logo's voor hun campagnes te krijgen."
@@ -667,10 +671,12 @@
       },
       "messages": {
         "error": "Er is een fout opgetreden bij het verwerken van je verzoek. Probeer het later opnieuw. Als het probleem aanhoudt, neem dan contact op met ondersteuning.",
+        "sharedResultNotFound": "Dit gedeelde resultaat kon niet worden gevonden. Het is mogelijk verwijderd of de link is ongeldig. Controleer de URL of probeer een nieuwe affiliate link te analyseren.",
         "deadEnd": "We hebben een doodlopende weg gedetecteerd in een van de doorverwijzingen. Het is waarschijnlijk dat deze affiliate link niet meer werkt. Log in om deze adverteerder te promoten via een ander netwerk.",
         "deadLink": "We hebben een 404 dode link gedetecteerd in een van de doorverwijzingen. Het is waarschijnlijk dat deze affiliate link niet meer werkt. Log in om deze adverteerder te promoten via een ander netwerk.",
         "multipleNetworks": "We hebben meerdere affiliate netwerken geïdentificeerd die aan deze link zijn gekoppeld. Je komt mogelijk in aanmerking om dit programma uit te voeren via een ander netwerk in plaats van {network}. Log in om deze kans te verkennen en je aan te melden voor hun campagne.",
-        "success": "Geweldig nieuws! Je link is in perfecte staat zonder problemen gedetecteerd. Log in om te verkennen hoe je je verdiensten van deze link kunt maximaliseren."
+        "success": "Geweldig nieuws! Je link is in perfecte staat zonder problemen gedetecteerd. Log in om te verkennen hoe je je verdiensten van deze link kunt maximaliseren.",
+        "likelyNotAffiliate": "Deze URL lijkt geen affiliate link te zijn omdat er geen doorverwijzingen zichtbaar zijn. Het kan een directe link naar de handelaar zijn of een niet-affiliate URL."
       },
       "sections": {
         "about": {

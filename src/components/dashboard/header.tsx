@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button"
 import { 
   Search,
   Bell,
-  FileText,
   CircleUser
 } from "lucide-react"
 import { useUser } from '@/hooks/use-user'
@@ -355,12 +354,7 @@ export default function DashboardHeader({ selectedProject, notifications, onAllN
         )}
       </div>
       <div className="flex items-center space-x-1 mr-2">
-        <Button variant="ghost" size="sm" className="h-7 px-2 text-xs">
-          Feedback
-        </Button>
-        <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
-          <FileText className="h-3 w-3" />
-        </Button>
+
         <div className="relative" ref={notificationsRef}>
           <Button 
             variant="ghost" 
