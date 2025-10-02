@@ -109,7 +109,7 @@ async function handleCreateDeal(body: any, env: any) {
 
   console.log('Create deal request body:', body);
   
-  if (!project_id || !merchant_name || !title || !discount || !description || !end_date) {
+  if (!project_id || !merchant_name || !discount || !description) {
     throw new Error(`Missing required parameters for deal creation. Got: project_id=${project_id}, merchant_name=${merchant_name}, title=${title}, discount=${discount}, description=${description}, end_date=${end_date}`);
   }
 

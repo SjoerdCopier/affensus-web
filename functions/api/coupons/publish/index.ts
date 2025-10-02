@@ -14,10 +14,13 @@ export async function onRequestOptions() {
 export async function onRequestPost(context: { request: Request; env: any }) {
   try {
     const { request, env } = context;
-    const { projectId, deal } = await request.json();
+    const { projectId, deal, externalId, promotionId, networkId } = await request.json();
 
     console.log('=== PUBLISH COUPON ===');
     console.log('ProjectId:', projectId);
+    console.log('External ID:', externalId);
+    console.log('Promotion ID:', promotionId);
+    console.log('Network ID:', networkId);
 
     if (!projectId || !deal) {
       console.log('❌ ERROR: Missing projectId or deal');
@@ -31,6 +34,17 @@ export async function onRequestPost(context: { request: Request; env: any }) {
 
     const dealData = JSON.parse(deal)[0]; // Parse the stringified deal data
 
+    const bearerToken = env.AFFENSUS_CREDENTIALS_PASSWORD;
+    if (!bearerToken) {
+      console.log('❌ ERROR: AFFENSUS_CREDENTIALS_PASSWORD not configured');
+      return new Response(JSON.stringify({ 
+        error: 'AFFENSUS_CREDENTIALS_PASSWORD not configured' 
+      }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
     // Transform deal data to match the external API format
     const transformedDeal = {
       created_by: 1, // Default user ID
@@ -39,8 +53,10 @@ export async function onRequestPost(context: { request: Request; env: any }) {
       code: dealData.coupon || null,
       status: 1, // Active
       description: dealData.description,
-      webshop: dealData.external_id || 0,
-      validity_from: dealData.valid_from ? new Date(dealData.valid_from).toLocaleDateString('nl-NL') : null,
+      webshop: externalId ? parseInt(String(externalId), 10) : 0,
+      validity_from: dealData.valid_from 
+        ? new Date(dealData.valid_from).toLocaleDateString('nl-NL') 
+        : new Date().toLocaleDateString('nl-NL'),
       validity_to: dealData.valid_until ? new Date(dealData.valid_until).toLocaleDateString('nl-NL') : null,
       exclusive: 0,
       affiliate_deep_link: dealData.affiliate_link || '',
@@ -53,17 +69,6 @@ export async function onRequestPost(context: { request: Request; env: any }) {
         dealData.categories.map((cat: any) => cat.id).filter((id: number) => id > 0) : null,
       proof_of_marketing: null
     };
-
-    const bearerToken = env.AFFENSUS_CREDENTIALS_PASSWORD;
-    if (!bearerToken) {
-      console.log('❌ ERROR: AFFENSUS_CREDENTIALS_PASSWORD not configured');
-      return new Response(JSON.stringify({ 
-        error: 'AFFENSUS_CREDENTIALS_PASSWORD not configured' 
-      }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
 
     // Get the project details to retrieve the encrypted publish data
     const projectResponse = await fetch(`https://apiv2.affensus.com/api/projects/${projectId}`, {
@@ -134,12 +139,12 @@ export async function onRequestPost(context: { request: Request; env: any }) {
     }
 
     console.log('Sending to external API:');
-    console.log(JSON.stringify(transformedDeal, null, 2));
+    console.log(JSON.stringify([transformedDeal], null, 2));
 
     const response = await fetch(apiDetails.endpoint, {
       method: 'POST',
       headers: headers,
-      body: JSON.stringify(transformedDeal)
+      body: JSON.stringify([transformedDeal])
     });
 
     console.log('External API status:', response.status);
@@ -151,7 +156,26 @@ export async function onRequestPost(context: { request: Request; env: any }) {
     }
 
     const apiResponse = await response.json();
-    console.log('✓ Published successfully');
+    console.log('✓ Published successfully to external API');
+
+    // Mark coupon as published in Affensus database
+    if (promotionId && networkId) {
+      console.log('Marking coupon as published in Affensus database...');
+      const publishUrl = `https://apiv2.affensus.com/api/coupons/${promotionId}/${networkId}/publish?project_id=${projectId}`;
+      const publishResponse = await fetch(publishUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${bearerToken}`,
+        },
+      });
+
+      if (!publishResponse.ok) {
+        console.log('⚠️ Warning: Failed to mark coupon as published in database');
+      } else {
+        console.log('✓ Coupon marked as published in database');
+      }
+    }
 
     return new Response(JSON.stringify({ 
       success: true, 

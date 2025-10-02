@@ -74,6 +74,10 @@
       "logos": {
         "title": "Logo Fetcher | Extract Website Logos | Affensus",
         "description": "Extract and download logos from any website URL. Perfect for affiliate marketers to get merchant logos for their campaigns."
+      },
+      "merchants": {
+        "title": "Store Creator | Create Merchant Stores | Affensus",
+        "description": "Create and manage merchant stores for your affiliate marketing campaigns. Add new stores with logos, descriptions, and details."
       }
     }
   },

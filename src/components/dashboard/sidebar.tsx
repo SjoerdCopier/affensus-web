@@ -194,7 +194,18 @@ export default function DashboardSidebar({
                 <span className="text-xs">Link validation</span>
               </Link>
             </li>
-   
+            <li className={`rounded-lg border mb-1 ${
+              isActive('/dashboard/store-creator')
+                ? 'bg-white border-gray-200 border-b-2' 
+                : 'border-transparent hover:border-gray-200'
+            }`}>
+              <Link href="/dashboard/store-creator" className="flex items-center py-1 px-2">
+                <Bot className={`w-3 h-3 mr-2 ${
+                  isActive('/dashboard/store-creator') ? 'text-green-600' : ''
+                }`} />
+                <span className="text-xs">Store creator</span>
+              </Link>
+            </li>
                   
           </ul>
         </div>

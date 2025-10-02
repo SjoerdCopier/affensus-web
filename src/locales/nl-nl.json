@@ -74,6 +74,10 @@
         "logos": {
           "title": "Logo Ophaler | Extracteer Website Logo's | Affensus",
           "description": "Extracteer en download logo's van elke website URL. Perfect voor affiliate marketeers om merchant logo's voor hun campagnes te krijgen."
+        },
+        "merchants": {
+          "title": "Winkel Maker | Maak Merchant Winkels | Affensus",
+          "description": "Maak en beheer merchant winkels voor je affiliate marketing campagnes. Voeg nieuwe winkels toe met logo's, beschrijvingen en details."
         }
       }
     },
